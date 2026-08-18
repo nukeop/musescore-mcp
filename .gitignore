@@ -29,3 +29,10 @@ logs
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# MuseScore extra files next to saved .mscx sheets
+src/fixtures/**/META-INF/
+src/fixtures/**/Thumbnails/
+src/fixtures/**/audiosettings.json
+src/fixtures/**/viewsettings.json
+src/fixtures/**/score_style.mss
