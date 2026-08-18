@@ -1,5 +1,5 @@
 import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
-import { KEY_FIFTHS } from "../model/keys";
+import { KEY_FIFTHS, type KeyName } from "../model/keys";
 import type { Clefs, InstrumentDefinition, Transposition } from "./instruments";
 
 type ScoreState = {
@@ -44,21 +44,12 @@ export class ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, composer });
 	}
 
-	withKey(key: string): ScoreBuilder {
-		const concertFifths = KEY_FIFTHS[key];
-		if (concertFifths === undefined) {
-			throw new Error(`Unknown key "${key}"`);
-		}
-		return new ScoreBuilder({ ...this.state, concertFifths });
+	withKey(key: KeyName): ScoreBuilder {
+		return new ScoreBuilder({ ...this.state, concertFifths: KEY_FIFTHS[key] });
 	}
 
-	withTime(time: string): ScoreBuilder {
-		const match = time.match(/^(\d+)\/(\d+)$/);
-		if (match === null) {
-			throw new Error(`Invalid time signature "${time}"`);
-		}
-		const [, beats, beatUnit] = match;
-		return new ScoreBuilder({ ...this.state, beats: Number(beats), beatUnit: Number(beatUnit) });
+	withTime(beats: number, beatUnit: number): ScoreBuilder {
+		return new ScoreBuilder({ ...this.state, beats, beatUnit });
 	}
 
 	withTempo(tempo: number): ScoreBuilder {

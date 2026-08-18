@@ -1,4 +1,4 @@
-export const KEY_FIFTHS: Record<string, number> = {
+export const KEY_FIFTHS = {
 	Cb: -7,
 	Gb: -6,
 	Db: -5,
@@ -29,4 +29,8 @@ export const KEY_FIFTHS: Record<string, number> = {
 	"G#m": 5,
 	"D#m": 6,
 	"A#m": 7,
-};
+} as const;
+
+export type KeyName = keyof typeof KEY_FIFTHS;
+
+export const keyNames = Object.keys(KEY_FIFTHS) as [KeyName, ...KeyName[]];

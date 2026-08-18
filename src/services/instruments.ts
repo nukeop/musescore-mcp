@@ -25,7 +25,7 @@ export type InstrumentDefinition = {
 	clefs?: Clefs;
 };
 
-const catalog: Record<string, InstrumentDefinition> = {
+const catalog = {
 	piano: {
 		museScoreId: "piano",
 		longName: "Piano",
@@ -119,10 +119,12 @@ const catalog: Record<string, InstrumentDefinition> = {
 		transposition: { diatonic: -12, chromatic: -21 },
 		clefs: { concert: "F", transposing: "G" },
 	},
-};
+} satisfies Record<string, InstrumentDefinition>;
 
-export const instrumentNames = Object.keys(catalog);
+export type InstrumentName = keyof typeof catalog;
 
-export function findInstrument(name: string): InstrumentDefinition | undefined {
+export const instrumentNames = Object.keys(catalog) as [InstrumentName, ...InstrumentName[]];
+
+export function findInstrument(name: InstrumentName): InstrumentDefinition {
 	return catalog[name];
 }
