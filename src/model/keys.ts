@@ -34,3 +34,13 @@ export const KEY_FIFTHS = {
 export type KeyName = keyof typeof KEY_FIFTHS;
 
 export const keyNames = Object.keys(KEY_FIFTHS) as [KeyName, ...KeyName[]];
+
+export function actualKey(
+	concertKey: number,
+	transposition: { diatonic: number; chromatic: number } | undefined,
+): number {
+	if (transposition === undefined) {
+		return concertKey;
+	}
+	return concertKey - (7 * transposition.chromatic - 12 * transposition.diatonic);
+}

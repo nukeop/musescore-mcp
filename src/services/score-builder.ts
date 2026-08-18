@@ -1,11 +1,11 @@
 import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
-import { KEY_FIFTHS, type KeyName } from "../model/keys";
+import { actualKey, KEY_FIFTHS, type KeyName } from "../model/keys";
 import type { Clefs, InstrumentDefinition, Transposition } from "./instruments";
 
 type ScoreState = {
 	readonly title: string;
 	readonly composer: string;
-	readonly concertFifths: number;
+	readonly concertKey: number;
 	readonly beats: number;
 	readonly beatUnit: number;
 	readonly tempo: number;
@@ -27,7 +27,7 @@ export class ScoreBuilder {
 		return new ScoreBuilder({
 			title: "",
 			composer: "",
-			concertFifths: 0,
+			concertKey: 0,
 			beats: 4,
 			beatUnit: 4,
 			tempo: 120,
@@ -45,7 +45,7 @@ export class ScoreBuilder {
 	}
 
 	withKey(key: KeyName): ScoreBuilder {
-		return new ScoreBuilder({ ...this.state, concertFifths: KEY_FIFTHS[key] });
+		return new ScoreBuilder({ ...this.state, concertKey: KEY_FIFTHS[key] });
 	}
 
 	withTime(beats: number, beatUnit: number): ScoreBuilder {
@@ -69,7 +69,9 @@ export class ScoreBuilder {
 			.map((definition, index) => this.renderPart(index + 1, definition))
 			.join("\n");
 
-		const staves = this.state.instruments.map((_, index) => this.renderStaff(index + 1)).join("\n");
+		const staves = this.state.instruments
+			.map((definition, index) => this.renderStaff(index + 1, definition))
+			.join("\n");
 
 		return `<?xml version="1.0" encoding="UTF-8"?>
 <museScore version="4.50">
@@ -97,10 +99,40 @@ ${staves}
 `;
 	}
 
-	private renderStaff(id: number): string {
-		const measures = `\n${this.renderRestMeasure()}`.repeat(this.state.measures);
-		return `    <Staff id="${id}">${measures}
+	private renderStaff(id: number, definition: InstrumentDefinition): string {
+		const restMeasures = `\n${this.renderRestMeasure()}`.repeat(this.state.measures - 1);
+		return `    <Staff id="${id}">
+${this.renderFirstMeasure(definition)}${restMeasures}
       </Staff>`;
+	}
+
+	private renderFirstMeasure(definition: InstrumentDefinition): string {
+		return `      <Measure>
+        <voice>
+${this.renderKeySig(definition)}
+          <TimeSig>
+            <sigN>${this.state.beats}</sigN>
+            <sigD>${this.state.beatUnit}</sigD>
+            </TimeSig>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>`;
+	}
+
+	private renderKeySig(definition: InstrumentDefinition): string {
+		const concert = this.state.concertKey;
+		const actual = actualKey(concert, definition.transposition);
+		if (actual === concert) {
+			return `          <KeySig>
+            <concertKey>${concert}</concertKey>
+            </KeySig>`;
+		}
+		return `          <KeySig>
+            <concertKey>${concert}</concertKey>
+            <actualKey>${actual}</actualKey>
+            </KeySig>`;
 	}
 
 	private renderRestMeasure(): string {
