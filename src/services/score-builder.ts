@@ -8,7 +8,7 @@ type ScoreState = {
 	readonly concertKey: number;
 	readonly beats: number;
 	readonly beatUnit: number;
-	readonly tempo: number;
+	readonly tempo: { bpm: number; quarterNotesPerSecond: number };
 	readonly measures: number;
 	readonly instruments: readonly InstrumentDefinition[];
 };
@@ -30,7 +30,7 @@ export class ScoreBuilder {
 			concertKey: 0,
 			beats: 4,
 			beatUnit: 4,
-			tempo: 120,
+			tempo: { bpm: 120, quarterNotesPerSecond: 2 },
 			measures: 32,
 			instruments: [],
 		});
@@ -52,7 +52,7 @@ export class ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, beats: time.beats, beatUnit: time.beatUnit });
 	}
 
-	withTempo(tempo: number): ScoreBuilder {
+	withTempo(tempo: { bpm: number; quarterNotesPerSecond: number }): ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, tempo });
 	}
 
@@ -101,24 +101,53 @@ ${staves}
 
 	private renderStaff(id: number, definition: InstrumentDefinition): string {
 		const restMeasures = `\n${this.renderRestMeasure()}`.repeat(this.state.measures - 1);
+		if (id === 1) {
+			return `    <Staff id="1">
+${this.renderVBox()}
+${this.renderFirstMeasure(definition, this.renderTempo())}${restMeasures}
+      </Staff>`;
+		}
 		return `    <Staff id="${id}">
-${this.renderFirstMeasure(definition)}${restMeasures}
+${this.renderFirstMeasure(definition, "")}${restMeasures}
       </Staff>`;
 	}
 
-	private renderFirstMeasure(definition: InstrumentDefinition): string {
+	private renderVBox(): string {
+		return `      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>${xmlText(this.state.title)}</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>${xmlText(this.state.composer)}</text>
+          </Text>
+        </VBox>`;
+	}
+
+	private renderFirstMeasure(definition: InstrumentDefinition, tempo: string): string {
 		return `      <Measure>
         <voice>
 ${this.renderKeySig(definition)}
           <TimeSig>
             <sigN>${this.state.beats}</sigN>
             <sigD>${this.state.beatUnit}</sigD>
-            </TimeSig>
+            </TimeSig>${tempo}
           <Rest>
             <durationType>measure</durationType>
             </Rest>
           </voice>
         </Measure>`;
+	}
+
+	private renderTempo(): string {
+		return `
+          <Tempo>
+            <tempo>${this.state.tempo.quarterNotesPerSecond}</tempo>
+            <followText>1</followText>
+            <text><sym>metNoteQuarterUp</sym> = ${this.state.tempo.bpm}</text>
+            </Tempo>`;
 	}
 
 	private renderKeySig(definition: InstrumentDefinition): string {

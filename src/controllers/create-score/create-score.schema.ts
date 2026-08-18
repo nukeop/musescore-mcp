@@ -17,6 +17,9 @@ export const createScoreSchema = {
 			const match = value.match(/^(?<beats>\d+)\/(?<beatUnit>\d+)$/);
 			return { beats: Number(match?.groups?.beats), beatUnit: Number(match?.groups?.beatUnit) };
 		}),
-	tempo: z.number().positive(),
+	tempo: z
+		.number()
+		.positive()
+		.transform((bpm) => ({ bpm, quarterNotesPerSecond: Math.round((bpm / 60) * 1_000_000) / 1_000_000 })),
 	measures: z.number().int().positive(),
 };
