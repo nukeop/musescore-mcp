@@ -68,6 +68,9 @@ export class ScoreBuilder {
 		const parts = this.state.instruments
 			.map((definition, index) => this.renderPart(index + 1, definition))
 			.join("\n");
+
+		const staves = this.state.instruments.map((_, index) => this.renderStaff(index + 1)).join("\n");
+
 		return `<?xml version="1.0" encoding="UTF-8"?>
 <museScore version="4.50">
   <Score>
@@ -88,9 +91,26 @@ export class ScoreBuilder {
     <metaTag name="workNumber"></metaTag>
     <metaTag name="workTitle">${xmlText(this.state.title)}</metaTag>
 ${parts}
+${staves}
     </Score>
   </museScore>
 `;
+	}
+
+	private renderStaff(id: number): string {
+		const measures = `\n${this.renderRestMeasure()}`.repeat(this.state.measures);
+		return `    <Staff id="${id}">${measures}
+      </Staff>`;
+	}
+
+	private renderRestMeasure(): string {
+		return `      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>`;
 	}
 
 	private renderPart(id: number, definition: InstrumentDefinition): string {

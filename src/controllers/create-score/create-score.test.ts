@@ -31,14 +31,27 @@ describe("create_score", () => {
 		expect(result.isError).toBeUndefined();
 		expect(files.writtenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
-	test("rejects an unknown instrument and names the known ones", async () => {
-		const result = await createScore(mcp, { instruments: ["kazoo"] });
+	// Raw tool call is needed here so this doesn't get rejected by type check
+	test("rejects an unknown instrument and names the allowed ones", async () => {
+		const result = await mcp.client.callTool({
+			name: "create_score",
+			arguments: {
+				file: "/scores/test-tune.mscx",
+				title: "Test Tune",
+				composer: "Test Composer",
+				instruments: ["kazoo"],
+				key: "Cm",
+				time: "4/4",
+				tempo: 160,
+				measures: 32,
+			},
+		});
 
 		expect(result.isError).toBe(true);
 		expect(result.content).toEqual([
 			{
 				type: "text",
-				text: 'Unknown instrument "kazoo". Known instruments: piano, electric-guitar, acoustic-bass, electric-bass, trumpet, soprano-saxophone, alto-saxophone, tenor-saxophone, baritone-saxophone.',
+				text: 'MCP error -32602: Input validation error: Invalid arguments for tool create_score: Invalid option: expected one of "piano"|"electric-guitar"|"acoustic-bass"|"electric-bass"|"trumpet"|"soprano-saxophone"|"alto-saxophone"|"tenor-saxophone"|"baritone-saxophone" at instruments[0]',
 			},
 		]);
 	});
