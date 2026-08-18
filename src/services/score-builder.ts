@@ -48,8 +48,8 @@ export class ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, concertKey: KEY_FIFTHS[key] });
 	}
 
-	withTime(beats: number, beatUnit: number): ScoreBuilder {
-		return new ScoreBuilder({ ...this.state, beats, beatUnit });
+	withTime(time: { beats: number; beatUnit: number }): ScoreBuilder {
+		return new ScoreBuilder({ ...this.state, beats: time.beats, beatUnit: time.beatUnit });
 	}
 
 	withTempo(tempo: number): ScoreBuilder {
@@ -60,8 +60,8 @@ export class ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, measures });
 	}
 
-	withInstrument(definition: InstrumentDefinition): ScoreBuilder {
-		return new ScoreBuilder({ ...this.state, instruments: [...this.state.instruments, definition] });
+	withInstruments(definitions: readonly InstrumentDefinition[]): ScoreBuilder {
+		return new ScoreBuilder({ ...this.state, instruments: definitions });
 	}
 
 	build(): string {

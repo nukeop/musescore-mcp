@@ -2,7 +2,7 @@ import { z } from "zod";
 import { keyNames } from "../../model/keys";
 import { instrumentNames } from "../../services/instruments";
 
-export type CreateScoreArgs = z.infer<z.ZodObject<typeof createScoreSchema>>;
+export type CreateScoreArgs = z.input<z.ZodObject<typeof createScoreSchema>>;
 
 export const createScoreSchema = {
 	file: z.string(),
@@ -10,7 +10,13 @@ export const createScoreSchema = {
 	composer: z.string(),
 	instruments: z.array(z.enum(instrumentNames)),
 	key: z.enum(keyNames),
-	time: z.string().regex(/^\d+\/\d+$/),
+	time: z
+		.templateLiteral([z.number().int().positive(), "/", z.number().int().positive()])
+		.default("4/4")
+		.transform((value) => {
+			const match = value.match(/^(?<beats>\d+)\/(?<beatUnit>\d+)$/);
+			return { beats: Number(match?.groups?.beats), beatUnit: Number(match?.groups?.beatUnit) };
+		}),
 	tempo: z.number().positive(),
 	measures: z.number().int().positive(),
 };
