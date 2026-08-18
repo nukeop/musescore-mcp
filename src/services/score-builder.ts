@@ -1,9 +1,15 @@
 import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
+import { KEY_FIFTHS } from "../model/keys";
 import type { Clefs, InstrumentDefinition, Transposition } from "./instruments";
 
 type ScoreState = {
 	readonly title: string;
 	readonly composer: string;
+	readonly concertFifths: number;
+	readonly beats: number;
+	readonly beatUnit: number;
+	readonly tempo: number;
+	readonly measures: number;
 	readonly instruments: readonly InstrumentDefinition[];
 };
 
@@ -18,7 +24,16 @@ export class ScoreBuilder {
 	private constructor(private readonly state: ScoreState) {}
 
 	static create(): ScoreBuilder {
-		return new ScoreBuilder({ title: "", composer: "", instruments: [] });
+		return new ScoreBuilder({
+			title: "",
+			composer: "",
+			concertFifths: 0,
+			beats: 4,
+			beatUnit: 4,
+			tempo: 120,
+			measures: 32,
+			instruments: [],
+		});
 	}
 
 	withTitle(title: string): ScoreBuilder {
@@ -27,6 +42,31 @@ export class ScoreBuilder {
 
 	withComposer(composer: string): ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, composer });
+	}
+
+	withKey(key: string): ScoreBuilder {
+		const concertFifths = KEY_FIFTHS[key];
+		if (concertFifths === undefined) {
+			throw new Error(`Unknown key "${key}"`);
+		}
+		return new ScoreBuilder({ ...this.state, concertFifths });
+	}
+
+	withTime(time: string): ScoreBuilder {
+		const match = time.match(/^(\d+)\/(\d+)$/);
+		if (match === null) {
+			throw new Error(`Invalid time signature "${time}"`);
+		}
+		const [, beats, beatUnit] = match;
+		return new ScoreBuilder({ ...this.state, beats: Number(beats), beatUnit: Number(beatUnit) });
+	}
+
+	withTempo(tempo: number): ScoreBuilder {
+		return new ScoreBuilder({ ...this.state, tempo });
+	}
+
+	withMeasures(measures: number): ScoreBuilder {
+		return new ScoreBuilder({ ...this.state, measures });
 	}
 
 	withInstrument(definition: InstrumentDefinition): ScoreBuilder {

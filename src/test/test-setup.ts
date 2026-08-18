@@ -11,10 +11,7 @@ export async function createTestClient(): Promise<TestClient> {
 	const server = buildServer();
 	const client = new Client({ name: "test-client", version: "0.1.0" });
 	const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-	await Promise.all([
-		client.connect(clientTransport),
-		server.connect(serverTransport),
-	]);
+	await Promise.all([client.connect(clientTransport), server.connect(serverTransport)]);
 	return {
 		client,
 		close: async () => {

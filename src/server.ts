@@ -11,7 +11,9 @@ export function buildServer(): McpServer {
 		version: "0.1.0",
 	});
 
-	controllers.forEach((register) => register(server));
+	controllers.forEach((register) => {
+		register(server);
+	});
 
 	return server;
 }

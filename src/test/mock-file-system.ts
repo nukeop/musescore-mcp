@@ -19,6 +19,12 @@ export function createMockFileSystem() {
 		afterEach: () => {
 			writeSpy.mockRestore();
 		},
-		writtenFile: (path: string) => written.get(path)!,
+		writtenFile: (path: string) => {
+			const content = written.get(path);
+			if (content === undefined) {
+				throw new Error(`No file was written to ${path}`);
+			}
+			return content;
+		},
 	};
 }
