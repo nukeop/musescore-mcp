@@ -1,8 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { createScoreController } from "./controllers/create-score/create-score.controller";
 
 export type Controller = (server: McpServer) => void;
 
-const controllers: Controller[] = [];
+const controllers: Controller[] = [createScoreController];
 
 export function buildServer(): McpServer {
 	const server = new McpServer({
