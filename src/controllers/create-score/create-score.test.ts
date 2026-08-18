@@ -21,7 +21,7 @@ describe("create_score", () => {
 		const result = await createScore(mcp);
 
 		expect(result.isError).toBeUndefined();
-		expect(result.content).toEqual([{ type: "text", text: `Created ${SCORE_FILE}` }]);
+		expect(result.content).toEqual([{ type: "text", text: "Created /scores/test-tune.mscx" }]);
 		expect(files.writtenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
@@ -38,7 +38,7 @@ describe("create_score", () => {
 		expect(result.content).toEqual([
 			{
 				type: "text",
-				text: 'Unknown instrument "kazoo". Known instruments: piano, guitar, bass, flute, trumpet, tenor-saxophone, soprano-saxophone, clarinet, alto-saxophone, baritone-saxophone.',
+				text: 'Unknown instrument "kazoo". Known instruments: piano, electric-guitar, acoustic-bass, electric-bass, trumpet, soprano-saxophone, alto-saxophone, tenor-saxophone, baritone-saxophone.',
 			},
 		]);
 	});
