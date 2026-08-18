@@ -9,8 +9,6 @@ export const createScoreController: Controller = (server) => {
 				"Creates a new .mscx score file with a header, instruments, key and time signatures, a tempo marker, and empty measures.",
 			inputSchema: createScoreSchema,
 		},
-		async () => {
-
-		},
+		async () => ({ content: [] }),
 	);
 };
