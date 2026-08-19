@@ -35,6 +35,10 @@ export type KeyName = keyof typeof KEY_FIFTHS;
 
 export const keyNames = Object.keys(KEY_FIFTHS) as [KeyName, ...KeyName[]];
 
+export function keyName(fifths: number): string {
+	return keyNames.filter((name) => KEY_FIFTHS[name] === fifths).join("/");
+}
+
 export function actualKey(
 	concertKey: number,
 	transposition: { diatonic: number; chromatic: number } | undefined,

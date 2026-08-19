@@ -1,6 +1,9 @@
 import type { Controller } from "../../server";
 import { ScoreFile } from "../../services/score-file";
+import { ScoreReader } from "../../services/score-reader";
+import { textResult } from "../tool-response";
 import { getOverviewSchema } from "./get-overview.schema";
+import { OverviewRenderer } from "./overview-renderer";
 
 export const getOverviewController: Controller = (server) => {
 	server.registerTool(
@@ -11,8 +14,9 @@ export const getOverviewController: Controller = (server) => {
 			inputSchema: getOverviewSchema,
 		},
 		async ({ file }) => {
-			await ScoreFile.open(file);
-			return { content: [] };
+			const scoreFile = await ScoreFile.open(file);
+			const score = new ScoreReader(scoreFile.document).read();
+			return textResult(new OverviewRenderer(score).render());
 		},
 	);
 };

@@ -1,6 +1,7 @@
 import type { Controller } from "../../server";
 import { findInstrument } from "../../services/instruments";
 import { ScoreBuilder } from "../../services/score-builder";
+import { textResult } from "../tool-response";
 import { createScoreSchema } from "./create-score.schema";
 
 export const createScoreController: Controller = (server) => {
@@ -22,7 +23,7 @@ export const createScoreController: Controller = (server) => {
 				.withInstruments(instruments.map((name) => findInstrument(name)))
 				.build();
 			await Bun.write(file, score);
-			return { content: [{ type: "text", text: `Created ${file}` }] };
+			return textResult(`Created ${file}`);
 		},
 	);
 };
