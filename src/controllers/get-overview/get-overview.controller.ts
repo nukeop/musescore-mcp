@@ -1,5 +1,5 @@
 import type { Controller } from "../../server";
-import { SheetFile } from "../../services/sheet-file";
+import { ScoreFile } from "../../services/score-file";
 import { getOverviewSchema } from "./get-overview.schema";
 
 export const getOverviewController: Controller = (server) => {
@@ -11,7 +11,7 @@ export const getOverviewController: Controller = (server) => {
 			inputSchema: getOverviewSchema,
 		},
 		async ({ file }) => {
-			await SheetFile.open(file);
+			await ScoreFile.open(file);
 			return { content: [] };
 		},
 	);
