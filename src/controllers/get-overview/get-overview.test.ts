@@ -31,6 +31,19 @@ describe("get_overview", () => {
 		expect(textContent(result)).toMatchSnapshot();
 	});
 
+	test("lists every instrument", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["tenor-saxophone", "piano"] });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await getOverview(mcp);
+
+		expect(result.isError).toBeUndefined();
+		expect(textContent(result)).toMatchSnapshot();
+	});
+
 	test("summarizes example sheet", async () => {
 		const reads = BunFsMock.spyOnFile();
 
