@@ -1,19 +1,18 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { createScore } from "../../test/create-score";
-import { createMockFileSystem } from "../../test/mock-file-system";
+import { BunFsMock } from "../../test/mocks/bun-fs";
 import { createTestClient, type TestClient } from "../../test/test-setup";
 
 describe("create_score", () => {
-	const files = createMockFileSystem();
 	let mcp: TestClient;
 
 	beforeEach(async () => {
-		files.beforeEach();
+		BunFsMock.mockWrite();
 		mcp = await createTestClient();
 	});
 
 	afterEach(async () => {
-		files.afterEach();
+		BunFsMock.reset();
 		await mcp.close();
 	});
 
@@ -22,14 +21,14 @@ describe("create_score", () => {
 
 		expect(result.isError).toBeUndefined();
 		expect(result.content).toEqual([{ type: "text", text: "Created /scores/test-tune.mscx" }]);
-		expect(files.writtenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
 	test("creates one part and staff per requested instrument", async () => {
 		const result = await createScore(mcp, { instruments: ["tenor-saxophone", "piano"] });
 
 		expect(result.isError).toBeUndefined();
-		expect(files.writtenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 	// Raw tool call is needed here so this doesn't get rejected by type check
 	test("rejects an unknown instrument and names the allowed ones", async () => {
