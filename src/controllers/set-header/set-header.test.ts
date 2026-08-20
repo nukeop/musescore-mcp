@@ -85,9 +85,11 @@ describe("set_header", () => {
 	});
 
 	test("reports an error for a file that does not exist", async () => {
+		BunFsMock.mockNoFile();
+
 		const result = await setHeader(mcp, { title: "Blue Monk" }, "/scores/missing.mscx");
 
-		expect(result).toBeToolError("File not found: /scores/missing.mscx");
+		expect(result).toBeToolError("ENOENT: no such file or directory, open '/scores/missing.mscx'");
 	});
 
 	test("reports an error for a file that is not a MuseScore score", async () => {

@@ -15,11 +15,7 @@ export class ScoreFile {
 	}
 
 	static async open(path: string): Promise<ScoreFile> {
-		const file = Bun.file(path);
-		if (!(await file.exists())) {
-			throw new Error(`File not found: ${path}`);
-		}
-		const document = new DOMParser().parseFromString(await file.text(), "text/xml");
+		const document = new DOMParser().parseFromString(await Bun.file(path).text(), "text/xml");
 		const integrity = scoreIntegrity.safeParse(document);
 		if (!integrity.success) {
 			const reasons = integrity.error.issues.map((issue) => issue.message).join(", ");

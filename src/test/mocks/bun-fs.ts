@@ -19,6 +19,16 @@ export const BunFsMock = {
 				}) as BunFile) as typeof Bun.file,
 		),
 
+	mockNoFile: () =>
+		spyOn(Bun, "file").mockImplementation(
+			((path: string) =>
+				({
+					text: async () => {
+						throw new Error(`ENOENT: no such file or directory, open '${path}'`);
+					},
+				}) as unknown as BunFile) as typeof Bun.file,
+		),
+
 	spyOnFile: () => spyOn(Bun, "file"),
 
 	getWrittenFile: (path: string) => writtenFiles.get(path) as string,

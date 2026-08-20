@@ -56,8 +56,10 @@ describe("get_overview", () => {
 	});
 
 	test("reports an error for a file that does not exist", async () => {
+		BunFsMock.mockNoFile();
+
 		const result = await getOverview(mcp, "/scores/missing.mscx");
 
-		expect(result).toBeToolError("File not found: /scores/missing.mscx");
+		expect(result).toBeToolError("ENOENT: no such file or directory, open '/scores/missing.mscx'");
 	});
 });
