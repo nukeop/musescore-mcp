@@ -1,0 +1,40 @@
+import type { Document, Element, Node } from "@xmldom/xmldom";
+
+export function children(parent: Node, name: string): Element[] {
+	return Array.from(parent.childNodes).filter(
+		(node): node is Element => node.nodeType === node.ELEMENT_NODE && node.nodeName === name,
+	);
+}
+
+export function child(parent: Node, name: string): Element | undefined {
+	return children(parent, name)[0];
+}
+
+export function numberIn(parent: Element, name: string): number {
+	return Number(child(parent, name)?.textContent);
+}
+
+export function textIn(parent: Element, name: string): string {
+	return child(parent, name)?.textContent ?? "";
+}
+
+export function elementWithText(document: Document, name: string, value: string): Element {
+	const element = document.createElement(name);
+	element.textContent = value;
+	return element;
+}
+
+export function textElementIn(document: Document, parent: Element): Element {
+	const existing = child(parent, "text");
+	if (existing) {
+		return existing;
+	}
+	const created = document.createElement("text");
+	parent.appendChild(created);
+	return created;
+}
+
+export function scoreElementOf(document: Document): Element | undefined {
+	const root = child(document, "museScore");
+	return root && child(root, "Score");
+}

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { createScore } from "../../test/create-score";
 import { getOverview } from "../../test/get-overview";
+import "../../test/matchers";
 import { BunFsMock } from "../../test/mocks/bun-fs";
 import { createTestClient, type TestClient } from "../../test/test-setup";
 import { textContent } from "../../test/tool-result";
@@ -57,7 +58,6 @@ describe("get_overview", () => {
 	test("reports an error for a file that does not exist", async () => {
 		const result = await getOverview(mcp, "/scores/missing.mscx");
 
-		expect(result.isError).toBe(true);
-		expect(result.content).toEqual([{ type: "text", text: "File not found: /scores/missing.mscx" }]);
+		expect(result).toBeToolError("File not found: /scores/missing.mscx");
 	});
 });

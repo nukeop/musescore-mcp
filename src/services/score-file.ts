@@ -1,21 +1,30 @@
-import type { Document } from "@xmldom/xmldom";
-import { DOMParser } from "@xmldom/xmldom";
+import type { Document, Element } from "@xmldom/xmldom";
+import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
+import { scoreIntegrity } from "./score-integrity";
 
 export class ScoreFile {
 	private constructor(
 		readonly path: string,
-		readonly xml: string,
+		readonly document: Document,
+		readonly score: Element,
+		readonly firstStaff: Element,
 	) {}
 
-	get document(): Document {
-		return new DOMParser().parseFromString(this.xml, "text/xml");
+	async save(): Promise<void> {
+		await Bun.write(this.path, new XMLSerializer().serializeToString(this.document));
 	}
 
 	static async open(path: string): Promise<ScoreFile> {
-		const source = Bun.file(path);
-		if (!(await source.exists())) {
+		const file = Bun.file(path);
+		if (!(await file.exists())) {
 			throw new Error(`File not found: ${path}`);
 		}
-		return new ScoreFile(path, await source.text());
+		const document = new DOMParser().parseFromString(await file.text(), "text/xml");
+		const integrity = scoreIntegrity.safeParse(document);
+		if (!integrity.success) {
+			const reasons = integrity.error.issues.map((issue) => issue.message).join(", ");
+			throw new Error(`${reasons}: ${path}`);
+		}
+		return new ScoreFile(path, document, integrity.data.score, integrity.data.firstStaff);
 	}
 }

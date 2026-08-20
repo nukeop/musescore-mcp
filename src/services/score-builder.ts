@@ -200,7 +200,7 @@ ${this.renderKeySig(definition)}
 	}
 
 	private staffClefLines(clefs: Clefs | undefined): string {
-		if (clefs === undefined) {
+		if (!clefs) {
 			return "";
 		}
 		if (clefs.concert === clefs.transposing) {
@@ -213,7 +213,7 @@ ${this.renderKeySig(definition)}
 	}
 
 	private instrumentClefLines(clefs: Clefs | undefined): string {
-		if (clefs === undefined || clefs.concert === clefs.transposing) {
+		if (!clefs || clefs.concert === clefs.transposing) {
 			return "";
 		}
 		return `
@@ -222,11 +222,10 @@ ${this.renderKeySig(definition)}
 	}
 
 	private transpositionLines(transposition: Transposition | undefined): string {
-		if (transposition === undefined) {
-			return "";
-		}
-		return `
+		return transposition
+			? `
         <transposeDiatonic>${transposition.diatonic}</transposeDiatonic>
-        <transposeChromatic>${transposition.chromatic}</transposeChromatic>`;
+        <transposeChromatic>${transposition.chromatic}</transposeChromatic>`
+			: "";
 	}
 }

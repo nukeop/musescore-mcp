@@ -43,8 +43,7 @@ export function actualKey(
 	concertKey: number,
 	transposition: { diatonic: number; chromatic: number } | undefined,
 ): number {
-	if (transposition === undefined) {
-		return concertKey;
-	}
-	return concertKey - (7 * transposition.chromatic - 12 * transposition.diatonic);
+	return transposition
+		? concertKey - (7 * transposition.chromatic - 12 * transposition.diatonic)
+		: concertKey;
 }

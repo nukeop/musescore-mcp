@@ -15,7 +15,7 @@ export const getOverviewController: Controller = (server) => {
 		},
 		async ({ file }) => {
 			const scoreFile = await ScoreFile.open(file);
-			const score = new ScoreReader(scoreFile.document).read();
+			const score = new ScoreReader(scoreFile.score).read();
 			return textResult(new OverviewRenderer(score).render());
 		},
 	);
