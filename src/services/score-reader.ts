@@ -52,14 +52,15 @@ export class ScoreReader {
 		return instrument
 			? {
 					name: textIn(instrument, "longName"),
-					transposeChromatic: this.readTranspose(instrument),
+					transposeDiatonic: this.readTransposeValue(instrument, "transposeDiatonic"),
+					transposeChromatic: this.readTransposeValue(instrument, "transposeChromatic"),
 				}
-			: { name: "", transposeChromatic: 0 };
+			: { name: "", transposeDiatonic: 0, transposeChromatic: 0 };
 	}
 
-	private readTranspose(instrument: Element): number {
-		const transpose = child(instrument, "transposeChromatic");
-		return transpose ? Number(transpose.textContent) : 0;
+	private readTransposeValue(instrument: Element, tag: string): number {
+		const element = child(instrument, tag);
+		return element ? Number(element.textContent) : 0;
 	}
 
 	private readStaff(element: Element): Staff {

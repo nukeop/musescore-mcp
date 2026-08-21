@@ -5,6 +5,7 @@ export interface ScoreHeader {
 
 export interface ScorePart {
 	name: string;
+	transposeDiatonic: number;
 	transposeChromatic: number;
 }
 
