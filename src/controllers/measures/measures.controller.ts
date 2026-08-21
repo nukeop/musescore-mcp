@@ -1,7 +1,9 @@
 import type { Controller } from "../../server";
 import { ScoreFile } from "../../services/score-file";
 import { ScoreReader } from "../../services/score-reader";
+import { textResult } from "../tool-response";
 import { readMeasuresSchema, writeMeasuresSchema } from "./measures.schema";
+import { MeasuresRenderer } from "./measures-renderer";
 
 export const measuresController: Controller = (server) => {
 	server.registerTool(
@@ -15,7 +17,6 @@ export const measuresController: Controller = (server) => {
 			const scoreFile = await ScoreFile.open(file);
 			const score = new ScoreReader(scoreFile.score).read();
 			const measures = score.staves[(staff ?? 1) - 1];
-			const firstPart = score.parts[(staff ?? 1) - 1];
 
 			if (!measures) {
 				throw new Error(`No measures in staff ${staff}`);
@@ -28,7 +29,8 @@ export const measuresController: Controller = (server) => {
 			}
 
 			const firstVoiceMeasures = measures.slice(from - 1, to).map((m) => m.voices[0]);
-			const transposeChromatic = firstPart?.transposeChromatic ?? 0;
+
+			return textResult(new MeasuresRenderer(firstVoiceMeasures).render());
 		},
 	);
 
