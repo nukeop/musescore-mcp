@@ -16,21 +16,23 @@ export const measuresController: Controller = (server) => {
 		async ({ file, from, to, staff }) => {
 			const scoreFile = await ScoreFile.open(file);
 			const score = new ScoreReader(scoreFile.score).read();
-			const measures = score.staves[(staff ?? 1) - 1];
+			const scoreStaff = score.staves[(staff ?? 1) - 1];
 
-			if (!measures) {
-				throw new Error(`No measures in staff ${staff}`);
+			if (!scoreStaff) {
+				throw new Error(`No staff ${staff ?? 1} in ${file}`);
 			}
 
-			if (to > measures.length) {
+			if (to > scoreStaff.measures.length) {
 				throw new Error(
-					`Measure range ${from}-${to} exceeds score length (${measures.length} measures): ${file}`,
+					`Measure range ${from}-${to} exceeds score length (${scoreStaff.measures.length} measures): ${file}`,
 				);
 			}
 
-			const firstVoiceMeasures = measures.slice(from - 1, to).map((m) => m.voices[0]);
+			const firstVoiceMeasures = scoreStaff.measures.slice(from - 1, to).map((m) => m.voices[0]);
 
-			return textResult(new MeasuresRenderer(firstVoiceMeasures).render());
+			return textResult(
+				new MeasuresRenderer(firstVoiceMeasures, scoreStaff.part.transposeChromatic).render(),
+			);
 		},
 	);
 

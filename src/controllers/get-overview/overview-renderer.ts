@@ -12,7 +12,7 @@ export class OverviewRenderer {
 	}
 
 	private signatureLine(): string {
-		const measures = this.score.staves[0] ?? [];
+		const measures = this.score.staves[0]?.measures ?? [];
 		const [first] = measures;
 		const segments: string[] = [];
 		if (first?.keySig) {

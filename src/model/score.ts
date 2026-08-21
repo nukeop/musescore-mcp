@@ -43,7 +43,14 @@ export interface Rest {
 	duration: Duration;
 }
 
-export type VoiceEvent = Chord | Rest;
+export interface Tuplet {
+	kind: "tuplet";
+	actualNotes: number;
+	normalNotes: number;
+	events: VoiceEvent[];
+}
+
+export type VoiceEvent = Chord | Rest | Tuplet;
 
 export interface Voice {
 	events: VoiceEvent[];
@@ -56,8 +63,13 @@ export interface Measure {
 	voices: Voice[];
 }
 
+export interface Staff {
+	part: ScorePart;
+	measures: Measure[];
+}
+
 export interface Score {
 	header: ScoreHeader;
 	parts: ScorePart[];
-	staves: Measure[][];
+	staves: Staff[];
 }

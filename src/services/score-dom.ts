@@ -1,9 +1,13 @@
 import type { Document, Element, Node } from "@xmldom/xmldom";
 
-export function children(parent: Node, name: string): Element[] {
+export function childElements(parent: Node): Element[] {
 	return Array.from(parent.childNodes).filter(
-		(node): node is Element => node.nodeType === node.ELEMENT_NODE && node.nodeName === name,
+		(node): node is Element => node.nodeType === node.ELEMENT_NODE,
 	);
+}
+
+export function children(parent: Node, name: string): Element[] {
+	return childElements(parent).filter((element) => element.nodeName === name);
 }
 
 export function child(parent: Node, name: string): Element | undefined {

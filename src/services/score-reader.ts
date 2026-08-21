@@ -1,18 +1,17 @@
 import type { Element } from "@xmldom/xmldom";
 import type {
-	Duration,
 	KeySig,
 	Measure,
-	Note,
 	Score,
 	ScoreHeader,
 	ScorePart,
+	Staff,
 	Tempo,
 	TimeSig,
 	Voice,
-	VoiceEvent,
 } from "../model/score";
 import { child, children, numberIn, textIn } from "./score-dom";
+import { VoiceReader } from "./voice-reader";
 
 export class ScoreReader {
 	constructor(private readonly score: Element) {}
@@ -23,6 +22,17 @@ export class ScoreReader {
 			parts: children(this.score, "Part").map((part) => this.readPart(part)),
 			staves: children(this.score, "Staff").map((staff) => this.readStaff(staff)),
 		};
+	}
+
+	private partOf(staff: Element): Element {
+		const staffId = staff.getAttribute("id");
+		const part = children(this.score, "Part").find((candidate) =>
+			children(candidate, "Staff").some((declared) => declared.getAttribute("id") === staffId),
+		);
+		if (!part) {
+			throw new Error(`No part declares staff ${staffId}`);
+		}
+		return part;
 	}
 
 	private readHeader(): ScoreHeader {
@@ -52,8 +62,11 @@ export class ScoreReader {
 		return transpose ? Number(transpose.textContent) : 0;
 	}
 
-	private readStaff(element: Element): Measure[] {
-		return children(element, "Measure").map((measure) => this.readMeasure(measure));
+	private readStaff(element: Element): Staff {
+		return {
+			part: this.readPart(this.partOf(element)),
+			measures: children(element, "Measure").map((measure) => this.readMeasure(measure)),
+		};
 	}
 
 	private readKeySig(voice: Element): KeySig | undefined {
@@ -85,43 +98,6 @@ export class ScoreReader {
 	}
 
 	private readVoice(element: Element): Voice {
-		const events = Array.from(element.childNodes)
-			.filter((node): node is Element => node.nodeType === node.ELEMENT_NODE)
-			.flatMap((node) => this.readEvent(node));
-		return { events };
-	}
-
-	private readEvent(element: Element): VoiceEvent[] {
-		// Every melody note is inside a "Chord" event, even if there's no actual chord inside
-		if (element.nodeName === "Chord") {
-			return [
-				{
-					kind: "chord",
-					duration: this.readDuration(element),
-					notes: children(element, "Note").map((note) => this.readNote(note)),
-				},
-			];
-		} else if (element.nodeName === "Rest") {
-			return [{ kind: "rest", duration: this.readDuration(element) }];
-		} else {
-			return [];
-		}
-	}
-
-	private readDuration(element: Element): Duration {
-		const dots = child(element, "dots");
-		return {
-			type: textIn(element, "durationType"),
-			dots: dots ? Number(dots.textContent) : 0,
-		};
-	}
-
-	private readNote(element: Element): Note {
-		const tpc2 = child(element, "tpc2");
-		return {
-			pitch: numberIn(element, "pitch"),
-			tpc: numberIn(element, "tpc"),
-			tpc2: tpc2 ? Number(tpc2.textContent) : undefined,
-		};
+		return new VoiceReader(element).read();
 	}
 }
