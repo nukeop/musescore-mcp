@@ -1,7 +1,9 @@
 import type { Element } from "@xmldom/xmldom";
 import type {
+	Duration,
 	KeySig,
 	Measure,
+	Note,
 	Score,
 	ScoreHeader,
 	ScorePart,
@@ -90,12 +92,36 @@ export class ScoreReader {
 	}
 
 	private readEvent(element: Element): VoiceEvent[] {
+		// Every melody note is inside a "Chord" event, even if there's no actual chord inside
 		if (element.nodeName === "Chord") {
-			return [{ kind: "chord" }];
+			return [
+				{
+					kind: "chord",
+					duration: this.readDuration(element),
+					notes: children(element, "Note").map((note) => this.readNote(note)),
+				},
+			];
 		} else if (element.nodeName === "Rest") {
-			return [{ kind: "rest" }];
+			return [{ kind: "rest", duration: this.readDuration(element) }];
 		} else {
 			return [];
 		}
+	}
+
+	private readDuration(element: Element): Duration {
+		const dots = child(element, "dots");
+		return {
+			type: textIn(element, "durationType"),
+			dots: dots ? Number(dots.textContent) : 0,
+		};
+	}
+
+	private readNote(element: Element): Note {
+		const tpc2 = child(element, "tpc2");
+		return {
+			pitch: numberIn(element, "pitch"),
+			tpc: numberIn(element, "tpc"),
+			tpc2: tpc2 ? Number(tpc2.textContent) : undefined,
+		};
 	}
 }

@@ -21,12 +21,26 @@ export interface Tempo {
 	quarterNotesPerSecond: number;
 }
 
+export interface Duration {
+	type: string;
+	dots: number;
+}
+
+export interface Note {
+	pitch: number;
+	tpc: number;
+	tpc2?: number;
+}
+
 export interface Chord {
 	kind: "chord";
+	duration: Duration;
+	notes: Note[];
 }
 
 export interface Rest {
 	kind: "rest";
+	duration: Duration;
 }
 
 export type VoiceEvent = Chord | Rest;
