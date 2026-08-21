@@ -1,7 +1,10 @@
+import { durationSymbol } from "../../model/durations";
 import { noteName } from "../../model/pitch";
-import type { Note, Voice, VoiceEvent } from "../../model/score";
+import type { Duration, Note, Voice, VoiceEvent } from "../../model/score";
 
 export class MeasuresRenderer {
+	private previousDuration: string | undefined;
+
 	constructor(
 		private readonly voices: (Voice | undefined)[],
 		private readonly transposeChromatic: number,
@@ -20,11 +23,21 @@ export class MeasuresRenderer {
 			const members = event.events.map((member) => this.renderEvent(member)).join(" ");
 			return `(${event.actualNotes}:${event.normalNotes} ${members})`;
 		}
-		const duration = `${event.duration.type}${".".repeat(event.duration.dots)}`;
 		if (event.kind === "rest") {
-			return `r:${duration}`;
+			return `r${this.renderDuration(event.duration)}`;
 		}
-		return event.notes.map((note) => `${this.renderNote(note)}:${duration}`).join(" ");
+		return event.notes
+			.map((note) => `${this.renderNote(note)}${this.renderDuration(event.duration)}`)
+			.join(" ");
+	}
+
+	private renderDuration(duration: Duration): string {
+		const token = `${durationSymbol(duration.type)}${".".repeat(duration.dots)}`;
+		if (token === this.previousDuration) {
+			return "";
+		}
+		this.previousDuration = token;
+		return `:${token}`;
 	}
 
 	private renderNote(note: Note): string {
