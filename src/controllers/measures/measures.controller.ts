@@ -5,6 +5,18 @@ import { textResult } from "../tool-response";
 import { readMeasuresSchema, writeMeasuresSchema } from "./measures.schema";
 import { MeasuresRenderer } from "./measures-renderer";
 
+const getStaff = async (file: string, staff: number | undefined) => {
+	const scoreFile = await ScoreFile.open(file);
+	const score = new ScoreReader(scoreFile.score).read();
+	const scoreStaff = score.staves[(staff ?? 1) - 1];
+
+	if (!scoreStaff) {
+		throw new Error(`No staff ${staff ?? 1} in ${file}`);
+	}
+
+	return scoreStaff;
+};
+
 export const measuresController: Controller = (server) => {
 	server.registerTool(
 		"read_measures",
@@ -14,13 +26,7 @@ export const measuresController: Controller = (server) => {
 			inputSchema: readMeasuresSchema,
 		},
 		async ({ file, from, to, staff }) => {
-			const scoreFile = await ScoreFile.open(file);
-			const score = new ScoreReader(scoreFile.score).read();
-			const scoreStaff = score.staves[(staff ?? 1) - 1];
-
-			if (!scoreStaff) {
-				throw new Error(`No staff ${staff ?? 1} in ${file}`);
-			}
+			const scoreStaff = await getStaff(file, staff);
 
 			if (to > scoreStaff.measures.length) {
 				throw new Error(
@@ -42,9 +48,12 @@ export const measuresController: Controller = (server) => {
 			inputSchema: writeMeasuresSchema,
 		},
 		async ({ file, from, content, staff }) => {
+			const scoreStaff = await getStaff(file, staff);
+			const firstVoiceMeasures = scoreStaff.measures.slice(from - 1).map((m) => m.voices[0]);
+
 			const scoreFile = await ScoreFile.open(file);
 			await scoreFile.save();
-			return textResult(content);
+			return textResult(new MeasuresRenderer(firstVoiceMeasures, scoreStaff?.part).render());
 		},
 	);
 };
