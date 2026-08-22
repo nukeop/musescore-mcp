@@ -26,8 +26,10 @@ describe("write_measures", () => {
 			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
 		});
 
-		const notation = "C5:4 D5 E5 r | G5:2. r:4";
-		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: notation });
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "C5:4 D5 E5 r | G5:2. r:4",
+		});
 
 		expect(result.isError).toBeUndefined();
 
@@ -35,7 +37,7 @@ describe("write_measures", () => {
 			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
 		});
 		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 2 });
-		expect(textContent(readBack)).toBe(notation);
+		expect(textContent(readBack)).toBe("C5:4 D5 E5 r | G5:2. r:4");
 	});
 
 	test("writes triplets and quintuplets spanning a quarter, a half and an eighth", async () => {
