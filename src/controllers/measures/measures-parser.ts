@@ -1,4 +1,5 @@
-import type { ScorePart, Voice } from "../../model/score";
+import { parseDuration } from "../../model/duration-tables";
+import type { Duration, ScorePart, Voice, VoiceEvent } from "../../model/score";
 
 export class MeasuresParser {
 	constructor(
@@ -7,6 +8,46 @@ export class MeasuresParser {
 	) {}
 
 	parse(): Voice[] {
-		return [];
+		return this.notation.split(" | ").map((bar) => this.parseBar(bar));
+	}
+
+	private parseBar(bar: string): Voice {
+		const symbols = bar.split(" ");
+		return { events: symbols.map((symbol) => this.parseSymbol(symbol)) };
+	}
+
+	private previousDuration: Duration | undefined;
+
+	private parseSymbol(symbol: string): VoiceEvent {
+		if (symbol === "R") {
+			return { kind: "rest", duration: { type: "measure", dots: 0 } };
+		}
+
+		const { name, duration } = this.splitSymbol(symbol);
+
+		if (name === "r") {
+			return { kind: "rest", duration };
+		}
+
+		return {
+			kind: "chord",
+			duration,
+			notes: [{ pitch: 60, tpc: 14 }],
+		};
+	}
+
+	private splitSymbol(symbol: string): { name: string; duration: Duration } {
+		const [name = symbol, durationPart] = symbol.split(":");
+
+		if (!durationPart) {
+			if (!this.previousDuration) {
+				throw new Error(`Missing duration: ${symbol}`);
+			}
+			return { name, duration: this.previousDuration };
+		}
+
+		const duration = parseDuration(durationPart);
+		this.previousDuration = duration;
+		return { name, duration };
 	}
 }
