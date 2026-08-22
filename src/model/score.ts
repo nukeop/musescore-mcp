@@ -1,3 +1,4 @@
+import type { MscxDurationType } from "./duration-tables";
 export interface ScoreHeader {
 	title: string;
 	composer: string;
@@ -23,7 +24,7 @@ export interface Tempo {
 }
 
 export interface Duration {
-	type: string;
+	type: MscxDurationType;
 	dots: number;
 }
 

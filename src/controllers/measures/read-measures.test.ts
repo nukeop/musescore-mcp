@@ -18,10 +18,13 @@ describe("read_measures", () => {
 	});
 
 	test("prints notes, rests and dotted durations as bar notation", async () => {
-		const result = await readMeasures(mcp, "src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx", { from: 3, to: 5 });
+		const result = await readMeasures(mcp, "src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx", {
+			from: 3,
+			to: 5,
+		});
 
 		expect(result.isError).toBeUndefined();
-		expect(textContent(result)).toBe("D5:2 C5:4. r:8 | r:1 | C5:8 B4 A4 G4 F4:4 E4");
+		expect(textContent(result)).toBe("D5:2 C5:4. r:8 | R | C5 B4 A4 G4 F4:4 E4");
 	});
 
 	test("errors for a file that does not exist", async () => {
@@ -33,8 +36,13 @@ describe("read_measures", () => {
 	});
 
 	test("errors when the range is outside the score", async () => {
-		const result = await readMeasures(mcp, "src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx", { from: 7, to: 10 });
+		const result = await readMeasures(mcp, "src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx", {
+			from: 7,
+			to: 10,
+		});
 
-		expect(result).toBeToolError("Measure range 7-10 exceeds score length (8 measures): src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx");
+		expect(result).toBeToolError(
+			"Measure range 7-10 exceeds score length (8 measures): src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx",
+		);
 	});
 });

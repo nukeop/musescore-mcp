@@ -1,4 +1,5 @@
 import type { Element } from "@xmldom/xmldom";
+import type { MscxDurationType } from "../model/duration-tables";
 import type { Chord, Duration, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
 import { child, childElements, children, numberIn, textIn } from "./score-dom";
 
@@ -67,7 +68,7 @@ export class VoiceReader {
 	private readDuration(element: Element): Duration {
 		const dots = child(element, "dots");
 		return {
-			type: textIn(element, "durationType"),
+			type: textIn(element, "durationType") as MscxDurationType,
 			dots: dots ? Number(dots.textContent) : 0,
 		};
 	}

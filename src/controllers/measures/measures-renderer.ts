@@ -1,9 +1,9 @@
-import { durationSymbol } from "../../model/durations";
+import { type DottedDuration, durationSymbol } from "../../model/duration-tables";
 import type { Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
 import { WrittenPitch } from "../../model/written-pitch";
 
 export class MeasuresRenderer {
-	private previousDuration: string | undefined;
+	private previousDuration: DottedDuration | undefined;
 
 	constructor(
 		private readonly voices: (Voice | undefined)[],
@@ -24,6 +24,9 @@ export class MeasuresRenderer {
 			return `(${event.actualNotes}:${event.normalNotes} ${members})`;
 		}
 		if (event.kind === "rest") {
+			if (event.duration.type === "measure") {
+				return "R";
+			}
 			return `r${this.renderDuration(event.duration)}`;
 		}
 		return event.notes
@@ -32,12 +35,15 @@ export class MeasuresRenderer {
 	}
 
 	private renderDuration(duration: Duration): string {
-		const token = `${durationSymbol(duration.type)}${".".repeat(duration.dots)}`;
-		if (token === this.previousDuration) {
+		if (duration.type === "measure") {
+			throw new Error("Unexpected measure duration on a note or non-measure rest");
+		}
+		const symbol = durationSymbol(duration.type, duration.dots);
+		if (symbol === this.previousDuration) {
 			return "";
 		}
-		this.previousDuration = token;
-		return `:${token}`;
+		this.previousDuration = symbol;
+		return `:${symbol}`;
 	}
 
 	private renderNote(note: Note): string {

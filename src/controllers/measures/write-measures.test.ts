@@ -94,8 +94,8 @@ describe("write_measures", () => {
 		});
 		const bar1 = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
 		const bar4 = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 4, to: 4 });
-		expect(textContent(bar1)).toBe("r:1");
-		expect(textContent(bar4)).toBe("r:1");
+		expect(textContent(bar1)).toBe("R");
+		expect(textContent(bar4)).toBe("R");
 	});
 
 	test("errors for a file that does not exist", async () => {

@@ -241,12 +241,12 @@
             </Rest>
           </voice>
         </Measure>
-      <Measure>
+       <Measure>
         <eid>/Xh6RAH+tfK_73aprnzxSaE</eid>
         <voice>
           <Rest>
             <eid>bdnncQx6DU_AXagD9lhwzP</eid>
-            <durationType>whole</durationType>
+            <durationType>measure</durationType>
             </Rest>
           </voice>
         </Measure>
