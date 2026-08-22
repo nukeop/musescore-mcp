@@ -21,7 +21,7 @@ export class MeasuresRenderer {
 	private renderEvent(event: VoiceEvent): string {
 		if (event.kind === "tuplet") {
 			const members = event.events.map((member) => this.renderEvent(member)).join(" ");
-			return `(${event.actualNotes}:${event.normalNotes} ${members})`;
+			return `tuplet(${event.actualNotes}:${event.normalNotes} ${members})`;
 		}
 		if (event.kind === "rest") {
 			if (event.duration.type === "measure") {

@@ -38,6 +38,30 @@ describe("write_measures", () => {
 		expect(textContent(readBack)).toBe(notation);
 	});
 
+	test("writes triplets and quintuplets spanning a quarter, a half and an eighth", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const notation = [
+			"tuplet(3:2 C5:8 D5 E5) tuplet(3:2 F5:4 G5 A5) tuplet(3:2 B5:8 C6 D6)",
+			"tuplet(5:4 C5:16 D5 E5 F5 G5) tuplet(5:4 A5:8 B5 C6 D6 E6) tuplet(5:4 F6:16 G6 A6 B6 C7)",
+			"tuplet(5:4 C5:32 D5 E5 F5 G5) tuplet(3:2 A5:16 B5 C6) r:4 r:2",
+			"tuplet(3:2 C5:4 D5:8) tuplet(3:2 E5 F5:4) r:2",
+		].join(" | ");
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: notation });
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 4 });
+		expect(textContent(readBack)).toBe(notation);
+	});
+
 	test("writes sounding pitch and both tonal pitch classes for a transposing staff", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { measures: 4 });
