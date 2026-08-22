@@ -41,6 +41,10 @@ export const measuresController: Controller = (server) => {
 				"Replaces the content of consecutive bars with the given notation. Bar separators define the bar count. Each bar must fill the time signature exactly.",
 			inputSchema: writeMeasuresSchema,
 		},
-		async ({ file, from, content, staff }) => {},
+		async ({ file, from, content, staff }) => {
+			const scoreFile = await ScoreFile.open(file);
+			await scoreFile.save();
+			return textResult(content);
+		},
 	);
 };
