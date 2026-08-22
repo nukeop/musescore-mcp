@@ -30,9 +30,7 @@ export const measuresController: Controller = (server) => {
 
 			const firstVoiceMeasures = scoreStaff.measures.slice(from - 1, to).map((m) => m.voices[0]);
 
-			return textResult(
-				new MeasuresRenderer(firstVoiceMeasures, scoreStaff.part.transposeChromatic).render(),
-			);
+			return textResult(new MeasuresRenderer(firstVoiceMeasures, scoreStaff.part).render());
 		},
 	);
 

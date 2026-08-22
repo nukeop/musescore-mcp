@@ -1,13 +1,13 @@
 import { durationSymbol } from "../../model/durations";
-import { noteName } from "../../model/pitch";
-import type { Duration, Note, Voice, VoiceEvent } from "../../model/score";
+import type { Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
+import { WrittenPitch } from "../../model/written-pitch";
 
 export class MeasuresRenderer {
 	private previousDuration: string | undefined;
 
 	constructor(
 		private readonly voices: (Voice | undefined)[],
-		private readonly transposeChromatic: number,
+		private readonly part: ScorePart,
 	) {}
 
 	render(): string {
@@ -41,6 +41,6 @@ export class MeasuresRenderer {
 	}
 
 	private renderNote(note: Note): string {
-		return noteName(note.tpc2 ?? note.tpc, note.pitch - this.transposeChromatic);
+		return WrittenPitch.fromNote(note, this.part).name;
 	}
 }
