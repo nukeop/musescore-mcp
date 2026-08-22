@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { keyNames } from "../../model/keys";
+import { KEY_NAMES } from "../../model/keys";
 import { instrumentNames } from "../../services/instruments";
 
 export type CreateScoreArgs = z.input<z.ZodObject<typeof createScoreSchema>>;
@@ -9,7 +9,7 @@ export const createScoreSchema = {
 	title: z.string(),
 	composer: z.string(),
 	instruments: z.array(z.enum(instrumentNames)),
-	key: z.enum(keyNames),
+	key: z.enum(KEY_NAMES),
 	time: z
 		.templateLiteral([z.number().int().positive(), "/", z.number().int().positive()])
 		.default("4/4")

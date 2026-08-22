@@ -2,22 +2,22 @@
 
 exports[`get_overview summarizes a freshly created score 1`] = `
 "Test Tune by Test Composer
-Key: Eb/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
-Instruments:
-  1. Tenor Saxophone"
-`;
-
-exports[`get_overview summarizes example sheet 1`] = `
-"Simple Lead Sheet by Test Composer
-Key: Bb/Gm | Time: 4/4 | Tempo: 132 bpm | Bars: 8
+Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
   1. Tenor Saxophone"
 `;
 
 exports[`get_overview lists every instrument 1`] = `
 "Test Tune by Test Composer
-Key: Eb/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
   1. Tenor Saxophone
   2. Piano"
+`;
+
+exports[`get_overview summarizes example sheet 1`] = `
+"Simple Lead Sheet by Test Composer
+Key: B♭/Gm | Time: 4/4 | Tempo: 132 bpm | Bars: 8
+Instruments:
+  1. Tenor Saxophone"
 `;
