@@ -4,7 +4,6 @@ import { getOverview } from "../../test/get-overview";
 import "../../test/matchers";
 import { BunFsMock } from "../../test/mocks/bun-fs";
 import { createTestClient, type TestClient } from "../../test/test-setup";
-import { textContent } from "../../test/tool-result";
 
 describe("get_overview", () => {
 	let mcp: TestClient;
@@ -29,7 +28,7 @@ describe("get_overview", () => {
 
 		expect(reads).toHaveBeenCalledWith("/scores/test-tune.mscx");
 		expect(result.isError).toBeUndefined();
-		expect(textContent(result)).toMatchSnapshot();
+		expect(result).toMatchSnapshot();
 	});
 
 	test("lists every instrument", async () => {
@@ -42,7 +41,7 @@ describe("get_overview", () => {
 		const result = await getOverview(mcp);
 
 		expect(result.isError).toBeUndefined();
-		expect(textContent(result)).toMatchSnapshot();
+		expect(result).toMatchSnapshot();
 	});
 
 	test("summarizes example sheet", async () => {
@@ -52,7 +51,7 @@ describe("get_overview", () => {
 
 		expect(reads).toHaveBeenCalledWith("src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx");
 		expect(result.isError).toBeUndefined();
-		expect(textContent(result)).toMatchSnapshot();
+		expect(result).toMatchSnapshot();
 	});
 
 	test("reports an error for a file that does not exist", async () => {

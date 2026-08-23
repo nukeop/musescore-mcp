@@ -5,7 +5,6 @@ import "../../test/matchers";
 import { BunFsMock } from "../../test/mocks/bun-fs";
 import { setHeader } from "../../test/set-header";
 import { createTestClient, type TestClient } from "../../test/test-setup";
-import { textContent } from "../../test/tool-result";
 
 describe("set_header", () => {
 	let mcp: TestClient;
@@ -30,7 +29,7 @@ describe("set_header", () => {
 
 		expect(reads).toHaveBeenCalledWith("/scores/test-tune.mscx");
 		expect(result.isError).toBeUndefined();
-		expect(textContent(result)).toBe("Updated header of /scores/test-tune.mscx");
+		expect(result).toBeToolText("Updated header of /scores/test-tune.mscx");
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 

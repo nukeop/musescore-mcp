@@ -3,7 +3,6 @@ import "../../test/matchers";
 import { BunFsMock } from "../../test/mocks/bun-fs";
 import { readMeasures } from "../../test/read-measures";
 import { createTestClient, type TestClient } from "../../test/test-setup";
-import { textContent } from "../../test/tool-result";
 
 describe("read_measures", () => {
 	let mcp: TestClient;
@@ -24,7 +23,7 @@ describe("read_measures", () => {
 		});
 
 		expect(result.isError).toBeUndefined();
-		expect(textContent(result)).toBe("D5:2 C5:4. r:8 | R | C5 B4 A4 G4 F4:4 E4");
+		expect(result).toBeToolText("D5:2 C5:4. r:8 | R | C5 B4 A4 G4 F4:4 E4");
 	});
 
 	test("errors for a file that does not exist", async () => {
