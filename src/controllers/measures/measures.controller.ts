@@ -61,7 +61,7 @@ export const measuresController: Controller = (server) => {
 			});
 
 			await scoreFile.save();
-			return textResult(content);
+			return textResult(`Wrote measures ${from}-${from - 1 + bars.length} to ${file}`);
 		},
 	);
 };
