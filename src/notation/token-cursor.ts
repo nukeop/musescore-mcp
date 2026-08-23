@@ -26,6 +26,16 @@ export class TokenCursor {
 		return true;
 	}
 
+	expect(kind: Token["kind"]): void {
+		const token = this.peek();
+		if (token.kind !== kind) {
+			throw new Error(
+				`Expected ${TOKEN_NAMES[kind]}, got ${TOKEN_NAMES[token.kind]} at offset ${token.offset}`,
+			);
+		}
+		this.index += 1;
+	}
+
 	expectWord(): WordToken {
 		const token = this.peek();
 		if (token.kind !== "word") {

@@ -36,19 +36,44 @@ export class NotationParser {
 		const word = this.cursor.expectWord();
 
 		if (word.text === "R") {
-			return { kind: "rest", duration: { type: "measure", dots: 0 } };
+			return this.parseMeasureRest();
 		}
-
-		const duration = this.eventDuration(word);
-
+		if (word.text === "chord" && this.cursor.match("lparen")) {
+			return this.parseChord(word);
+		}
 		if (word.text === "r") {
-			return { kind: "rest", duration };
+			return this.parseRest(word);
 		}
+		return this.parseNote(word);
+	}
+
+	private parseMeasureRest(): VoiceEvent {
+		return { kind: "rest", duration: { type: "measure", dots: 0 } };
+	}
+
+	private parseRest(word: WordToken): VoiceEvent {
+		return { kind: "rest", duration: this.eventDuration(word) };
+	}
+
+	private parseNote(word: WordToken): VoiceEvent {
+		return {
+			kind: "chord",
+			duration: this.eventDuration(word),
+			notes: [WrittenPitch.parse(word.text).toNote(this.part)],
+		};
+	}
+
+	private parseChord(word: WordToken): VoiceEvent {
+		const notes = [this.cursor.expectWord()];
+		while (this.cursor.peek().kind === "word") {
+			notes.push(this.cursor.expectWord());
+		}
+		this.cursor.expect("rparen");
 
 		return {
 			kind: "chord",
-			duration,
-			notes: [WrittenPitch.parse(word.text).toNote(this.part)],
+			duration: this.eventDuration(word),
+			notes: notes.map((note) => WrittenPitch.parse(note.text).toNote(this.part)),
 		};
 	}
 

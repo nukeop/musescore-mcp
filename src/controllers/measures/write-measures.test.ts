@@ -197,6 +197,45 @@ describe("write_measures", () => {
 		expect(result).toBeToolError("Missing duration: C5");
 	});
 
+	test("ignores unexpected test after the last bar", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "C5:1 )" });
+
+		expect(result).toBeToolError('Expected end of input, got ")" at offset 5');
+	});
+
+	test("rejects a duration colon with nothing after it", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "C5:" });
+
+		expect(result).toBeToolError("Expected a word, got end of input at offset 3");
+	});
+
+	test("rejects an empty bar between separators", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "C5:1 | | D5:1",
+		});
+
+		expect(result).toBeToolError('Expected a word, got "|" at offset 7');
+	});
+
 	test("rejects content that runs past the end of the score", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
