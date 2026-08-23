@@ -1,5 +1,6 @@
 import { parseDuration } from "../../model/duration-tables";
 import type { Duration, ScorePart, Voice, VoiceEvent } from "../../model/score";
+import { WrittenPitch } from "../../model/written-pitch";
 
 export class MeasuresParser {
 	constructor(
@@ -32,7 +33,7 @@ export class MeasuresParser {
 		return {
 			kind: "chord",
 			duration,
-			notes: [{ pitch: 60, tpc: 14 }],
+			notes: [WrittenPitch.parse(name).toNote(this.part)],
 		};
 	}
 
