@@ -1,5 +1,4 @@
 import type { ScorePart, Voice, VoiceEvent } from "../model/score";
-import { TokenCursor } from "./token-cursor";
 
 export class NotationParser {
 	constructor(

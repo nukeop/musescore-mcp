@@ -1,10 +1,10 @@
+import { NotationParser } from "../../notation/parser";
 import type { Controller } from "../../server";
 import { ScoreFile } from "../../services/score-file";
 import { ScoreReader } from "../../services/score-reader";
 import { StaffWriter } from "../../services/staff-writer";
 import { textResult } from "../tool-response";
 import { readMeasuresSchema, writeMeasuresSchema } from "./measures.schema";
-import { MeasuresParser } from "./measures-parser";
 import { MeasuresRenderer } from "./measures-renderer";
 
 const openStaff = async (file: string, staff: number | undefined) => {
@@ -51,7 +51,7 @@ export const measuresController: Controller = (server) => {
 		},
 		async ({ file, from, content, staff }) => {
 			const { scoreFile, scoreStaff } = await openStaff(file, staff);
-			const bars = new MeasuresParser(content, scoreStaff.part).parse();
+			const bars = new NotationParser(content, scoreStaff.part).parse();
 
 			new StaffWriter(scoreFile, scoreStaff).write(from, bars);
 

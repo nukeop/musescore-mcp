@@ -1,5 +1,7 @@
+export type WordToken = { kind: "word"; text: string; offset: number };
+
 export type Token =
-	| { kind: "word"; text: string; offset: number }
+	| WordToken
 	| { kind: "colon"; offset: number }
 	| { kind: "lparen"; offset: number }
 	| { kind: "rparen"; offset: number }
