@@ -90,12 +90,13 @@ export class ScoreReader {
 		const [first] = voices;
 		return first
 			? {
+					element,
 					keySig: this.readKeySig(first),
 					timeSig: this.readTimeSig(first),
 					tempo: this.readTempo(first),
 					voices: voices.map((voice) => this.readVoice(voice)),
 				}
-			: { voices: [] };
+			: { element, voices: [] };
 	}
 
 	private readVoice(element: Element): Voice {

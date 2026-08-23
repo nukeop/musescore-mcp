@@ -1,12 +1,14 @@
 import type { Controller } from "../../server";
+import { child } from "../../services/score-dom";
 import { ScoreFile } from "../../services/score-file";
 import { ScoreReader } from "../../services/score-reader";
+import { VoiceWriter } from "../../services/voice-writer";
 import { textResult } from "../tool-response";
 import { readMeasuresSchema, writeMeasuresSchema } from "./measures.schema";
 import { MeasuresParser } from "./measures-parser";
 import { MeasuresRenderer } from "./measures-renderer";
 
-const getStaff = async (file: string, staff: number | undefined) => {
+const openStaff = async (file: string, staff: number | undefined) => {
 	const scoreFile = await ScoreFile.open(file);
 	const score = new ScoreReader(scoreFile.score).read();
 	const scoreStaff = score.staves[(staff ?? 1) - 1];
@@ -15,7 +17,7 @@ const getStaff = async (file: string, staff: number | undefined) => {
 		throw new Error(`No staff ${staff ?? 1} in ${file}`);
 	}
 
-	return scoreStaff;
+	return { scoreFile, scoreStaff };
 };
 
 export const measuresController: Controller = (server) => {
@@ -27,7 +29,7 @@ export const measuresController: Controller = (server) => {
 			inputSchema: readMeasuresSchema,
 		},
 		async ({ file, from, to, staff }) => {
-			const scoreStaff = await getStaff(file, staff);
+			const { scoreStaff } = await openStaff(file, staff);
 
 			if (to > scoreStaff.measures.length) {
 				throw new Error(
@@ -49,15 +51,14 @@ export const measuresController: Controller = (server) => {
 			inputSchema: writeMeasuresSchema,
 		},
 		async ({ file, from, content, staff }) => {
-			const scoreFile = await ScoreFile.open(file);
-			const score = new ScoreReader(scoreFile.score).read();
-			const scoreStaff = score.staves[(staff ?? 1) - 1];
-
-			if (!scoreStaff) {
-				throw new Error(`No staff ${staff ?? 1} in ${file}`);
-			}
-
+			const { scoreFile, scoreStaff } = await openStaff(file, staff);
 			const bars = new MeasuresParser(content, scoreStaff.part).parse();
+			const targetMeasures = scoreStaff.measures.slice(from - 1, from - 1 + bars.length);
+
+			bars.forEach((bar, index) => {
+				const voiceElement = child(targetMeasures[index]!.element, "voice");
+				new VoiceWriter(scoreFile.document, voiceElement!).write(bar);
+			});
 
 			await scoreFile.save();
 			return textResult(content);

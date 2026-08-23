@@ -1,3 +1,4 @@
+import type { Element } from "@xmldom/xmldom";
 import type { MscxDurationType } from "./duration-tables";
 export interface ScoreHeader {
 	title: string;
@@ -59,6 +60,7 @@ export interface Voice {
 }
 
 export interface Measure {
+	element: Element;
 	keySig?: KeySig;
 	timeSig?: TimeSig;
 	tempo?: Tempo;
