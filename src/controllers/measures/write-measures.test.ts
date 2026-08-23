@@ -40,6 +40,25 @@ describe("write_measures", () => {
 		expect(textContent(readBack)).toBe("C5:4 D5 E5 r | G5:2. r:4");
 	});
 
+	test("writes chords with several notes at the same spot", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const notation = "chord(C4 E4 G4):4 F4 chord(B♭3 D4 F4):2 | chord(D4 F♯4 A4 C5):1";
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: notation });
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 2 });
+		expect(textContent(readBack)).toBe(notation);
+	});
+
 	test("writes triplets and quintuplets spanning a quarter, a half and an eighth", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
