@@ -1,4 +1,5 @@
 import type { ScorePart, Voice, VoiceEvent } from "../model/score";
+import { tokenize } from "./tokenize";
 
 export class NotationParser {
 	constructor(
@@ -6,7 +7,11 @@ export class NotationParser {
 		private readonly part: ScorePart,
 	) {}
 
-	parse(): Voice[] {}
+	parse(): Voice[] {
+		const tokens = tokenize(this.notation);
+		console.log({ tokens });
+		return [];
+	}
 
 	private parseBar(): Voice {}
 
