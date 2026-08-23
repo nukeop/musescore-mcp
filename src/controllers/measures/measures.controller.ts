@@ -1,8 +1,7 @@
 import type { Controller } from "../../server";
-import { child } from "../../services/score-dom";
 import { ScoreFile } from "../../services/score-file";
 import { ScoreReader } from "../../services/score-reader";
-import { VoiceWriter } from "../../services/voice-writer";
+import { StaffWriter } from "../../services/staff-writer";
 import { textResult } from "../tool-response";
 import { readMeasuresSchema, writeMeasuresSchema } from "./measures.schema";
 import { MeasuresParser } from "./measures-parser";
@@ -53,12 +52,8 @@ export const measuresController: Controller = (server) => {
 		async ({ file, from, content, staff }) => {
 			const { scoreFile, scoreStaff } = await openStaff(file, staff);
 			const bars = new MeasuresParser(content, scoreStaff.part).parse();
-			const targetMeasures = scoreStaff.measures.slice(from - 1, from - 1 + bars.length);
 
-			bars.forEach((bar, index) => {
-				const voiceElement = child(targetMeasures[index]!.element, "voice");
-				new VoiceWriter(scoreFile.document, voiceElement!).write(bar);
-			});
+			new StaffWriter(scoreFile, scoreStaff).write(from, bars);
 
 			await scoreFile.save();
 			return textResult(`Wrote measures ${from}-${from - 1 + bars.length} to ${file}`);
