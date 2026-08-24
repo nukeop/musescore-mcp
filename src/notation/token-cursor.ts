@@ -1,4 +1,4 @@
-import type { Token, WordToken } from "./token";
+import type { SuffixToken, Token, WordToken } from "./token";
 
 const TOKEN_NAMES: Record<Token["kind"], string> = {
 	word: "a word",
@@ -6,6 +6,7 @@ const TOKEN_NAMES: Record<Token["kind"], string> = {
 	lparen: '"("',
 	rparen: '")"',
 	pipe: '"|"',
+	suffix: '"~"',
 	eof: "end of input",
 };
 
@@ -34,6 +35,15 @@ export class TokenCursor {
 			);
 		}
 		this.index += 1;
+	}
+
+	matchSuffix(): SuffixToken | undefined {
+		const token = this.peek();
+		if (token.kind !== "suffix") {
+			return undefined;
+		}
+		this.index += 1;
+		return token;
 	}
 
 	expectWord(): WordToken {

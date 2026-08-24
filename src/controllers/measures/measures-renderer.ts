@@ -19,6 +19,17 @@ export class MeasuresRenderer {
 	}
 
 	private renderEvent(event: VoiceEvent): string {
+		return `${this.renderBody(event)}${this.renderSuffixes(event)}`;
+	}
+
+	private renderSuffixes(event: VoiceEvent): string {
+		if (event.kind === "chord" && event.notes.some((note) => note.tied)) {
+			return "~";
+		}
+		return "";
+	}
+
+	private renderBody(event: VoiceEvent): string {
 		if (event.kind === "tuplet") {
 			const members = event.events.map((member) => this.renderEvent(member)).join(" ");
 			return `tuplet(${event.actualNotes}:${event.normalNotes} ${members})`;
@@ -36,16 +47,9 @@ export class MeasuresRenderer {
 		const names = chord.notes.map((note) => this.renderNote(note)).join(" ");
 		const duration = this.renderDuration(chord.duration);
 		if (chord.notes.length === 1) {
-			return `${names}${duration}${this.renderTie(chord)}`;
+			return `${names}${duration}`;
 		}
-		return `chord(${names})${duration}${this.renderTie(chord)}`;
-	}
-
-	private renderTie(chord: Chord): string {
-		if (chord.notes.some((note) => note.tied)) {
-			return "~";
-		}
-		return "";
+		return `chord(${names})${duration}`;
 	}
 
 	private renderDuration(duration: Duration): string {

@@ -1,9 +1,17 @@
 import { parseDuration } from "../model/duration-tables";
-import type { Duration, ScorePart, Voice, VoiceEvent } from "../model/score";
+import type { Chord, Duration, ScorePart, Voice, VoiceEvent } from "../model/score";
 import { WrittenPitch } from "../model/written-pitch";
-import type { WordToken } from "./token";
+import type { SuffixChar, WordToken } from "./token";
 import { TokenCursor } from "./token-cursor";
 import { tokenize } from "./tokenize";
+
+const SUFFIX_PARSERS: Record<SuffixChar, (chord: Chord) => VoiceEvent> = {
+	"~": tie,
+};
+
+function tie(chord: Chord): VoiceEvent {
+	return { ...chord, notes: chord.notes.map((note) => ({ ...note, tied: true })) };
+}
 
 export class NotationParser {
 	private readonly cursor: TokenCursor;
@@ -35,7 +43,21 @@ export class NotationParser {
 
 	private parseEvent(): VoiceEvent {
 		const word = this.cursor.expectWord();
+		return this.parseSuffixes(this.parseBody(word));
+	}
 
+	private parseSuffixes(event: VoiceEvent): VoiceEvent {
+		if (event.kind !== "chord") {
+			return event;
+		}
+		const suffix = this.cursor.matchSuffix();
+		if (!suffix) {
+			return event;
+		}
+		return SUFFIX_PARSERS[suffix.char](event);
+	}
+
+	private parseBody(word: WordToken): VoiceEvent {
 		if (word.text === "R") {
 			return this.parseMeasureRest();
 		}

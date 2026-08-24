@@ -29,6 +29,10 @@ export function tokenize(source: string): Token[] {
 				closeWord(offset);
 				tokens.push({ kind: "pipe", offset });
 				break;
+			case "~":
+				closeWord(offset);
+				tokens.push({ kind: "suffix", char: "~", offset });
+				break;
 			case " ":
 				closeWord(offset);
 				break;
