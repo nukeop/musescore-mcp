@@ -1,5 +1,5 @@
 import { type DottedDuration, durationSymbol } from "../../model/duration-tables";
-import type { Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
+import type { Chord, Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
 import { WrittenPitch } from "../../model/written-pitch";
 
 export class MeasuresRenderer {
@@ -29,9 +29,16 @@ export class MeasuresRenderer {
 			}
 			return `r${this.renderDuration(event.duration)}`;
 		}
-		return event.notes
-			.map((note) => `${this.renderNote(note)}${this.renderDuration(event.duration)}`)
-			.join(" ");
+		return this.renderChord(event);
+	}
+
+	private renderChord(chord: Chord): string {
+		const names = chord.notes.map((note) => this.renderNote(note)).join(" ");
+		const duration = this.renderDuration(chord.duration);
+		if (chord.notes.length === 1) {
+			return `${names}${duration}`;
+		}
+		return `chord(${names})${duration}`;
 	}
 
 	private renderDuration(duration: Duration): string {
