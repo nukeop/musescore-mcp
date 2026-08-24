@@ -1,5 +1,5 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type { Chord, Duration, Note, Rest, Voice, VoiceEvent } from "../model/score";
+import type { Chord, Duration, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
 import { children, elementWithText } from "./score-dom";
 
 export class VoiceWriter {
@@ -23,7 +23,22 @@ export class VoiceWriter {
 			case "rest":
 				this.voiceElement.appendChild(this.restElement(event));
 				break;
+			case "tuplet":
+				this.writeTuplet(event);
+				break;
 		}
+	}
+
+	private writeTuplet(tuplet: Tuplet): void {
+		const element = this.document.createElement("Tuplet");
+		element.appendChild(elementWithText(this.document, "normalNotes", String(tuplet.normalNotes)));
+		element.appendChild(elementWithText(this.document, "actualNotes", String(tuplet.actualNotes)));
+		this.voiceElement.appendChild(element);
+
+		tuplet.events.forEach((event) => {
+			this.writeEvent(event);
+		});
+		this.voiceElement.appendChild(this.document.createElement("endTuplet"));
 	}
 
 	private chordElement(chord: Chord): Element {
@@ -59,7 +74,12 @@ export class VoiceWriter {
 	}
 
 	private removeContent(): void {
-		const content = [...children(this.voiceElement, "Chord"), ...children(this.voiceElement, "Rest")];
+		const content = [
+			...children(this.voiceElement, "Chord"),
+			...children(this.voiceElement, "Rest"),
+			...children(this.voiceElement, "Tuplet"),
+			...children(this.voiceElement, "endTuplet"),
+		];
 		content.forEach((element) => {
 			this.voiceElement.removeChild(element);
 		});

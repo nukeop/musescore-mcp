@@ -39,7 +39,7 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("C5:4 D5 E5 r | G5:2. r:4");
 	});
 
-	test("writes chords with several notes at the same spot", async () => {
+	test("writes chords with several notes in the same spot", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -60,7 +60,7 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("chord(C4 E4 G4):4 F4 chord(B♭3 D4 F4):2 | chord(D4 F♯4 A4 C5):1");
 	});
 
-	test("writes sharps and flats that read back with the same spelling", async () => {
+	test("writes sharps and flats and reads them back with the same enharmonic spelling", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -81,7 +81,7 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("B♭4:4 F♯5 E♭5 G♯4 | D♭5:2 A♯4");
 	});
 
-	test("writes triplets and quintuplets spanning a quarter, a half and an eighth", async () => {
+	test("writes triplets and quintuplets", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -119,7 +119,7 @@ describe("write_measures", () => {
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
-	test("rejects a bar that doesn't match the time signature, and says in which bar/beat", async () => {
+	test("errors on a bar that doesn't match the time signature, and says in which bar/beat", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -134,7 +134,7 @@ describe("write_measures", () => {
 		expect(result).toBeToolError("Bar 1 overflows at beat 5");
 	});
 
-	test("rejects a bar that does not fill the time signature, and says what's missing", async () => {
+	test("errors on a bar that does not fill the time signature, and says what's missing", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -149,7 +149,7 @@ describe("write_measures", () => {
 		expect(result).toBeToolError("Bar 1 is short by a quarter note");
 	});
 
-	test("rejects a note name that is not a note", async () => {
+	test("errors on an invalid note name", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -161,7 +161,7 @@ describe("write_measures", () => {
 		expect(result).toBeToolError("Invalid note: H5");
 	});
 
-	test("rejects ASCII accidentals because notes use unicode ♯ and ♭", async () => {
+	test("enforces unicode ♯ and ♭ accidentals", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -236,7 +236,7 @@ describe("write_measures", () => {
 		expect(result).toBeToolError('Expected a word, got "|" at offset 7');
 	});
 
-	test("rejects content that runs past the end of the score", async () => {
+	test("rejects content that overflows past the end of the score", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -271,7 +271,7 @@ describe("write_measures", () => {
 		expect(bar4).toBeToolText("R");
 	});
 
-	test("replaces previously written content instead of appending to it", async () => {
+	test("replaces content", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -292,7 +292,7 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("G4:2 A4");
 	});
 
-	test("writes to the requested staff and leaves other staves alone", async () => {
+	test("writes to the requested staff", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["trumpet", "piano"], measures: 4 });
 		BunFsMock.mockFile({
