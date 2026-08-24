@@ -18,8 +18,6 @@ describe("write_measures", () => {
 		await mcp.close();
 	});
 
-	// --- Round trips ---
-
 	test("writes notes, rests and dotted durations (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
@@ -193,7 +191,26 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("r:2 r:4 r:8 C5:8~ | C5:2. r:4");
 	});
 
-	// --- Write behavior ---
+	test("writes a tied chord (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "chord(C4 E4 G4):2~ chord(C4 E4 G4):2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("chord(C4 E4 G4):2~ chord(C4 E4 G4)");
+	});
 
 	test("replaces content (round trip)", async () => {
 		BunFsMock.mockWrite();
@@ -258,8 +275,6 @@ describe("write_measures", () => {
 		expect(trumpet).toBeToolText("R");
 	});
 
-	// --- Snapshots ---
-
 	test("(Snapshot) writes a transposing staff", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { measures: 4 });
@@ -301,8 +316,6 @@ describe("write_measures", () => {
 
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
-
-	// --- Errors ---
 
 	test("errors on a bar that overflows the time signature", async () => {
 		BunFsMock.mockWrite();
