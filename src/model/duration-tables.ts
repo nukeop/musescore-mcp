@@ -1,3 +1,5 @@
+import Fraction from "fraction.js";
+
 export type NoteDuration = "whole" | "half" | "quarter" | "eighth" | "16th" | "32nd" | "64th" | "128th";
 
 export type MscxDurationType = "measure" | NoteDuration;
@@ -37,6 +39,11 @@ const SYMBOL_TO_TYPE: Record<DurationSymbol, NoteDuration> = {
 	"64": "64th",
 	"128": "128th",
 };
+
+export function durationFraction(type: NoteDuration, dots: number): Fraction {
+	const dotFactor = new Fraction(2).sub(new Fraction(1, 2 ** dots));
+	return dotFactor.div(DURATIONS_MAP[type]);
+}
 
 export function durationSymbol(type: NoteDuration, dots: number): DottedDuration {
 	const base = TYPE_TO_SYMBOL[type];

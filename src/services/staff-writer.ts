@@ -1,4 +1,5 @@
-import type { Staff, Voice } from "../model/score";
+import { validateBarFill } from "../model/bar-fill";
+import type { Staff, TimeSig, Voice } from "../model/score";
 import { MeasureWriter } from "./measure-writer";
 import type { ScoreFile } from "./score-file";
 
@@ -17,9 +18,18 @@ export class StaffWriter {
 			);
 		}
 
+		bars.forEach((bar, index) => {
+			validateBarFill(bar, index + 1, this.timeSigAt(from + index));
+		});
+
 		const targetMeasures = this.staff.measures.slice(from - 1, to);
 		bars.forEach((bar, index) => {
 			new MeasureWriter(this.scoreFile.document, targetMeasures[index]!).write(bar);
 		});
+	}
+
+	private timeSigAt(measureNumber: number): TimeSig {
+		const declared = this.staff.measures.slice(0, measureNumber).findLast((measure) => measure.timeSig);
+		return declared?.timeSig ?? { beats: 4, beatUnit: 4 };
 	}
 }
