@@ -1,6 +1,6 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
-exports[`write_measures writes sounding pitch and both tonal pitch classes for a transposing staff 1`] = `
+exports[`write_measures (Snapshot) writes a transposing staff 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <museScore version="4.50">
   <Score>
@@ -75,7 +75,7 @@ exports[`write_measures writes sounding pitch and both tonal pitch classes for a
             <followText>1</followText>
             <text><sym>metNoteQuarterUp</sym> = 160</text>
             </Tempo>
-          
+
           <Chord><durationType>whole</durationType><Note><pitch>55</pitch><tpc>15</tpc><tpc2>17</tpc2></Note></Chord></voice>
         </Measure>
       <Measure>
@@ -98,6 +98,82 @@ exports[`write_measures writes sounding pitch and both tonal pitch classes for a
             <durationType>measure</durationType>
             </Rest>
           </voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>"
+`;
+
+exports[`write_measures (Snapshot) writes tuplets 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <Score>
+    <Division>480</Division>
+    <metaTag name="arranger"/>
+    <metaTag name="audioComUrl"/>
+    <metaTag name="composer">Test Composer</metaTag>
+    <metaTag name="copyright"/>
+    <metaTag name="lyricist"/>
+    <metaTag name="movementNumber"/>
+    <metaTag name="movementTitle"/>
+    <metaTag name="platform"/>
+    <metaTag name="poet"/>
+    <metaTag name="source"/>
+    <metaTag name="sourceRevisionId"/>
+    <metaTag name="subtitle"/>
+    <metaTag name="translator"/>
+    <metaTag name="workNumber"/>
+    <metaTag name="workTitle">Test Tune</metaTag>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>Test Tune</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>Test Composer</text>
+          </Text>
+        </VBox>
+      <Measure>
+        <voice>
+          <KeySig>
+            <concertKey>-3</concertKey>
+            </KeySig>
+          <TimeSig>
+            <sigN>4</sigN>
+            <sigD>4</sigD>
+            </TimeSig>
+          <Tempo>
+            <tempo>2.666667</tempo>
+            <followText>1</followText>
+            <text><sym>metNoteQuarterUp</sym> = 160</text>
+            </Tempo>
+
+          <Tuplet><normalNotes>2</normalNotes><actualNotes>3</actualNotes></Tuplet><Chord><durationType>eighth</durationType><Note><pitch>72</pitch><tpc>14</tpc></Note></Chord><Chord><durationType>eighth</durationType><Note><pitch>74</pitch><tpc>16</tpc></Note></Chord><Chord><durationType>eighth</durationType><Note><pitch>76</pitch><tpc>18</tpc></Note></Chord><endTuplet/><Rest><durationType>quarter</durationType></Rest><Rest><durationType>half</durationType></Rest></voice>
         </Measure>
       </Staff>
     </Score>

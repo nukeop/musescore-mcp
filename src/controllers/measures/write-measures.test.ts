@@ -18,7 +18,9 @@ describe("write_measures", () => {
 		await mcp.close();
 	});
 
-	test("writes notes, rests and dotted durations", async () => {
+	// --- Round trips ---
+
+	test("writes notes, rests and dotted durations (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -39,28 +41,7 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("C5:4 D5 E5 r | G5:2. r:4");
 	});
 
-	test("writes chords with several notes in the same spot", async () => {
-		BunFsMock.mockWrite();
-		await createScore(mcp, { instruments: ["piano"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-
-		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
-			from: 1,
-			content: "chord(C4 E4 G4):4 F4 chord(B♭3 D4 F4):2 | chord(D4 F♯4 A4 C5):1",
-		});
-
-		expect(result.isError).toBeUndefined();
-
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 2 });
-		expect(readBack).toBeToolText("chord(C4 E4 G4):4 F4 chord(B♭3 D4 F4):2 | chord(D4 F♯4 A4 C5):1");
-	});
-
-	test("writes sharps and flats and reads them back with the same enharmonic spelling", async () => {
+	test("writes sharps and flats and reads them back with the same enharmonic spelling (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -81,7 +62,28 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("B♭4:4 F♯5 E♭5 G♯4 | D♭5:2 A♯4");
 	});
 
-	test("writes triplets and quintuplets", async () => {
+	test("writes chords with several notes in the same spot (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "chord(C4 E4 G4):4 F4 chord(B♭3 D4 F4):2 | chord(D4 F♯4 A4 C5):1",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 2 });
+		expect(readBack).toBeToolText("chord(C4 E4 G4):4 F4 chord(B♭3 D4 F4):2 | chord(D4 F♯4 A4 C5):1");
+	});
+
+	test("writes triplets and quintuplets (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -107,7 +109,7 @@ describe("write_measures", () => {
 		);
 	});
 
-	test("writes more complex tuplets", async () => {
+	test("writes duplets in compound meter (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], time: "9/8", measures: 4 });
 		BunFsMock.mockFile({
@@ -128,7 +130,7 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("tuplet(2:3 C5:8 D5) tuplet(2:3 E5 F5) tuplet(2:3 G5 A5)");
 	});
 
-	test("writes sextuplets", async () => {
+	test("writes sextuplets (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -170,7 +172,7 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("C5:4~ C5 r:2");
 	});
 
-	test("writes a tie within two neighboring bars (round trip)", async () => {
+	test("writes a tie across the barline (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -191,7 +193,74 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("r:2 r:4 r:8 C5:8~ | C5:2. r:4");
 	});
 
-	test("writes sounding pitch and both tonal pitch classes for a transposing staff", async () => {
+	// --- Write behavior ---
+
+	test("replaces content (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "C5:4 D5 E5 F5" });
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "G4:2 A4:2" });
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("G4:2 A4");
+	});
+
+	test("doesn't modify bars outside the written range (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 2, content: "C5:1" });
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const bar1 = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		const bar4 = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 4, to: 4 });
+		expect(bar1).toBeToolText("R");
+		expect(bar4).toBeToolText("R");
+	});
+
+	test("writes to the requested staff (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["trumpet", "piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			staff: 2,
+			from: 1,
+			content: "C4:1",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const piano = await readMeasures(mcp, "/scores/test-tune.mscx", { staff: 2, from: 1, to: 1 });
+		const trumpet = await readMeasures(mcp, "/scores/test-tune.mscx", { staff: 1, from: 1, to: 1 });
+		expect(piano).toBeToolText("C4:1");
+		expect(trumpet).toBeToolText("R");
+	});
+
+	// --- Snapshots ---
+
+	test("(Snapshot) writes a transposing staff", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { measures: 4 });
 		BunFsMock.mockFile({
@@ -233,7 +302,9 @@ describe("write_measures", () => {
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
-	test("errors on a bar that doesn't match the time signature, and says in which bar/beat", async () => {
+	// --- Errors ---
+
+	test("errors on a bar that overflows the time signature", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -248,7 +319,7 @@ describe("write_measures", () => {
 		expect(result).toBeToolError("Bar 1 overflows at beat 5");
 	});
 
-	test("errors on a bar that does not fill the time signature, and says what's missing", async () => {
+	test("errors on a bar that does not fill the time signature", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({
@@ -365,69 +436,6 @@ describe("write_measures", () => {
 		expect(result).toBeToolError(
 			"Measure range 3-5 exceeds score length (4 measures): /scores/test-tune.mscx",
 		);
-	});
-
-	test("doesn't modify bars outside the written range", async () => {
-		BunFsMock.mockWrite();
-		await createScore(mcp, { instruments: ["piano"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-
-		await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 2, content: "C5:1" });
-
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-		const bar1 = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
-		const bar4 = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 4, to: 4 });
-		expect(bar1).toBeToolText("R");
-		expect(bar4).toBeToolText("R");
-	});
-
-	test("replaces content", async () => {
-		BunFsMock.mockWrite();
-		await createScore(mcp, { instruments: ["piano"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-
-		await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "C5:4 D5 E5 F5" });
-
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-		await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "G4:2 A4:2" });
-
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
-		expect(readBack).toBeToolText("G4:2 A4");
-	});
-
-	test("writes to the requested staff", async () => {
-		BunFsMock.mockWrite();
-		await createScore(mcp, { instruments: ["trumpet", "piano"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-
-		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
-			staff: 2,
-			from: 1,
-			content: "C4:1",
-		});
-
-		expect(result.isError).toBeUndefined();
-
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-		const piano = await readMeasures(mcp, "/scores/test-tune.mscx", { staff: 2, from: 1, to: 1 });
-		const trumpet = await readMeasures(mcp, "/scores/test-tune.mscx", { staff: 1, from: 1, to: 1 });
-		expect(piano).toBeToolText("C4:1");
-		expect(trumpet).toBeToolText("R");
 	});
 
 	test("errors for a file that does not exist", async () => {
