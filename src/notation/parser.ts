@@ -21,6 +21,7 @@ export class NotationParser {
 		while (this.cursor.match("pipe")) {
 			bars.push(this.parseBar());
 		}
+		this.cursor.expect("eof");
 		return bars;
 	}
 
