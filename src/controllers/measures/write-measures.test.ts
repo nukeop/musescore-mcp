@@ -197,7 +197,7 @@ describe("write_measures", () => {
 		expect(result).toBeToolError("Missing duration: C5");
 	});
 
-	test("ignores unexpected test after the last bar", async () => {
+	test("errors on unexpected text after the last bar", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 		BunFsMock.mockFile({

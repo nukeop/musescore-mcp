@@ -41,6 +41,9 @@ export class NotationParser {
 		if (word.text === "chord" && this.cursor.match("lparen")) {
 			return this.parseChord(word);
 		}
+		if (word.text === "tuplet" && this.cursor.match("lparen")) {
+			return this.parseTuplet();
+		}
 		if (word.text === "r") {
 			return this.parseRest(word);
 		}
@@ -61,6 +64,20 @@ export class NotationParser {
 			duration: this.eventDuration(word),
 			notes: [WrittenPitch.parse(word.text).toNote(this.part)],
 		};
+	}
+
+	private parseTuplet(): VoiceEvent {
+		const actualNotes = Number(this.cursor.expectWord().text);
+		this.cursor.expect("colon");
+		const normalNotes = Number(this.cursor.expectWord().text);
+
+		const events = [this.parseEvent()];
+		while (this.cursor.peek().kind === "word") {
+			events.push(this.parseEvent());
+		}
+		this.cursor.expect("rparen");
+
+		return { kind: "tuplet", actualNotes, normalNotes, events };
 	}
 
 	private parseChord(word: WordToken): VoiceEvent {
