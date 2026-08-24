@@ -26,6 +26,16 @@ describe("read_measures", () => {
 		expect(result).toBeToolText("D5:2 C5:4. r:8 | R | C5 B4 A4 G4 F4:4 E4");
 	});
 
+	test("prints a tie across the barline", async () => {
+		const result = await readMeasures(mcp, "src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx", {
+			from: 1,
+			to: 2,
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText("C5:4. B4:8 A4 G4 r F4~ | F4:2. E4:4");
+	});
+
 	test("errors for a file that does not exist", async () => {
 		BunFsMock.mockNoFile();
 
