@@ -107,6 +107,27 @@ describe("write_measures", () => {
 		);
 	});
 
+	test("writes more complex tuplets", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], time: "9/8", measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "tuplet(2:3 C5:8 D5) tuplet(2:3 E5 F5) tuplet(2:3 G5 A5)",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("tuplet(2:3 C5:8 D5) tuplet(2:3 E5 F5) tuplet(2:3 G5 A5)");
+	});
+
 	test("writes sounding pitch and both tonal pitch classes for a transposing staff", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { measures: 4 });
