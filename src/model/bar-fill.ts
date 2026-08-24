@@ -5,13 +5,18 @@ import type { TimeSig, Tuplet, Voice, VoiceEvent } from "./score";
 export function validateBarFill(bar: Voice, barNumber: number, timeSig: TimeSig): void {
 	const measureLength = new Fraction(timeSig.beats, timeSig.beatUnit);
 
-	bar.events.reduce((currentPos, event) => {
+	const barLength = bar.events.reduce((currentPos, event) => {
 		const nextPos = currentPos.add(eventDuration(event, measureLength));
 		if (nextPos.compare(measureLength) > 0) {
 			throw new Error(`Bar ${barNumber} overflows at beat ${beatAt(currentPos, timeSig)}`);
 		}
 		return nextPos;
 	}, new Fraction(0));
+
+	if (barLength.compare(measureLength) < 0) {
+		const missing = measureLength.sub(barLength);
+		throw new Error(`Bar ${barNumber} is short by ${missing.toFraction()} of a whole note`);
+	}
 }
 
 function eventDuration(event: VoiceEvent, measureLength: Fraction): Fraction {

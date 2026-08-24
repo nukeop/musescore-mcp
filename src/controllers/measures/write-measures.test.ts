@@ -146,7 +146,7 @@ describe("write_measures", () => {
 			content: "C5:4 D5 E5",
 		});
 
-		expect(result).toBeToolError("Bar 1 is short by a quarter note");
+		expect(result).toBeToolError("Bar 1 is short by 1/4 of a whole note");
 	});
 
 	test("errors on an invalid note name", async () => {
