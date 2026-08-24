@@ -33,6 +33,7 @@ export interface Note {
 	pitch: number;
 	tpc: number;
 	tpc2?: number;
+	tied?: boolean;
 }
 
 export interface Chord {

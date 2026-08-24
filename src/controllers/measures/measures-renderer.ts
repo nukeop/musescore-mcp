@@ -36,9 +36,16 @@ export class MeasuresRenderer {
 		const names = chord.notes.map((note) => this.renderNote(note)).join(" ");
 		const duration = this.renderDuration(chord.duration);
 		if (chord.notes.length === 1) {
-			return `${names}${duration}`;
+			return `${names}${duration}${this.renderTie(chord)}`;
 		}
-		return `chord(${names})${duration}`;
+		return `chord(${names})${duration}${this.renderTie(chord)}`;
+	}
+
+	private renderTie(chord: Chord): string {
+		if (chord.notes.some((note) => note.tied)) {
+			return "~";
+		}
+		return "";
 	}
 
 	private renderDuration(duration: Duration): string {

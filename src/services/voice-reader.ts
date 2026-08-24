@@ -79,6 +79,9 @@ export class VoiceReader {
 			pitch: numberIn(element, "pitch"),
 			tpc: numberIn(element, "tpc"),
 			tpc2: tpc2 ? Number(tpc2.textContent) : undefined,
+			tied: children(element, "Spanner").some(
+				(spanner) => spanner.getAttribute("type") === "Tie" && Boolean(child(spanner, "next")),
+			),
 		};
 	}
 }
