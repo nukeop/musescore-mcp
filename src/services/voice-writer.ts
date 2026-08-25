@@ -1,7 +1,10 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type { Chord, Voice, VoiceEvent } from "../model/score";
+import Fraction from "fraction.js";
+import { eventDuration } from "../model/bar-fill";
+import type { Voice, VoiceEvent } from "../model/score";
 import { ChordWriter } from "./elements/chord-writer";
 import { RestWriter } from "./elements/rest-writer";
+import type { TieWriter } from "./elements/tie-writer";
 import { TupletWriter } from "./elements/tuplet-writer";
 import { children } from "./score-dom";
 
@@ -19,30 +22,41 @@ export class VoiceWriter {
 		this.tupletWriter = new TupletWriter(document);
 	}
 
-	write(voice: Voice, previousChord: Chord | undefined): Chord | undefined {
+	write(voice: Voice, measureLength: Fraction, tieWriter: TieWriter): void {
 		this.removeContent();
-		return voice.events.reduce(
-			(previousChord, event) => this.writeEvent(event, previousChord),
-			previousChord,
+		voice.events.reduce(
+			(position, event) => this.writeEvent(event, position, measureLength, tieWriter),
+			new Fraction(0),
 		);
 	}
 
-	private writeEvent(event: VoiceEvent, previousChord: Chord | undefined): Chord | undefined {
+	private writeEvent(
+		event: VoiceEvent,
+		position: Fraction,
+		measureLength: Fraction,
+		tieWriter: TieWriter,
+	): Fraction {
+		const nextPosition = position.add(eventDuration(event, measureLength));
 		switch (event.kind) {
-			case "chord":
-				this.voiceElement.appendChild(this.chordWriter.write(event, previousChord));
-				return event;
+			case "chord": {
+				const element = this.chordWriter.write(event);
+				this.voiceElement.appendChild(element);
+				tieWriter.endTie(event, element, position);
+				break;
+			}
 			case "rest":
 				this.voiceElement.appendChild(this.restWriter.write(event));
-				return undefined;
+				tieWriter.clear();
+				break;
 			case "tuplet":
 				this.voiceElement.appendChild(this.tupletWriter.write(event));
 				event.events.forEach((member) => {
-					this.writeEvent(member, undefined);
+					this.writeEvent(member, position, measureLength, tieWriter);
 				});
 				this.voiceElement.appendChild(this.document.createElement("endTuplet"));
-				return undefined;
+				break;
 		}
+		return nextPosition;
 	}
 
 	private removeContent(): void {

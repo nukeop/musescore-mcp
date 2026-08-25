@@ -1,5 +1,7 @@
+import Fraction from "fraction.js";
 import { validateBarFill } from "../model/bar-fill";
-import type { Chord, Staff, TimeSig, Voice } from "../model/score";
+import type { Staff, TimeSig, Voice } from "../model/score";
+import { TieWriter } from "./elements/tie-writer";
 import { MeasureWriter } from "./measure-writer";
 import type { ScoreFile } from "./score-file";
 
@@ -22,16 +24,26 @@ export class StaffWriter {
 			validateBarFill(bar, index + 1, this.timeSigAt(from + index));
 		});
 
+		const tieWriter = new TieWriter(this.scoreFile.document);
 		const targetMeasures = this.staff.measures.slice(from - 1, to);
-		bars.reduce<Chord | undefined>(
-			(previousChord, bar, index) =>
-				new MeasureWriter(this.scoreFile.document, targetMeasures[index]!).write(bar, previousChord),
-			undefined,
-		);
+		bars.forEach((bar, index) => {
+			tieWriter.startBar();
+			new MeasureWriter(this.scoreFile.document, targetMeasures[index]!).write(
+				bar,
+				this.measureLengthAt(from + index),
+				tieWriter,
+			);
+		});
+		tieWriter.startTie();
 	}
 
 	private timeSigAt(measureNumber: number): TimeSig {
 		const declared = this.staff.measures.slice(0, measureNumber).findLast((measure) => measure.timeSig);
 		return declared?.timeSig ?? { beats: 4, beatUnit: 4 };
+	}
+
+	private measureLengthAt(measureNumber: number): Fraction {
+		const timeSig = this.timeSigAt(measureNumber);
+		return new Fraction(timeSig.beats, timeSig.beatUnit);
 	}
 }

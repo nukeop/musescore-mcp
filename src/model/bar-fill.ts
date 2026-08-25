@@ -19,7 +19,7 @@ export function validateBarFill(bar: Voice, barNumber: number, timeSig: TimeSig)
 	}
 }
 
-function eventDuration(event: VoiceEvent, measureLength: Fraction): Fraction {
+export function eventDuration(event: VoiceEvent, measureLength: Fraction): Fraction {
 	if (event.kind === "tuplet") {
 		return elementsDuration(event);
 	}
