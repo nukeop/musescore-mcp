@@ -1,12 +1,23 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type { Chord, Duration, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
-import { children, elementWithText } from "./score-dom";
+import type { Tuplet, Voice, VoiceEvent } from "../model/score";
+import { ChordWriter } from "./elements/chord-writer";
+import { RestWriter } from "./elements/rest-writer";
+import { TupletWriter } from "./elements/tuplet-writer";
+import { children } from "./score-dom";
 
 export class VoiceWriter {
+	private readonly chordWriter: ChordWriter;
+	private readonly restWriter: RestWriter;
+	private readonly tupletWriter: TupletWriter;
+
 	constructor(
 		private readonly document: Document,
 		private readonly voiceElement: Element,
-	) {}
+	) {
+		this.chordWriter = new ChordWriter(document);
+		this.restWriter = new RestWriter(document);
+		this.tupletWriter = new TupletWriter(document);
+	}
 
 	write(voice: Voice): void {
 		this.removeContent();
@@ -18,10 +29,10 @@ export class VoiceWriter {
 	private writeEvent(event: VoiceEvent): void {
 		switch (event.kind) {
 			case "chord":
-				this.voiceElement.appendChild(this.chordElement(event));
+				this.voiceElement.appendChild(this.chordWriter.write(event));
 				break;
 			case "rest":
-				this.voiceElement.appendChild(this.restElement(event));
+				this.voiceElement.appendChild(this.restWriter.write(event));
 				break;
 			case "tuplet":
 				this.writeTuplet(event);
@@ -30,47 +41,11 @@ export class VoiceWriter {
 	}
 
 	private writeTuplet(tuplet: Tuplet): void {
-		const element = this.document.createElement("Tuplet");
-		element.appendChild(elementWithText(this.document, "normalNotes", String(tuplet.normalNotes)));
-		element.appendChild(elementWithText(this.document, "actualNotes", String(tuplet.actualNotes)));
-		this.voiceElement.appendChild(element);
-
+		this.voiceElement.appendChild(this.tupletWriter.write(tuplet));
 		tuplet.events.forEach((event) => {
 			this.writeEvent(event);
 		});
 		this.voiceElement.appendChild(this.document.createElement("endTuplet"));
-	}
-
-	private chordElement(chord: Chord): Element {
-		const element = this.document.createElement("Chord");
-		this.appendDuration(element, chord.duration);
-		chord.notes.forEach((note) => {
-			element.appendChild(this.noteElement(note));
-		});
-		return element;
-	}
-
-	private restElement(rest: Rest): Element {
-		const element = this.document.createElement("Rest");
-		this.appendDuration(element, rest.duration);
-		return element;
-	}
-
-	private appendDuration(parent: Element, duration: Duration): void {
-		if (duration.dots > 0) {
-			parent.appendChild(elementWithText(this.document, "dots", String(duration.dots)));
-		}
-		parent.appendChild(elementWithText(this.document, "durationType", duration.type));
-	}
-
-	private noteElement(note: Note): Element {
-		const element = this.document.createElement("Note");
-		element.appendChild(elementWithText(this.document, "pitch", String(note.pitch)));
-		element.appendChild(elementWithText(this.document, "tpc", String(note.tpc)));
-		if (note.tpc2 !== undefined) {
-			element.appendChild(elementWithText(this.document, "tpc2", String(note.tpc2)));
-		}
-		return element;
 	}
 
 	private removeContent(): void {
