@@ -1,5 +1,5 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type { Tuplet, Voice, VoiceEvent } from "../model/score";
+import type { Chord, Voice, VoiceEvent } from "../model/score";
 import { ChordWriter } from "./elements/chord-writer";
 import { RestWriter } from "./elements/rest-writer";
 import { TupletWriter } from "./elements/tuplet-writer";
@@ -19,33 +19,30 @@ export class VoiceWriter {
 		this.tupletWriter = new TupletWriter(document);
 	}
 
-	write(voice: Voice): void {
+	write(voice: Voice, previousChord: Chord | undefined): Chord | undefined {
 		this.removeContent();
-		voice.events.forEach((event) => {
-			this.writeEvent(event);
-		});
+		return voice.events.reduce(
+			(previousChord, event) => this.writeEvent(event, previousChord),
+			previousChord,
+		);
 	}
 
-	private writeEvent(event: VoiceEvent): void {
+	private writeEvent(event: VoiceEvent, previousChord: Chord | undefined): Chord | undefined {
 		switch (event.kind) {
 			case "chord":
 				this.voiceElement.appendChild(this.chordWriter.write(event));
-				break;
+				return event;
 			case "rest":
 				this.voiceElement.appendChild(this.restWriter.write(event));
-				break;
+				return undefined;
 			case "tuplet":
-				this.writeTuplet(event);
-				break;
+				this.voiceElement.appendChild(this.tupletWriter.write(event));
+				event.events.forEach((member) => {
+					this.writeEvent(member, undefined);
+				});
+				this.voiceElement.appendChild(this.document.createElement("endTuplet"));
+				return undefined;
 		}
-	}
-
-	private writeTuplet(tuplet: Tuplet): void {
-		this.voiceElement.appendChild(this.tupletWriter.write(tuplet));
-		tuplet.events.forEach((event) => {
-			this.writeEvent(event);
-		});
-		this.voiceElement.appendChild(this.document.createElement("endTuplet"));
 	}
 
 	private removeContent(): void {

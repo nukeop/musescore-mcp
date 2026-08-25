@@ -1,5 +1,5 @@
 import type { Document } from "@xmldom/xmldom";
-import type { Measure, Voice } from "../model/score";
+import type { Chord, Measure, Voice } from "../model/score";
 import { child } from "./score-dom";
 import { VoiceWriter } from "./voice-writer";
 
@@ -9,8 +9,8 @@ export class MeasureWriter {
 		private readonly measure: Measure,
 	) {}
 
-	write(bar: Voice): void {
+	write(bar: Voice, previousChord: Chord | undefined): Chord | undefined {
 		const voiceElement = child(this.measure.element, "voice");
-		new VoiceWriter(this.document, voiceElement!).write(bar);
+		return new VoiceWriter(this.document, voiceElement!).write(bar, previousChord);
 	}
 }

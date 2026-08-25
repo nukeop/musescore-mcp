@@ -1,5 +1,5 @@
 import { validateBarFill } from "../model/bar-fill";
-import type { Staff, TimeSig, Voice } from "../model/score";
+import type { Chord, Staff, TimeSig, Voice } from "../model/score";
 import { MeasureWriter } from "./measure-writer";
 import type { ScoreFile } from "./score-file";
 
@@ -23,9 +23,11 @@ export class StaffWriter {
 		});
 
 		const targetMeasures = this.staff.measures.slice(from - 1, to);
-		bars.forEach((bar, index) => {
-			new MeasureWriter(this.scoreFile.document, targetMeasures[index]!).write(bar);
-		});
+		bars.reduce<Chord | undefined>(
+			(previousChord, bar, index) =>
+				new MeasureWriter(this.scoreFile.document, targetMeasures[index]!).write(bar, previousChord),
+			undefined,
+		);
 	}
 
 	private timeSigAt(measureNumber: number): TimeSig {
