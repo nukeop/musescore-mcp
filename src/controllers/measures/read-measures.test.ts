@@ -36,6 +36,16 @@ describe("read_measures", () => {
 		expect(result).toBeToolText("C5:4. B4:8 A4 G4 r F4~ | F4:2. E4:4");
 	});
 
+	test("prints chord symbols from the fixture", async () => {
+		const result = await readMeasures(mcp, "src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx", {
+			from: 1,
+			to: 2,
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText("[C^7] C5:4. B4:8 A4 G4 r F4~ | [D-7] F4:2. E4:4");
+	});
+
 	test("errors for a file that does not exist", async () => {
 		BunFsMock.mockNoFile();
 

@@ -461,4 +461,82 @@ describe("write_measures", () => {
 
 		expect(result).toBeToolError("ENOENT: no such file or directory, open '/scores/missing.mscx'");
 	});
+
+	test("writes chord symbols (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[C-7] C4:2 [F7] C4:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("[C-7] C4:2 [F7] C4:2");
+	});
+
+	test("writes chord symbols with accidentals in the root (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[B♭7] C4:2 [F♯-7] C4:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("[B♭7] C4:2 [F♯-7] C4:2");
+	});
+
+	test("writes a chord symbol on a rest (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[D-7] r:2 [G7] C4:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("[D-7] r:2 [G7] C4:2");
+	});
+
+	test("(Snapshot) writes chord symbol XML", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[E♭^7] C4:2 [A-7] D4:2",
+		});
+
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+	});
 });
