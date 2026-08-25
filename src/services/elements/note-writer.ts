@@ -15,10 +15,11 @@ export class NoteWriter {
 	write(note: Note, duration: Duration, tieFrom: Fraction | undefined): Element {
 		const element = this.document.createElement("Note");
 		if (note.tied && duration.type !== "measure") {
-			element.appendChild(this.tieWriter.startSpanner(durationFraction(duration.type, duration.dots)));
+			const fractions = durationFraction(duration.type, duration.dots);
+			element.appendChild(this.tieWriter.startSpanner({ measures: 0, fractions }));
 		}
 		if (tieFrom) {
-			element.appendChild(this.tieWriter.endSpanner(tieFrom));
+			element.appendChild(this.tieWriter.endSpanner({ measures: 0, fractions: tieFrom }));
 		}
 		element.appendChild(elementWithText(this.document, "pitch", String(note.pitch)));
 		element.appendChild(elementWithText(this.document, "tpc", String(note.tpc)));

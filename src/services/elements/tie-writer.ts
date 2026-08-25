@@ -1,34 +1,35 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import type Fraction from "fraction.js";
-import { elementWithText } from "../score-dom";
+import type { Chord } from "../../model/score";
+import { children, elementWithText } from "../score-dom";
+
+interface LastChord {
+	chord: Chord;
+	element: Element;
+	position: Fraction;
+	barOffset: number;
+}
 
 export class TieWriter {
+	private lastChord: LastChord | undefined;
+
 	constructor(private readonly document: Document) {}
 
-	startSpanner(fractions: Fraction): Element {
-		const spanner = this.spannerElement();
-		spanner.appendChild(this.document.createElement("Tie"));
-		spanner.appendChild(this.endpoint("next", fractions));
-		return spanner;
+	endTie(chord: Chord, element: Element, position: Fraction): void {
+		this.lastChord = { chord, element, position, barOffset: 0 };
 	}
 
-	endSpanner(fractions: Fraction): Element {
-		const spanner = this.spannerElement();
-		spanner.appendChild(this.endpoint("prev", fractions));
-		return spanner;
+	clear(): void {
+		this.lastChord = undefined;
 	}
 
-	private spannerElement(): Element {
-		const spanner = this.document.createElement("Spanner");
-		spanner.setAttribute("type", "Tie");
-		return spanner;
+	startBar(): void {
+		if (this.lastChord) {
+			this.lastChord = { ...this.lastChord, barOffset: this.lastChord.barOffset + 1 };
+		}
 	}
 
-	private endpoint(name: "next" | "prev", fractions: Fraction): Element {
-		const endpoint = this.document.createElement(name);
-		const location = this.document.createElement("location");
-		location.appendChild(elementWithText(this.document, "fractions", fractions.toFraction()));
-		endpoint.appendChild(location);
-		return endpoint;
+	startTie(): void {
+		this.lastChord = undefined;
 	}
 }
