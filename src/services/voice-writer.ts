@@ -30,7 +30,7 @@ export class VoiceWriter {
 	private writeEvent(event: VoiceEvent, previousChord: Chord | undefined): Chord | undefined {
 		switch (event.kind) {
 			case "chord":
-				this.voiceElement.appendChild(this.chordWriter.write(event));
+				this.voiceElement.appendChild(this.chordWriter.write(event, previousChord));
 				return event;
 			case "rest":
 				this.voiceElement.appendChild(this.restWriter.write(event));
