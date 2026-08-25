@@ -33,6 +33,16 @@ export function tokenize(source: string): Token[] {
 				closeWord(offset);
 				tokens.push({ kind: "suffix", char: "~", offset });
 				break;
+			case "[": {
+				closeWord(offset);
+				const close = source.indexOf("]", offset + 1);
+				if (close < 0) {
+					throw new Error(`Unclosed chord symbol at offset ${offset}`);
+				}
+				tokens.push({ kind: "harmony", text: source.substring(offset + 1, close), offset });
+				offset = close;
+				break;
+			}
 			case " ":
 				closeWord(offset);
 				break;

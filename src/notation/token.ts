@@ -4,9 +4,12 @@ export type SuffixChar = "~";
 
 export type SuffixToken = { kind: "suffix"; char: SuffixChar; offset: number };
 
+export type HarmonyToken = { kind: "harmony"; text: string; offset: number };
+
 export type Token =
 	| WordToken
 	| SuffixToken
+	| HarmonyToken
 	| { kind: "colon"; offset: number }
 	| { kind: "lparen"; offset: number }
 	| { kind: "rparen"; offset: number }

@@ -1,5 +1,6 @@
 import { parseDuration } from "../model/duration-tables";
-import type { Chord, Duration, ScorePart, Voice, VoiceEvent } from "../model/score";
+import { ACCIDENTAL_SEMITONES, type Accidental, isAccidental, isLetter, NATURAL_TPC } from "../model/pitch-tables";
+import type { Chord, Duration, Harmony, ScorePart, Voice, VoiceEvent } from "../model/score";
 import { WrittenPitch } from "../model/written-pitch";
 import type { SuffixChar, WordToken } from "./token";
 import { TokenCursor } from "./token-cursor";
@@ -35,15 +36,38 @@ export class NotationParser {
 
 	private parseBar(): Voice {
 		const events = [this.parseEvent()];
-		while (this.cursor.peek().kind === "word") {
+		while (this.cursor.peek().kind === "word" || this.cursor.peek().kind === "harmony") {
 			events.push(this.parseEvent());
 		}
 		return { events };
 	}
 
 	private parseEvent(): VoiceEvent {
+		const harmony = this.parseHarmony();
 		const word = this.cursor.expectWord();
-		return this.parseSuffixes(this.parseBody(word));
+		const event = this.parseSuffixes(this.parseBody(word));
+		if (harmony && (event.kind === "chord" || event.kind === "rest")) {
+			return { ...event, harmony };
+		}
+		return event;
+	}
+
+	private parseHarmony(): Harmony | undefined {
+		const token = this.cursor.matchHarmony();
+		if (!token) {
+			return undefined;
+		}
+		const letter = token.text.charAt(0);
+		if (!isLetter(letter)) {
+			throw new Error(`Invalid chord symbol root: ${token.text}`);
+		}
+		const secondChar = token.text.charAt(1);
+		const accidental: Accidental = isAccidental(secondChar) ? secondChar : "";
+		const name = token.text.substring(1 + accidental.length);
+		return {
+			root: NATURAL_TPC[letter] + 7 * ACCIDENTAL_SEMITONES[accidental],
+			name,
+		};
 	}
 
 	private parseSuffixes(event: VoiceEvent): VoiceEvent {

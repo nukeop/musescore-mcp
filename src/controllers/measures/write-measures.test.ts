@@ -480,7 +480,7 @@ describe("write_measures", () => {
 			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
 		});
 		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
-		expect(readBack).toBeToolText("[C-7] C4:2 [F7] C4:2");
+		expect(readBack).toBeToolText("[C-7] C4:2 [F7] C4");
 	});
 
 	test("writes chord symbols with accidentals in the root (round trip)", async () => {
@@ -501,7 +501,7 @@ describe("write_measures", () => {
 			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
 		});
 		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
-		expect(readBack).toBeToolText("[B♭7] C4:2 [F♯-7] C4:2");
+		expect(readBack).toBeToolText("[B♭7] C4:2 [F♯-7] C4");
 	});
 
 	test("writes a chord symbol on a rest (round trip)", async () => {
@@ -522,7 +522,7 @@ describe("write_measures", () => {
 			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
 		});
 		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
-		expect(readBack).toBeToolText("[D-7] r:2 [G7] C4:2");
+		expect(readBack).toBeToolText("[D-7] r:2 [G7] C4");
 	});
 
 	test("writes chord symbols in 5/4 (round trip)", async () => {

@@ -1,4 +1,4 @@
-import type { SuffixToken, Token, WordToken } from "./token";
+import type { HarmonyToken, SuffixToken, Token, WordToken } from "./token";
 
 const TOKEN_NAMES: Record<Token["kind"], string> = {
 	word: "a word",
@@ -7,6 +7,7 @@ const TOKEN_NAMES: Record<Token["kind"], string> = {
 	rparen: '")"',
 	pipe: '"|"',
 	suffix: '"~"',
+	harmony: "a chord symbol",
 	eof: "end of input",
 };
 
@@ -35,6 +36,15 @@ export class TokenCursor {
 			);
 		}
 		this.index += 1;
+	}
+
+	matchHarmony(): HarmonyToken | undefined {
+		const token = this.peek();
+		if (token.kind !== "harmony") {
+			return undefined;
+		}
+		this.index += 1;
+		return token;
 	}
 
 	matchSuffix(): SuffixToken | undefined {

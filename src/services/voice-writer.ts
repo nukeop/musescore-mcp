@@ -1,7 +1,7 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import Fraction from "fraction.js";
 import { eventDuration } from "../model/bar-fill";
-import type { Voice, VoiceEvent } from "../model/score";
+import type { Harmony, Voice, VoiceEvent } from "../model/score";
 import { ChordWriter } from "./elements/chord-writer";
 import { RestWriter } from "./elements/rest-writer";
 import type { TieWriter } from "./elements/tie-writer";
@@ -39,12 +39,14 @@ export class VoiceWriter {
 		const nextPosition = position.add(eventDuration(event, measureLength));
 		switch (event.kind) {
 			case "chord": {
+				this.appendHarmony(event.harmony);
 				const element = this.chordWriter.write(event);
 				this.voiceElement.appendChild(element);
 				tieWriter.endTie(event, element, position);
 				break;
 			}
 			case "rest":
+				this.appendHarmony(event.harmony);
 				this.voiceElement.appendChild(this.restWriter.write(event));
 				tieWriter.clear();
 				break;
@@ -59,8 +61,23 @@ export class VoiceWriter {
 		return nextPosition;
 	}
 
+	private appendHarmony(harmony: Harmony | undefined): void {
+		if (!harmony) {
+			return;
+		}
+		const element = this.document.createElement("Harmony");
+		const root = this.document.createElement("root");
+		root.textContent = String(harmony.root);
+		const name = this.document.createElement("name");
+		name.textContent = harmony.name;
+		element.appendChild(root);
+		element.appendChild(name);
+		this.voiceElement.appendChild(element);
+	}
+
 	private removeContent(): void {
 		const content = [
+			...children(this.voiceElement, "Harmony"),
 			...children(this.voiceElement, "Chord"),
 			...children(this.voiceElement, "Rest"),
 			...children(this.voiceElement, "Tuplet"),
