@@ -249,12 +249,12 @@ exports[`write_measures (Snapshot) writes ties 1`] = `
             <text><sym>metNoteQuarterUp</sym> = 160</text>
             </Tempo>
           
-          <Chord><durationType>half</durationType><Note><pitch>67</pitch><tpc>15</tpc></Note></Chord><Chord><durationType>half</durationType><Note><pitch>69</pitch><tpc>17</tpc></Note></Chord></voice>
+          <Chord><durationType>half</durationType><Note><pitch>67</pitch><tpc>15</tpc></Note></Chord><Chord><durationType>half</durationType><Note><Spanner type="Tie"><Tie/><next><location><measures>1</measures><fractions>-1/2</fractions></location></next></Spanner><pitch>69</pitch><tpc>17</tpc></Note></Chord></voice>
         </Measure>
       <Measure>
         <voice>
           
-          <Chord><durationType>half</durationType><Note><pitch>69</pitch><tpc>17</tpc></Note></Chord><Chord><durationType>half</durationType><Note><pitch>69</pitch><tpc>17</tpc></Note></Chord></voice>
+          <Chord><durationType>half</durationType><Note><Spanner type="Tie"><Tie/><next><location><fractions>1/2</fractions></location></next></Spanner><Spanner type="Tie"><prev><location><measures>-1</measures><fractions>1/2</fractions></location></prev></Spanner><pitch>69</pitch><tpc>17</tpc></Note></Chord><Chord><durationType>half</durationType><Note><Spanner type="Tie"><prev><location><fractions>-1/2</fractions></location></prev></Spanner><pitch>69</pitch><tpc>17</tpc></Note></Chord></voice>
         </Measure>
       </Staff>
     </Score>
