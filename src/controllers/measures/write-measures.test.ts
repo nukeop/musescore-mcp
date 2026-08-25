@@ -188,7 +188,7 @@ describe("write_measures", () => {
 			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
 		});
 		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 2 });
-		expect(readBack).toBeToolText("r:2 r:4 r:8 C5:8~ | C5:2. r:4");
+		expect(readBack).toBeToolText("r:2 r:4 r:8 C5~ | C5:2. r:4");
 	});
 
 	test("writes a tied chord (round trip)", async () => {
