@@ -23,7 +23,7 @@ describe("read_measures", () => {
 		});
 
 		expect(result.isError).toBeUndefined();
-		expect(result).toBeToolText("D5:2 C5:4. r:8 | R | C5 B4 A4 G4 F4:4 E4");
+		expect(result).toBeToolText("[G7] D5:2 C5:4. r:8 | R | [A-7] C5 B4 A4 G4 F4:4 E4");
 	});
 
 	test("prints a tie across the barline", async () => {
@@ -33,7 +33,7 @@ describe("read_measures", () => {
 		});
 
 		expect(result.isError).toBeUndefined();
-		expect(result).toBeToolText("C5:4. B4:8 A4 G4 r F4~ | F4:2. E4:4");
+		expect(result).toBeToolText("[C^7] C5:4. B4:8 A4 G4 r F4~ | [D-7] F4:2. E4:4");
 	});
 
 	test("prints chord symbols from the fixture", async () => {

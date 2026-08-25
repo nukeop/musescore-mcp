@@ -1,5 +1,5 @@
 import { type DottedDuration, durationSymbol } from "../../model/duration-tables";
-import type { Chord, Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
+import type { Chord, Duration, Harmony, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
 import { WrittenPitch } from "../../model/written-pitch";
 
 export class MeasuresRenderer {
@@ -19,7 +19,19 @@ export class MeasuresRenderer {
 	}
 
 	private renderEvent(event: VoiceEvent): string {
-		return `${this.renderBody(event)}${this.renderSuffixes(event)}`;
+		const harmony = this.renderHarmony(event);
+		return `${harmony}${this.renderBody(event)}${this.renderSuffixes(event)}`;
+	}
+
+	private renderHarmony(event: VoiceEvent): string {
+		if (event.kind === "tuplet") {
+			return "";
+		}
+		if (!event.harmony) {
+			return "";
+		}
+		const root = WrittenPitch.fromTpc(event.harmony.root);
+		return `[${root.letter}${root.accidental}${event.harmony.name}] `;
 	}
 
 	private renderSuffixes(event: VoiceEvent): string {

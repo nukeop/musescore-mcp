@@ -36,15 +36,22 @@ export interface Note {
 	tied?: boolean;
 }
 
+export interface Harmony {
+	root: number;
+	name: string;
+}
+
 export interface Chord {
 	kind: "chord";
 	duration: Duration;
 	notes: Note[];
+	harmony?: Harmony;
 }
 
 export interface Rest {
 	kind: "rest";
 	duration: Duration;
+	harmony?: Harmony;
 }
 
 export interface Tuplet {

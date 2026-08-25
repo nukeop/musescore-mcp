@@ -30,18 +30,21 @@ export class WrittenPitch {
 		return new WrittenPitch(letter, accidental, Number(octave));
 	}
 
+	static fromTpc(tpc: number): WrittenPitch {
+		const semitones = Math.floor((tpc + 1) / 7) - 2;
+		const letter = letterWithNaturalTpc(tpc - 7 * semitones);
+		const accidental = accidentalWithSemitones(semitones);
+		return new WrittenPitch(letter, accidental, 0);
+	}
+
 	// Written pitch as it will be shown to AI. e.g. E♭5
 	// Converts from Musescore XML to something AI-readable
 	static fromNote(note: Note, part: ScorePart): WrittenPitch {
 		const writtenTpc = note.tpc2 ?? note.tpc;
 		const writtenMidi = note.pitch - part.transposeChromatic;
-		const semitones = Math.floor((writtenTpc + 1) / 7) - 2;
-
-		const letter = letterWithNaturalTpc(writtenTpc - 7 * semitones);
-		const accidental = accidentalWithSemitones(semitones);
-		const octave = Math.floor((writtenMidi - semitones) / 12) - 1;
-
-		return new WrittenPitch(letter, accidental, octave);
+		const base = WrittenPitch.fromTpc(writtenTpc);
+		const octave = Math.floor((writtenMidi - ACCIDENTAL_SEMITONES[base.accidental]) / 12) - 1;
+		return new WrittenPitch(base.letter, base.accidental, octave);
 	}
 
 	// From written pitch (e.g. E♭5, 5 being the octave)

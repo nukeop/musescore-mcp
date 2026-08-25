@@ -525,6 +525,27 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("[D-7] r:2 [G7] C4:2");
 	});
 
+	test("writes chord symbols in 5/4 (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], time: "5/4", measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[E♭-7] C4:2. [B♭7] D4:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("[E♭-7] C4:2. [B♭7] D4:2");
+	});
+
 	test("(Snapshot) writes chord symbol XML", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 1 });

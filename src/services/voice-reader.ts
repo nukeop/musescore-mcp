@@ -1,7 +1,7 @@
 import type { Element } from "@xmldom/xmldom";
 import type { MscxDurationType } from "../model/duration-tables";
-import type { Chord, Duration, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
-import { child, childElements, children, numberIn, textIn } from "./score-dom";
+import type { Chord, Duration, Harmony, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
+import { child, childElements, children, numberIn, precedingElement, textIn } from "./score-dom";
 
 export class VoiceReader {
 	private readonly events: VoiceEvent[] = [];
@@ -25,10 +25,10 @@ export class VoiceReader {
 				this.openTuplets.pop();
 				break;
 			case "Chord":
-				this.add(this.readChord(element));
+				this.add({ ...this.readChord(element), harmony: this.readHarmonyBefore(element) });
 				break;
 			case "Rest":
-				this.add(this.readRest(element));
+				this.add({ ...this.readRest(element), harmony: this.readHarmonyBefore(element) });
 				break;
 		}
 	}
@@ -63,6 +63,14 @@ export class VoiceReader {
 
 	private readRest(element: Element): Rest {
 		return { kind: "rest", duration: this.readDuration(element) };
+	}
+
+	private readHarmonyBefore(element: Element): Harmony | undefined {
+		const prev = precedingElement(element);
+		if (!prev || prev.nodeName !== "Harmony") {
+			return undefined;
+		}
+		return { root: numberIn(prev, "root"), name: textIn(prev, "name") };
 	}
 
 	private readDuration(element: Element): Duration {
