@@ -18,6 +18,19 @@ describe("set_header", () => {
 		await mcp.close();
 	});
 
+	test("(Snapshot) retitles a MuseScore-authored file", async () => {
+		BunFsMock.mockWrite();
+
+		const result = await setHeader(
+			mcp,
+			{ title: "Waltz for Debby" },
+			"src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx",
+		);
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx")).toMatchSnapshot();
+	});
+
 	test("updates the title and composer texts in the header frame", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp);

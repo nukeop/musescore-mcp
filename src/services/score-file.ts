@@ -11,7 +11,7 @@ export class ScoreFile {
 	) {}
 
 	async save(): Promise<void> {
-		await Bun.write(this.path, new XMLSerializer().serializeToString(this.document));
+		await Bun.write(this.path, `${new XMLSerializer().serializeToString(this.document)}\n`);
 	}
 
 	static async open(path: string): Promise<ScoreFile> {

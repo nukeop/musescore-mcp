@@ -18,6 +18,18 @@ describe("write_measures", () => {
 		await mcp.close();
 	});
 
+	test("(Snapshot) edits one measure of a MuseScore-authored file", async () => {
+		BunFsMock.mockWrite();
+
+		const result = await writeMeasures(mcp, "src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx", {
+			from: 1,
+			content: "C5:4 D5 E5 F5",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx")).toMatchSnapshot();
+	});
+
 	test("writes notes, rests and dotted durations (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
