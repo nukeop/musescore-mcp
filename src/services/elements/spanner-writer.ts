@@ -20,7 +20,7 @@ const TIE: SpannerKind = {
 	isMarked: (note) => note.tied ?? false,
 	targetIndex: (marked, chord) => {
 		const index = chord.notes.findIndex((note) => note.pitch === marked.note.pitch);
-		return index > 0 ? index : undefined;
+		return index >= 0 ? index : undefined;
 	},
 	createInnerElement: (document) => document.createElement("Tie"),
 };
