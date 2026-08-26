@@ -4,6 +4,7 @@ import { eventDuration } from "../model/bar-fill";
 import type { Harmony, Voice, VoiceEvent } from "../model/score";
 import { ChordWriter } from "./elements/chord-writer";
 import { RestWriter } from "./elements/rest-writer";
+import type { EnclosureWriter } from "./elements/enclosure-writer";
 import type { SpannerWriter } from "./elements/spanner-writer";
 import { TupletWriter } from "./elements/tuplet-writer";
 import { children } from "./score-dom";
@@ -22,10 +23,10 @@ export class VoiceWriter {
 		this.tupletWriter = new TupletWriter(document);
 	}
 
-	write(voice: Voice, measureLength: Fraction, spannerWriter: SpannerWriter): void {
+	write(voice: Voice, measureLength: Fraction, spannerWriter: SpannerWriter, enclosureWriter: EnclosureWriter): void {
 		this.removeContent();
 		voice.events.reduce(
-			(position, event) => this.writeEvent(event, position, measureLength, spannerWriter),
+			(position, event) => this.writeEvent(event, position, measureLength, spannerWriter, enclosureWriter),
 			new Fraction(0),
 		);
 	}
@@ -35,6 +36,7 @@ export class VoiceWriter {
 		position: Fraction,
 		measureLength: Fraction,
 		spannerWriter: SpannerWriter,
+		enclosureWriter: EnclosureWriter,
 	): Fraction {
 		const nextPosition = position.add(eventDuration(event, measureLength));
 		switch (event.kind) {
@@ -43,6 +45,7 @@ export class VoiceWriter {
 				const element = this.chordWriter.write(event);
 				this.voiceElement.appendChild(element);
 				spannerWriter.onChord(event, element, position);
+				enclosureWriter.onChord(event, element, position);
 				break;
 			}
 			case "rest":
@@ -53,7 +56,7 @@ export class VoiceWriter {
 			case "tuplet":
 				this.voiceElement.appendChild(this.tupletWriter.write(event));
 				event.events.forEach((member) => {
-					this.writeEvent(member, position, measureLength, spannerWriter);
+					this.writeEvent(member, position, measureLength, spannerWriter, enclosureWriter);
 				});
 				this.voiceElement.appendChild(this.document.createElement("endTuplet"));
 				break;

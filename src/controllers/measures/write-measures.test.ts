@@ -405,7 +405,7 @@ describe("write_measures", () => {
 
 		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "C5:1 )" });
 
-		expect(result).toBeToolError('Expected end of input, got ")" at offset 5');
+		expect(result).toBeToolError("Expected eof, got rparen at offset 5");
 	});
 
 	test("rejects a duration colon with nothing after it", async () => {
@@ -417,7 +417,7 @@ describe("write_measures", () => {
 
 		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "C5:" });
 
-		expect(result).toBeToolError("Expected a word, got end of input at offset 3");
+		expect(result).toBeToolError("Expected a word, got eof at offset 3");
 	});
 
 	test("rejects an empty bar between separators", async () => {
@@ -432,7 +432,7 @@ describe("write_measures", () => {
 			content: "C5:1 | | D5:1",
 		});
 
-		expect(result).toBeToolError('Expected a word, got "|" at offset 7');
+		expect(result).toBeToolError("Expected a word, got pipe at offset 7");
 	});
 
 	test("rejects content that overflows past the end of the score", async () => {
@@ -666,7 +666,7 @@ describe("write_measures", () => {
 	});
 
 	test.each([
-		["a group with two grace notes", "grace(D5:8 E5) C5:1", 'Expected ")", got "E5" at offset 11'],
+		["a group with two grace notes", "grace(D5:8 E5) C5:1", "Expected rparen, got word at offset 11"],
 		["an unclosed slur", "slur(C5:4 D5 E5 F5", "Unclosed slur"],
 		["a nested slur", "slur(C5:4 slur(D5 E5) F5)", "Nested slur"],
 		["a slur with fewer than two notes", "slur(C5:4) D5 E5 F5", "Slur must contain at least two notes"],

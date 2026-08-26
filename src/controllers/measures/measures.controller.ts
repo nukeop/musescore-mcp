@@ -36,9 +36,9 @@ export const measuresController: Controller = (server) => {
 				);
 			}
 
-			const firstVoiceMeasures = scoreStaff.measures.slice(from - 1, to).map((m) => m.voices[0]);
+			const voices = scoreStaff.measures.slice(from - 1, to).map((measure) => measure.voices[0]);
 
-			return textResult(new MeasuresRenderer(firstVoiceMeasures, scoreStaff.part).render());
+			return textResult(new MeasuresRenderer(voices, scoreStaff.part).render());
 		},
 	);
 

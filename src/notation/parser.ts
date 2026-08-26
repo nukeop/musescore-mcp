@@ -6,8 +6,9 @@ import {
 	isLetter,
 	NATURAL_TPC,
 } from "../model/pitch-tables";
-import type { Duration, Harmony, ScorePart, Voice, VoiceEvent } from "../model/score";
+import type { Chord, Duration, Harmony, ScorePart, Voice, VoiceEvent } from "../model/score";
 import { WrittenPitch } from "../model/written-pitch";
+import { EnclosureMarker } from "./enclosures";
 import { suffixForParenName } from "./suffixes";
 import type { WordToken } from "./token";
 import { TokenCursor } from "./token-cursor";
@@ -15,6 +16,7 @@ import { tokenize } from "./tokenize";
 
 export class NotationParser {
 	private readonly cursor: TokenCursor;
+	private readonly enclosures: EnclosureMarker;
 	private carriedDuration: Duration | undefined;
 
 	constructor(
@@ -22,6 +24,7 @@ export class NotationParser {
 		private readonly part: ScorePart,
 	) {
 		this.cursor = new TokenCursor(tokenize(notation));
+		this.enclosures = new EnclosureMarker(this.cursor);
 	}
 
 	parse(): Voice[] {
@@ -34,11 +37,20 @@ export class NotationParser {
 	}
 
 	private parseBar(): Voice {
-		const events = [this.parseEvent()];
-		while (this.cursor.peek().kind === "word" || this.cursor.peek().kind === "harmony") {
-			events.push(this.parseEvent());
+		const events = [this.parseBarEvent()];
+		while (this.continuesBar()) {
+			events.push(this.parseBarEvent());
 		}
 		return { events };
+	}
+
+	private continuesBar(): boolean {
+		const kind = this.cursor.peek().kind;
+		return kind === "word" || kind === "harmony";
+	}
+
+	private parseBarEvent(): VoiceEvent {
+		return this.enclosures.around(() => this.parseEvent());
 	}
 
 	private parseEvent(): VoiceEvent {
@@ -99,6 +111,9 @@ export class NotationParser {
 		if (word.text === "tuplet" && this.cursor.match("lparen")) {
 			return this.parseTuplet();
 		}
+		if (word.text === "grace" && this.cursor.match("lparen")) {
+			return this.parseGrace();
+		}
 		if (word.text === "r") {
 			return this.parseRest(word);
 		}
@@ -113,12 +128,18 @@ export class NotationParser {
 		return { kind: "rest", duration: this.eventDuration(word) };
 	}
 
-	private parseNote(word: WordToken): VoiceEvent {
+	private parseNote(word: WordToken): Chord {
 		return {
 			kind: "chord",
 			duration: this.eventDuration(word),
 			notes: [WrittenPitch.parse(word.text).toNote(this.part)],
 		};
+	}
+
+	private parseGrace(): VoiceEvent {
+		const chord = this.parseNote(this.cursor.expectWord());
+		this.cursor.expect("rparen");
+		return { ...chord, grace: true };
 	}
 
 	private parseTuplet(): VoiceEvent {

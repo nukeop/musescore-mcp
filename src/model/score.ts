@@ -1,6 +1,7 @@
 import type { Element } from "@xmldom/xmldom";
 import type { AnnotationName } from "./annotations";
 import type { MscxDurationType } from "./duration-tables";
+import type { EnclosureName } from "./enclosures";
 export interface ScoreHeader {
 	title: string;
 	composer: string;
@@ -49,6 +50,9 @@ export interface Chord {
 	notes: Note[];
 	harmony?: Harmony;
 	annotation?: AnnotationName;
+	grace?: boolean;
+	opensEnclosure?: EnclosureName;
+	closesEnclosure?: EnclosureName;
 }
 
 export interface Rest {

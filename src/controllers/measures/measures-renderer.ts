@@ -1,6 +1,7 @@
 import { type DottedDuration, durationSymbol } from "../../model/duration-tables";
 import type { Chord, Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
 import { WrittenPitch } from "../../model/written-pitch";
+import { stripUnpairedEnclosures, wrapInEnclosures } from "../../notation/enclosures";
 import { SUFFIXES } from "../../notation/suffixes";
 
 export class MeasuresRenderer {
@@ -12,7 +13,8 @@ export class MeasuresRenderer {
 	) {}
 
 	render(): string {
-		return this.voices.map((voice) => this.renderBar(voice)).join(" | ");
+		const voices = stripUnpairedEnclosures(this.voices);
+		return voices.map((voice) => this.renderBar(voice)).join(" | ");
 	}
 
 	private renderBar(voice: Voice | undefined): string {
@@ -20,8 +22,11 @@ export class MeasuresRenderer {
 	}
 
 	private renderEvent(event: VoiceEvent): string {
-		const harmony = this.renderHarmony(event);
-		return `${harmony}${this.renderBody(event)}${this.renderSuffixes(event)}`;
+		const core = `${this.renderHarmony(event)}${this.renderBody(event)}${this.renderSuffixes(event)}`;
+		if (event.kind !== "chord") {
+			return core;
+		}
+		return wrapInEnclosures(event, core);
 	}
 
 	private renderHarmony(event: VoiceEvent): string {
@@ -53,6 +58,9 @@ export class MeasuresRenderer {
 				return "R";
 			}
 			return `r${this.renderDuration(event.duration)}`;
+		}
+		if (event.grace) {
+			return `grace(${this.renderNote(event.notes[0]!)}${this.renderDuration(event.duration)})`;
 		}
 		return this.renderChord(event);
 	}

@@ -16,6 +16,10 @@ export class ChordWriter {
 		const element = this.document.createElement("Chord");
 		appendDuration(this.document, element, chord.duration);
 
+		if (chord.grace) {
+			element.appendChild(this.document.createElement("acciaccatura"));
+		}
+
 		const annotation = chord.annotation ? ANNOTATIONS[chord.annotation] : undefined;
 		if (annotation?.xmlParent === "chord") {
 			element.appendChild(this.createAnnotationElement(annotation));

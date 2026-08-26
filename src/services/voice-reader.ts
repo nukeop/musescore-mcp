@@ -1,6 +1,7 @@
 import type { Element } from "@xmldom/xmldom";
 import { ANNOTATION_NAMES, ANNOTATIONS, type Annotation, type AnnotationName } from "../model/annotations";
 import type { MscxDurationType } from "../model/duration-tables";
+import { ENCLOSURE_NAMES, ENCLOSURE_SPANNERS, type EnclosureName } from "../model/enclosures";
 import type { Chord, Duration, Harmony, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
 import { child, childElements, children, numberIn, precedingElement, textIn } from "./score-dom";
 
@@ -56,11 +57,15 @@ export class VoiceReader {
 	// Every melody note is inside a "Chord" event, even if there's no actual chord inside
 	private readChord(element: Element): Chord {
 		const noteElements = children(element, "Note");
+		const chordSpanners = children(element, "Spanner");
 		return {
 			kind: "chord",
 			duration: this.readDuration(element),
 			notes: noteElements.map((note) => this.readNote(note)),
 			annotation: this.readAnnotation(element, noteElements),
+			grace: Boolean(child(element, "acciaccatura")),
+			opensEnclosure: this.readEnclosureMark(chordSpanners, "next"),
+			closesEnclosure: this.readEnclosureMark(chordSpanners, "prev"),
 		};
 	}
 
@@ -113,14 +118,18 @@ export class VoiceReader {
 			pitch: numberIn(element, "pitch"),
 			tpc: numberIn(element, "tpc"),
 			tpc2: tpc2 ? Number(tpc2.textContent) : undefined,
-			tied: this.hasSpanner(spanners, "Tie"),
-			glissando: this.hasSpanner(spanners, "Glissando"),
+			tied: this.hasSpanner(spanners, "Tie", "next"),
+			glissando: this.hasSpanner(spanners, "Glissando", "next"),
 		};
 	}
 
-	private hasSpanner(spanners: Element[], type: string): boolean {
+	private readEnclosureMark(spanners: Element[], endpoint: "next" | "prev"): EnclosureName | undefined {
+		return ENCLOSURE_NAMES.find((name) => this.hasSpanner(spanners, ENCLOSURE_SPANNERS[name], endpoint));
+	}
+
+	private hasSpanner(spanners: Element[], type: string, endpoint: "next" | "prev"): boolean {
 		return spanners.some(
-			(spanner) => spanner.getAttribute("type") === type && Boolean(child(spanner, "next")),
+			(spanner) => spanner.getAttribute("type") === type && Boolean(child(spanner, endpoint)),
 		);
 	}
 }

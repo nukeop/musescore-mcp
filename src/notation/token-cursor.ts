@@ -1,16 +1,5 @@
 import type { HarmonyToken, SuffixToken, Token, WordToken } from "./token";
 
-const TOKEN_NAMES: Record<Token["kind"], string> = {
-	word: "a word",
-	colon: '":"',
-	lparen: '"("',
-	rparen: '")"',
-	pipe: '"|"',
-	suffix: "a suffix",
-	harmony: "a chord symbol",
-	eof: "end of input",
-};
-
 export class TokenCursor {
 	private index = 0;
 
@@ -31,7 +20,7 @@ export class TokenCursor {
 	expect(kind: Token["kind"]): void {
 		const token = this.peek();
 		if (token.kind !== kind) {
-			throw new Error(`Expected ${TOKEN_NAMES[kind]}, got ${TOKEN_NAMES[token.kind]} at offset ${token.offset}`);
+			throw new Error(`Expected ${kind}, got ${token.kind} at offset ${token.offset}`);
 		}
 		this.index += 1;
 	}
@@ -57,7 +46,7 @@ export class TokenCursor {
 	expectWord(): WordToken {
 		const token = this.peek();
 		if (token.kind !== "word") {
-			throw new Error(`Expected a word, got ${TOKEN_NAMES[token.kind]} at offset ${token.offset}`);
+			throw new Error(`Expected a word, got ${token.kind} at offset ${token.offset}`);
 		}
 		this.index += 1;
 		return token;

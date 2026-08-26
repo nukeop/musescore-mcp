@@ -1,7 +1,8 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type Fraction from "fraction.js";
+import Fraction from "fraction.js";
 import type { Chord, Note } from "../../model/score";
 import { children, elementWithText } from "../score-dom";
+import { appendLocationElement, negateSpanLocation, type SpanLocation, spanLocation } from "./spanner-location";
 
 interface MarkedNote {
 	note: Note;
@@ -54,10 +55,9 @@ export class SpannerWriter {
 	onChord(chord: Chord, element: Element, position: Fraction): void {
 		const last = this.lastChord;
 		if (last) {
-			const location = { measures: last.barOffset, fractions: position.sub(last.position) };
-			const negated = { measures: -location.measures, fractions: location.fractions.neg() };
+			const location = spanLocation(last.barOffset, last.position, position);
 			this.appendStartSpanners(last, location);
-			this.appendEndSpanners(chord, element, last, negated);
+			this.appendEndSpanners(chord, element, last, negateSpanLocation(location));
 		}
 		this.lastChord = { chord, element, position, barOffset: 0 };
 	}
@@ -76,12 +76,12 @@ export class SpannerWriter {
 		if (!this.lastChord) {
 			return;
 		}
-		const location = { measures: this.lastChord.barOffset + 1, fractions: this.lastChord.position.neg() };
+		const location = spanLocation(this.lastChord.barOffset + 1, this.lastChord.position, new Fraction(0));
 		this.appendStartSpanners(this.lastChord, location);
 		this.lastChord = undefined;
 	}
 
-	private appendStartSpanners(last: LastChord, location: { measures: number; fractions: Fraction }): void {
+	private appendStartSpanners(last: LastChord, location: SpanLocation): void {
 		const noteElements = children(last.element, "Note");
 		for (const kind of SPANNER_KINDS) {
 			last.chord.notes.forEach((note, index) => {
@@ -92,12 +92,7 @@ export class SpannerWriter {
 		}
 	}
 
-	private appendEndSpanners(
-		chord: Chord,
-		element: Element,
-		last: LastChord,
-		location: { measures: number; fractions: Fraction },
-	): void {
+	private appendEndSpanners(chord: Chord, element: Element, last: LastChord, location: SpanLocation): void {
 		const noteElements = children(element, "Note");
 		for (const kind of SPANNER_KINDS) {
 			last.chord.notes.forEach((note, index) => {
@@ -115,7 +110,7 @@ export class SpannerWriter {
 	private insertSpanner(
 		noteElement: Element,
 		direction: "next" | "prev",
-		location: { measures: number; fractions: Fraction },
+		location: SpanLocation,
 		kind: SpannerKind,
 	): void {
 		const spanner = this.document.createElement("Spanner");
@@ -124,12 +119,7 @@ export class SpannerWriter {
 			spanner.appendChild(kind.createInnerElement(this.document));
 		}
 		const endpoint = this.document.createElement(direction);
-		const locationElement = this.document.createElement("location");
-		if (location.measures !== 0) {
-			locationElement.appendChild(elementWithText(this.document, "measures", String(location.measures)));
-		}
-		locationElement.appendChild(elementWithText(this.document, "fractions", location.fractions.toFraction()));
-		endpoint.appendChild(locationElement);
+		appendLocationElement(this.document, endpoint, location);
 		spanner.appendChild(endpoint);
 		noteElement.insertBefore(spanner, noteElement.firstChild);
 	}
