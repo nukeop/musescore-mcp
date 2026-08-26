@@ -152,6 +152,8 @@ describe("write_measures", () => {
 	test.each([
 		["tie", "C5:4~ C5:4 r:2", "C5:4~ C5 r:2"],
 		["glissando", "C5:4(gliss) D5 E5 F5", "C5:4(gliss) D5 E5 F5"],
+		["slur", "slur(C5:4 D5 E5) F5", "slur(C5:4 D5 E5) F5"],
+		["grace note", "grace(D5:8) C5:1", "grace(D5:8) C5:1"],
 	])("writes a %s within the same bar (round trip)", async (_, content, expected) => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
@@ -172,6 +174,7 @@ describe("write_measures", () => {
 	test.each([
 		["tie", "r:2 r:4 r:8 C5:8~ | C5:2. r:4", "r:2 r:4 r:8 C5~ | C5:2. r:4"],
 		["glissando", "C5:2 D5(gliss) | E5:4 F5 G5 A5", "C5:2 D5(gliss) | E5:4 F5 G5 A5"],
+		["slur", "r:8 r r:4 r:8 r slur(G4 A4 | B4 C5) r:4 r:2", "r:8 r r:4 r:8 r slur(G4 A4 | B4 C5) r:4 r:2"],
 	])("writes a %s across the barline (round trip)", async (_, content, expected) => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
@@ -607,6 +610,76 @@ describe("write_measures", () => {
 		});
 
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+	});
+
+	test("omits a slur that starts before the read range", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "r:8 r r:4 r:8 r slur(G4 A4 | B4 C5) r:4 r:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 2, to: 2 });
+		expect(readBack).toBeToolText("B4:8 C5 r:4 r:2");
+	});
+
+	test("(Snapshot) writes a grace note", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "grace(D5:8) C5:1",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+	});
+
+	test("(Snapshot) writes slurs", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 2 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "slur(C5:8 D5 E5) r:8 r:4 slur(G4:4 | A4:4) r:4 r:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+	});
+
+	test.each([
+		["a group with two grace notes", "grace(D5:8 E5) C5:1", 'Expected ")", got "E5" at offset 11'],
+		["an unclosed slur", "slur(C5:4 D5 E5 F5", "Unclosed slur"],
+		["a nested slur", "slur(C5:4 slur(D5 E5) F5)", "Nested slur"],
+		["a slur with fewer than two notes", "slur(C5:4) D5 E5 F5", "Slur must contain at least two notes"],
+	])("rejects %s", async (_, content, message) => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content });
+
+		expect(result).toBeToolError(message);
 	});
 
 	test("rejects an unknown annotation name", async () => {
