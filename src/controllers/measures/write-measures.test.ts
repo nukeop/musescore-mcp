@@ -51,6 +51,27 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("C5:4 D5 E5 r | G5:2. r:4");
 	});
 
+	test("a duration carries over across barlines (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "C4:1 | D4 | E4:2 F4 | G4 A4",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 4 });
+		expect(readBack).toBeToolText("C4:1 | D4 | E4:2 F4 | G4 A4");
+	});
+
 	test("writes sharps and flats and reads them back with the same enharmonic spelling (round trip)", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
