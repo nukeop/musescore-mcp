@@ -560,4 +560,54 @@ describe("write_measures", () => {
 
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
+
+	test("writes annotations (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const content = "C5:8' D5> E5(tr) F5(mord) G5(scoop) A5 B5 C6";
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content });
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText(content);
+	});
+
+	test("(Snapshot) writes annotation XML", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "C5:4' D5> E5(tr) F5(scoop)",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+	});
+
+	test("rejects an unknown annotation name", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { measures: 4 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "C5:4(xyz)" });
+
+		expect(result.isError).toBe(true);
+		expect(result.content).toEqual([
+			expect.objectContaining({ type: "text", text: expect.stringContaining("xyz") }),
+		]);
+	});
 });

@@ -1,6 +1,7 @@
 import { type DottedDuration, durationSymbol } from "../../model/duration-tables";
-import type { Chord, Duration, Harmony, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
+import type { Chord, Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
 import { WrittenPitch } from "../../model/written-pitch";
+import { SUFFIXES } from "../../notation/suffixes";
 
 export class MeasuresRenderer {
 	private previousDuration: DottedDuration | undefined;
@@ -35,10 +36,11 @@ export class MeasuresRenderer {
 	}
 
 	private renderSuffixes(event: VoiceEvent): string {
-		if (event.kind === "chord" && event.notes.some((note) => note.tied)) {
-			return "~";
+		if (event.kind !== "chord") {
+			return "";
 		}
-		return "";
+		const suffix = SUFFIXES.find((candidate) => candidate.appliesTo(event));
+		return suffix?.dsl ?? "";
 	}
 
 	private renderBody(event: VoiceEvent): string {

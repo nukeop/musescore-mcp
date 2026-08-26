@@ -6,7 +6,7 @@ const TOKEN_NAMES: Record<Token["kind"], string> = {
 	lparen: '"("',
 	rparen: '")"',
 	pipe: '"|"',
-	suffix: '"~"',
+	suffix: "a suffix",
 	harmony: "a chord symbol",
 	eof: "end of input",
 };
@@ -31,9 +31,7 @@ export class TokenCursor {
 	expect(kind: Token["kind"]): void {
 		const token = this.peek();
 		if (token.kind !== kind) {
-			throw new Error(
-				`Expected ${TOKEN_NAMES[kind]}, got ${TOKEN_NAMES[token.kind]} at offset ${token.offset}`,
-			);
+			throw new Error(`Expected ${TOKEN_NAMES[kind]}, got ${TOKEN_NAMES[token.kind]} at offset ${token.offset}`);
 		}
 		this.index += 1;
 	}

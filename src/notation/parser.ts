@@ -1,18 +1,17 @@
 import { parseDuration } from "../model/duration-tables";
-import { ACCIDENTAL_SEMITONES, type Accidental, isAccidental, isLetter, NATURAL_TPC } from "../model/pitch-tables";
-import type { Chord, Duration, Harmony, ScorePart, Voice, VoiceEvent } from "../model/score";
+import {
+	ACCIDENTAL_SEMITONES,
+	type Accidental,
+	isAccidental,
+	isLetter,
+	NATURAL_TPC,
+} from "../model/pitch-tables";
+import type { Duration, Harmony, ScorePart, Voice, VoiceEvent } from "../model/score";
 import { WrittenPitch } from "../model/written-pitch";
-import type { SuffixChar, WordToken } from "./token";
+import { suffixForParenName } from "./suffixes";
+import type { WordToken } from "./token";
 import { TokenCursor } from "./token-cursor";
 import { tokenize } from "./tokenize";
-
-const SUFFIX_PARSERS: Record<SuffixChar, (chord: Chord) => VoiceEvent> = {
-	"~": tie,
-};
-
-function tie(chord: Chord): VoiceEvent {
-	return { ...chord, notes: chord.notes.map((note) => ({ ...note, tied: true })) };
-}
 
 export class NotationParser {
 	private readonly cursor: TokenCursor;
@@ -74,11 +73,20 @@ export class NotationParser {
 		if (event.kind !== "chord") {
 			return event;
 		}
-		const suffix = this.cursor.matchSuffix();
-		if (!suffix) {
+		const token = this.cursor.matchSuffix();
+		if (token) {
+			return token.suffix.apply(event);
+		}
+		if (!this.cursor.match("lparen")) {
 			return event;
 		}
-		return SUFFIX_PARSERS[suffix.char](event);
+		const word = this.cursor.expectWord();
+		this.cursor.expect("rparen");
+		const suffix = suffixForParenName(word.text);
+		if (!suffix) {
+			throw new Error(`Unknown annotation: ${word.text}`);
+		}
+		return suffix.apply(event);
 	}
 
 	private parseBody(word: WordToken): VoiceEvent {

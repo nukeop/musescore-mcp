@@ -6,7 +6,12 @@ import { setHeaderController } from "./controllers/set-header/set-header.control
 
 export type Controller = (server: McpServer) => void;
 
-const controllers: Controller[] = [createScoreController, getOverviewController, measuresController, setHeaderController];
+const controllers: Controller[] = [
+	createScoreController,
+	getOverviewController,
+	measuresController,
+	setHeaderController,
+];
 
 export function buildServer(): McpServer {
 	const server = new McpServer({

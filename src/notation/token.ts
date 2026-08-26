@@ -1,8 +1,8 @@
+import type { Suffix } from "./suffixes";
+
 export type WordToken = { kind: "word"; text: string; offset: number };
 
-export type SuffixChar = "~";
-
-export type SuffixToken = { kind: "suffix"; char: SuffixChar; offset: number };
+export type SuffixToken = { kind: "suffix"; suffix: Suffix; offset: number };
 
 export type HarmonyToken = { kind: "harmony"; text: string; offset: number };
 

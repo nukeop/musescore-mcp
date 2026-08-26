@@ -1,4 +1,5 @@
 import type { Element } from "@xmldom/xmldom";
+import { ANNOTATION_NAMES, ANNOTATIONS, type Annotation, type AnnotationName } from "../model/annotations";
 import type { MscxDurationType } from "../model/duration-tables";
 import type { Chord, Duration, Harmony, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
 import { child, childElements, children, numberIn, precedingElement, textIn } from "./score-dom";
@@ -54,11 +55,35 @@ export class VoiceReader {
 
 	// Every melody note is inside a "Chord" event, even if there's no actual chord inside
 	private readChord(element: Element): Chord {
+		const noteElements = children(element, "Note");
 		return {
 			kind: "chord",
 			duration: this.readDuration(element),
-			notes: children(element, "Note").map((note) => this.readNote(note)),
+			notes: noteElements.map((note) => this.readNote(note)),
+			annotation: this.readAnnotation(element, noteElements),
 		};
+	}
+
+	private readAnnotation(chordElement: Element, noteElements: Element[]): AnnotationName | undefined {
+		return ANNOTATION_NAMES.find((name) =>
+			this.hasAnnotation(ANNOTATIONS[name], chordElement, noteElements),
+		);
+	}
+
+	private hasAnnotation(annotation: Annotation, chordElement: Element, noteElements: Element[]): boolean {
+		const parents = this.annotationParents(annotation, chordElement, noteElements);
+		return parents.some((parent) =>
+			children(parent, annotation.xmlElement).some((element) =>
+				annotation.readSubtypes.includes(textIn(element, "subtype")),
+			),
+		);
+	}
+
+	private annotationParents(annotation: Annotation, chordElement: Element, noteElements: Element[]): Element[] {
+		if (annotation.xmlParent === "chord") {
+			return [chordElement];
+		}
+		return noteElements;
 	}
 
 	private readRest(element: Element): Rest {
@@ -67,7 +92,7 @@ export class VoiceReader {
 
 	private readHarmonyBefore(element: Element): Harmony | undefined {
 		const prev = precedingElement(element);
-		if (!prev || prev.nodeName !== "Harmony") {
+		if (prev?.nodeName !== "Harmony") {
 			return undefined;
 		}
 		return { root: numberIn(prev, "root"), name: textIn(prev, "name") };

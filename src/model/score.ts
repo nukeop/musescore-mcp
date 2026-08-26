@@ -1,4 +1,5 @@
 import type { Element } from "@xmldom/xmldom";
+import type { AnnotationName } from "./annotations";
 import type { MscxDurationType } from "./duration-tables";
 export interface ScoreHeader {
 	title: string;
@@ -46,6 +47,7 @@ export interface Chord {
 	duration: Duration;
 	notes: Note[];
 	harmony?: Harmony;
+	annotation?: AnnotationName;
 }
 
 export interface Rest {

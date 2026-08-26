@@ -49,9 +49,7 @@ export function letterWithNaturalTpc(naturalTpc: number): Letter {
 }
 
 export function accidentalWithSemitones(semitones: number): Accidental {
-	const accidental = ACCIDENTALS.find(
-		(candidate) => ACCIDENTAL_SEMITONES[candidate] === semitones,
-	);
+	const accidental = ACCIDENTALS.find((candidate) => ACCIDENTAL_SEMITONES[candidate] === semitones);
 	if (accidental === undefined) {
 		throw new Error(`No accidental with ${semitones} semitones`);
 	}

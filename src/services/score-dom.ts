@@ -1,9 +1,7 @@
 import type { Document, Element, Node } from "@xmldom/xmldom";
 
 export function childElements(parent: Node): Element[] {
-	return Array.from(parent.childNodes).filter(
-		(node): node is Element => node.nodeType === node.ELEMENT_NODE,
-	);
+	return Array.from(parent.childNodes).filter((node): node is Element => node.nodeType === node.ELEMENT_NODE);
 }
 
 export function children(parent: Node, name: string): Element[] {
