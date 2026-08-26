@@ -1,7 +1,7 @@
 import Fraction from "fraction.js";
 import { validateBarFill } from "../model/bar-fill";
 import type { Staff, TimeSig, Voice } from "../model/score";
-import { TieWriter } from "./elements/tie-writer";
+import { SpannerWriter } from "./elements/spanner-writer";
 import { MeasureWriter } from "./measure-writer";
 import type { ScoreFile } from "./score-file";
 
@@ -24,17 +24,17 @@ export class StaffWriter {
 			validateBarFill(bar, index + 1, this.timeSigAt(from + index));
 		});
 
-		const tieWriter = new TieWriter(this.scoreFile.document);
+		const spannerWriter = new SpannerWriter(this.scoreFile.document);
 		const targetMeasures = this.staff.measures.slice(from - 1, to);
 		bars.forEach((bar, index) => {
-			tieWriter.startBar();
+			spannerWriter.startBar();
 			new MeasureWriter(this.scoreFile.document, targetMeasures[index]!).write(
 				bar,
 				this.measureLengthAt(from + index),
-				tieWriter,
+				spannerWriter,
 			);
 		});
-		tieWriter.startTie();
+		spannerWriter.finalize();
 	}
 
 	private timeSigAt(measureNumber: number): TimeSig {

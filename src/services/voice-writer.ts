@@ -4,7 +4,7 @@ import { eventDuration } from "../model/bar-fill";
 import type { Harmony, Voice, VoiceEvent } from "../model/score";
 import { ChordWriter } from "./elements/chord-writer";
 import { RestWriter } from "./elements/rest-writer";
-import type { TieWriter } from "./elements/tie-writer";
+import type { SpannerWriter } from "./elements/spanner-writer";
 import { TupletWriter } from "./elements/tuplet-writer";
 import { children } from "./score-dom";
 
@@ -22,10 +22,10 @@ export class VoiceWriter {
 		this.tupletWriter = new TupletWriter(document);
 	}
 
-	write(voice: Voice, measureLength: Fraction, tieWriter: TieWriter): void {
+	write(voice: Voice, measureLength: Fraction, spannerWriter: SpannerWriter): void {
 		this.removeContent();
 		voice.events.reduce(
-			(position, event) => this.writeEvent(event, position, measureLength, tieWriter),
+			(position, event) => this.writeEvent(event, position, measureLength, spannerWriter),
 			new Fraction(0),
 		);
 	}
@@ -34,7 +34,7 @@ export class VoiceWriter {
 		event: VoiceEvent,
 		position: Fraction,
 		measureLength: Fraction,
-		tieWriter: TieWriter,
+		spannerWriter: SpannerWriter,
 	): Fraction {
 		const nextPosition = position.add(eventDuration(event, measureLength));
 		switch (event.kind) {
@@ -42,18 +42,18 @@ export class VoiceWriter {
 				this.appendHarmony(event.harmony);
 				const element = this.chordWriter.write(event);
 				this.voiceElement.appendChild(element);
-				tieWriter.endTie(event, element, position);
+				spannerWriter.onChord(event, element, position);
 				break;
 			}
 			case "rest":
 				this.appendHarmony(event.harmony);
 				this.voiceElement.appendChild(this.restWriter.write(event));
-				tieWriter.clear();
+				spannerWriter.clear();
 				break;
 			case "tuplet":
 				this.voiceElement.appendChild(this.tupletWriter.write(event));
 				event.events.forEach((member) => {
-					this.writeEvent(member, position, measureLength, tieWriter);
+					this.writeEvent(member, position, measureLength, spannerWriter);
 				});
 				this.voiceElement.appendChild(this.document.createElement("endTuplet"));
 				break;

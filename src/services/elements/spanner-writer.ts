@@ -10,12 +10,12 @@ interface LastChord {
 	barOffset: number;
 }
 
-export class TieWriter {
+export class SpannerWriter {
 	private lastChord: LastChord | undefined;
 
 	constructor(private readonly document: Document) {}
 
-	endTie(chord: Chord, element: Element, position: Fraction): void {
+	onChord(chord: Chord, element: Element, position: Fraction): void {
 		const last = this.lastChord;
 		if (last) {
 			const location = { measures: last.barOffset, fractions: position.sub(last.position) };
@@ -36,7 +36,7 @@ export class TieWriter {
 		}
 	}
 
-	startTie(): void {
+	finalize(): void {
 		if (!this.lastChord) {
 			return;
 		}
