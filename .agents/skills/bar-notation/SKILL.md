@@ -14,6 +14,8 @@ Bars are separated by `|`. Just like in regular sheet music, all bars must have 
 | `R`                      | Full-measure rest, alone in the bar                  |
 | `chord(C4 E4 G4):4`      | Chord, one duration for the entire chord             |
 | `tuplet(3:2 C5:8 D5 E5)` | Tuplet, ratio is actual:normal                       |
+| `grace(D4:8) C4:4`        | Grace note (acciaccatura) before the main note       |
+| `slur(C4:8 D4 E4)`        | Slur, may cross barlines: `slur(G4:8 A4 \| B4 C5)` |
 | `C5:4~ C5`               | Tie                                                  |
 | `C5:4'`                  | Staccato                                             |
 | `C5:4>`                  | Accent                                               |
@@ -32,5 +34,5 @@ Chord symbols are written in square brackets before the event they attach to. Th
 Example:
 
 ```
-[C-7] C5:4.' B4:8> [F7] A4(tr) G4 r F4~ | [B♭^7] F4:2.(gliss) E4:4 | tuplet(3:2 C5:8 D5 E5) [E♭7] r:4 r:2 | R
+[C-7] grace(B4:8) C5:4.' B4:8> [F7] slur(A4(tr) G4 r F4~) | [B♭^7] F4:2.(gliss) E4:4 | tuplet(3:2 C5:8 D5 E5) [E♭7] r:4 r:2 | R
 ```
