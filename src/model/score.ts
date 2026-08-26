@@ -35,6 +35,7 @@ export interface Note {
 	tpc: number;
 	tpc2?: number;
 	tied?: boolean;
+	glissando?: boolean;
 }
 
 export interface Harmony {

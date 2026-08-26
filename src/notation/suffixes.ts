@@ -26,8 +26,13 @@ function annotationSuffix(name: AnnotationName): Suffix {
 export const SUFFIXES: Suffix[] = [
 	spannerSuffix(
 		"~",
-		(note) => note.tied === true,
+		(note) => note.tied ?? false,
 		(note) => ({ ...note, tied: true }),
+	),
+	spannerSuffix(
+		"(gliss)",
+		(note) => note.glissando ?? false,
+		(note) => ({ ...note, glissando: true }),
 	),
 	...ANNOTATION_NAMES.map(annotationSuffix),
 ];

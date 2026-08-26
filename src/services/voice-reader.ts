@@ -108,13 +108,19 @@ export class VoiceReader {
 
 	private readNote(element: Element): Note {
 		const tpc2 = child(element, "tpc2");
+		const spanners = children(element, "Spanner");
 		return {
 			pitch: numberIn(element, "pitch"),
 			tpc: numberIn(element, "tpc"),
 			tpc2: tpc2 ? Number(tpc2.textContent) : undefined,
-			tied: children(element, "Spanner").some(
-				(spanner) => spanner.getAttribute("type") === "Tie" && Boolean(child(spanner, "next")),
-			),
+			tied: this.hasSpanner(spanners, "Tie"),
+			glissando: this.hasSpanner(spanners, "Glissando"),
 		};
+	}
+
+	private hasSpanner(spanners: Element[], type: string): boolean {
+		return spanners.some(
+			(spanner) => spanner.getAttribute("type") === type && Boolean(child(spanner, "next")),
+		);
 	}
 }
