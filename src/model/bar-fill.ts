@@ -3,18 +3,18 @@ import { durationFraction } from "./duration-tables";
 import type { TimeSig, Tuplet, Voice, VoiceEvent } from "./score";
 
 export function validateBarFill(bar: Voice, barNumber: number, timeSig: TimeSig): void {
-	const measureLength = new Fraction(timeSig.beats, timeSig.beatUnit);
+	const barMeasureLength = new Fraction(timeSig.beats, timeSig.beatUnit);
 
 	const barLength = bar.events.reduce((currentPos, event) => {
-		const nextPos = currentPos.add(eventDuration(event, measureLength));
-		if (nextPos.compare(measureLength) > 0) {
+		const nextPos = currentPos.add(eventDuration(event, barMeasureLength));
+		if (nextPos.compare(barMeasureLength) > 0) {
 			throw new Error(`Bar ${barNumber} overflows at beat ${beatAt(currentPos, timeSig)}`);
 		}
 		return nextPos;
 	}, new Fraction(0));
 
-	if (barLength.compare(measureLength) < 0) {
-		const missing = measureLength.sub(barLength);
+	if (barLength.compare(barMeasureLength) < 0) {
+		const missing = barMeasureLength.sub(barLength);
 		throw new Error(`Bar ${barNumber} is short by ${missing.toFraction()} of a whole note`);
 	}
 }

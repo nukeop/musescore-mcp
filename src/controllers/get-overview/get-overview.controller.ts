@@ -1,6 +1,5 @@
 import type { Controller } from "../../server";
 import { ScoreFile } from "../../services/score-file";
-import { ScoreReader } from "../../services/score-reader";
 import { textResult } from "../tool-response";
 import { getOverviewSchema } from "./get-overview.schema";
 import { OverviewRenderer } from "./overview-renderer";
@@ -15,8 +14,7 @@ export const getOverviewController: Controller = (server) => {
 		},
 		async ({ file }) => {
 			const scoreFile = await ScoreFile.open(file);
-			const score = new ScoreReader(scoreFile.score).read();
-			return textResult(new OverviewRenderer(score).render());
+			return textResult(new OverviewRenderer(scoreFile.read()).render());
 		},
 	);
 };

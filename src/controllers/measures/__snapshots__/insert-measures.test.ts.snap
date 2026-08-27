@@ -1,0 +1,83 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`insert_measures (Snapshot) inserting at bar 1 keeps the signatures in the first bar 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <Score>
+    <Division>480</Division>
+    <metaTag name="arranger"/>
+    <metaTag name="audioComUrl"/>
+    <metaTag name="composer">Test Composer</metaTag>
+    <metaTag name="copyright"/>
+    <metaTag name="lyricist"/>
+    <metaTag name="movementNumber"/>
+    <metaTag name="movementTitle"/>
+    <metaTag name="platform"/>
+    <metaTag name="poet"/>
+    <metaTag name="source"/>
+    <metaTag name="sourceRevisionId"/>
+    <metaTag name="subtitle"/>
+    <metaTag name="translator"/>
+    <metaTag name="workNumber"/>
+    <metaTag name="workTitle">Test Tune</metaTag>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>Test Tune</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>Test Composer</text>
+          </Text>
+        </VBox>
+      <Measure><voice><KeySig>
+            <concertKey>-3</concertKey>
+            </KeySig><TimeSig>
+            <sigN>4</sigN>
+            <sigD>4</sigD>
+            </TimeSig><Rest><durationType>measure</durationType></Rest></voice></Measure><Measure>
+        <voice>
+          
+          
+          <Tempo>
+            <tempo>2.666667</tempo>
+            <followText>1</followText>
+            <text><sym>metNoteQuarterUp</sym> = 160</text>
+            </Tempo>
+          
+          <Chord><durationType>whole</durationType><Note><pitch>60</pitch><tpc>14</tpc></Note></Chord></voice>
+        </Measure>
+      <Measure>
+        <voice>
+          
+          <Chord><durationType>whole</durationType><Note><pitch>62</pitch><tpc>16</tpc></Note></Chord></voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>
+"
+`;

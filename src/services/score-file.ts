@@ -1,6 +1,8 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import { DOMParser, XMLSerializer } from "@xmldom/xmldom";
+import type { Score, Staff } from "../model/score";
 import { scoreIntegrity } from "./score-integrity";
+import { ScoreReader } from "./score-reader";
 
 export class ScoreFile {
 	private constructor(
@@ -9,6 +11,19 @@ export class ScoreFile {
 		readonly score: Element,
 		readonly firstStaff: Element,
 	) {}
+
+	read(): Score {
+		return new ScoreReader(this.score).read();
+	}
+
+	readStaff(staffNumber: number): Staff {
+		const score = this.read();
+		const staff = score.staves[staffNumber - 1];
+		if (!staff) {
+			throw new Error(`No staff ${staffNumber} in ${this.path}`);
+		}
+		return staff;
+	}
 
 	async save(): Promise<void> {
 		await Bun.write(this.path, `${new XMLSerializer().serializeToString(this.document)}\n`);

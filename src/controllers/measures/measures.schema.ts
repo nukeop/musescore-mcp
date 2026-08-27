@@ -13,3 +13,15 @@ export const writeMeasuresSchema = {
 	content: z.string(),
 	staff: z.number().int().min(1).optional(),
 };
+
+export const insertMeasuresSchema = {
+	file: z.string(),
+	at: z.number().int().min(1),
+	count: z.number().int().min(1),
+};
+
+export const deleteMeasuresSchema = {
+	file: z.string(),
+	from: z.number().int().min(1),
+	to: z.number().int().min(1),
+};
