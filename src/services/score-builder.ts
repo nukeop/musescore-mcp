@@ -2,6 +2,7 @@ import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
 import { KEY_FIFTHS, type KeyName } from "../model/keys";
 import type { Clefs, InstrumentDefinition, Transposition } from "./instruments";
 import { buildKeySig } from "./signatures/key-signature-element";
+import { buildTimeSig } from "./signatures/time-signature-element";
 
 type ScoreState = {
 	readonly title: string;
@@ -131,10 +132,7 @@ ${this.renderFirstMeasure(definition, "")}${restMeasures}
 		return `      <Measure>
         <voice>
 ${this.renderKeySig(definition)}
-          <TimeSig>
-            <sigN>${this.state.beats}</sigN>
-            <sigD>${this.state.beatUnit}</sigD>
-            </TimeSig>${tempo}
+${this.renderTimeSig()}${tempo}
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -154,6 +152,11 @@ ${this.renderKeySig(definition)}
 	private renderKeySig(definition: InstrumentDefinition): string {
 		const keySig = buildKeySig(document, this.state.concertKey, definition.transposition);
 		return `          ${serializer.serializeToString(keySig)}`;
+	}
+
+	private renderTimeSig(): string {
+		const timeSig = buildTimeSig(document, { beats: this.state.beats, beatUnit: this.state.beatUnit });
+		return `          ${serializer.serializeToString(timeSig)}`;
 	}
 
 	private renderRestMeasure(): string {

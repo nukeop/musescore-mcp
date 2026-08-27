@@ -54,10 +54,7 @@ exports[`insert_measures (Snapshot) inserting at bar 1 keeps the signatures in t
           <text>Test Composer</text>
           </Text>
         </VBox>
-      <Measure><voice><KeySig><concertKey>-3</concertKey></KeySig><TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig><Rest><durationType>measure</durationType></Rest></voice></Measure><Measure>
+      <Measure><voice><KeySig><concertKey>-3</concertKey></KeySig><TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig><Rest><durationType>measure</durationType></Rest></voice></Measure><Measure>
         <voice>
           
           

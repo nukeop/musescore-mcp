@@ -515,10 +515,7 @@ exports[`set_header updates the title and composer texts in the header frame 1`]
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -815,10 +812,7 @@ exports[`set_header adds a text to the frame for a field the header does not hav
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -1098,10 +1092,7 @@ exports[`set_header creates the header frame when the score has none 1`] = `
       <VBox><height>10</height><Text><style>title</style><text>Blue Monk</text></Text><Text><style>composer</style><text>Thelonious Monk</text></Text></VBox><Measure>
         <voice>
           <KeySig><concertKey>0</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2</tempo>
             <followText>1</followText>
@@ -1188,10 +1179,7 @@ exports[`set_header clears a field given an empty string 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -1471,10 +1459,7 @@ exports[`set_header leaves a frameless score untouched when no fields are given 
       <Measure>
         <voice>
           <KeySig><concertKey>0</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2</tempo>
             <followText>1</followText>

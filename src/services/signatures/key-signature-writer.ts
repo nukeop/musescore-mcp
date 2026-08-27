@@ -1,8 +1,9 @@
 import { KEY_FIFTHS, type KeyName } from "../../model/keys";
 import type { Staff } from "../../model/score";
-import { child } from "../score-dom";
+import { child, replaceOrPrepend } from "../score-dom";
 import type { ScoreFile } from "../score-file";
 import { buildKeySig } from "./key-signature-element";
+import { assertMeasureInRange } from "./measure-range";
 
 export class KeySignatureWriter {
 	constructor(
@@ -11,7 +12,7 @@ export class KeySignatureWriter {
 	) {}
 
 	set(measure: number, key: KeyName): void {
-		this.assertInRange(measure);
+		assertMeasureInRange(this.staves, measure, this.scoreFile.path);
 
 		this.staves.forEach((staff) => {
 			const voice = child(staff.measures[measure - 1]!.element, "voice")!;
@@ -19,20 +20,7 @@ export class KeySignatureWriter {
 				diatonic: staff.part.transposeDiatonic,
 				chromatic: staff.part.transposeChromatic,
 			};
-			const keySig = buildKeySig(this.scoreFile.document, KEY_FIFTHS[key], transposition);
-			const existing = child(voice, "KeySig");
-			if (existing) {
-				voice.replaceChild(keySig, existing);
-			} else {
-				voice.insertBefore(keySig, voice.firstChild);
-			}
+			replaceOrPrepend(voice, buildKeySig(this.scoreFile.document, KEY_FIFTHS[key], transposition));
 		});
-	}
-
-	private assertInRange(measure: number): void {
-		const length = this.staves[0]?.measures.length ?? 0;
-		if (measure > length) {
-			throw new Error(`Measure ${measure} exceeds score length (${length} measures): ${this.scoreFile.path}`);
-		}
 	}
 }

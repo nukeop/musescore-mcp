@@ -451,10 +451,7 @@ exports[`write_measures (Snapshot) writes a transposing staff 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -547,10 +544,7 @@ exports[`write_measures (Snapshot) writes tuplets 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -622,10 +616,7 @@ exports[`write_measures (Snapshot) writes ties 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -702,10 +693,7 @@ exports[`write_measures (Snapshot) writes chord symbol XML 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -783,10 +771,7 @@ exports[`write_measures (Snapshot) writes annotation XML 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -858,10 +843,7 @@ exports[`write_measures (Snapshot) writes glissando XML 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -933,10 +915,7 @@ exports[`write_measures (Snapshot) writes a grace note 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>
@@ -1008,10 +987,7 @@ exports[`write_measures (Snapshot) writes slurs 1`] = `
       <Measure>
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
-          <TimeSig>
-            <sigN>4</sigN>
-            <sigD>4</sigD>
-            </TimeSig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo>
             <tempo>2.666667</tempo>
             <followText>1</followText>

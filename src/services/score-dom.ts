@@ -36,6 +36,15 @@ export function textElementIn(document: Document, parent: Element): Element {
 	return created;
 }
 
+export function replaceOrPrepend(parent: Element, element: Element): void {
+	const existing = child(parent, element.nodeName);
+	if (existing) {
+		parent.replaceChild(element, existing);
+	} else {
+		parent.insertBefore(element, parent.firstChild);
+	}
+}
+
 export function precedingElement(element: Element): Element | undefined {
 	let node = element.previousSibling;
 	while (node && node.nodeType !== node.ELEMENT_NODE) {
