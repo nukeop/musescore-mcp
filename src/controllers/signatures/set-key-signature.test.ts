@@ -19,10 +19,8 @@ describe("set_key_signature", () => {
 
 	test("(Snapshot) writes a key change to all staves of a multi-staff score", async () => {
 		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
 		await createScore(mcp, { instruments: ["piano", "trumpet"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
 
 		const result = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 3, key: "D" });
 
@@ -32,15 +30,10 @@ describe("set_key_signature", () => {
 
 	test("(Snapshot) replaces an existing KeySig at the same bar", async () => {
 		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
 		const setup = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 2, key: "D" });
 		expect(setup.isError).toBeUndefined();
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
 
 		const result = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 2, key: "B♭" });
 
@@ -50,13 +43,13 @@ describe("set_key_signature", () => {
 
 	test("rejects a measure beyond the end of the score", async () => {
 		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
 
 		const result = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 6, key: "D" });
 
-		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
+		expect(result).toBeToolError(
+			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
+		);
 	});
 });

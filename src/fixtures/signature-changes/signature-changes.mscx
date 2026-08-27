@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <programVersion>4.5.2</programVersion>
+  <programRevision>ac9d3bc</programRevision>
+  <Score>
+    <eid>3pWwmiyQQ0C_GsW8qJtiJ6D</eid>
+    <Division>480</Division>
+    <showInvisible>1</showInvisible>
+    <showUnprintable>1</showUnprintable>
+    <showFrames>1</showFrames>
+    <showMargins>0</showMargins>
+    <open>1</open>
+    <metaTag name="arranger"></metaTag>
+    <metaTag name="audioComUrl"></metaTag>
+    <metaTag name="composer">Composer / arranger</metaTag>
+    <metaTag name="copyright"></metaTag>
+    <metaTag name="creationDate">2026-08-26</metaTag>
+    <metaTag name="lyricist"></metaTag>
+    <metaTag name="movementNumber"></metaTag>
+    <metaTag name="movementTitle"></metaTag>
+    <metaTag name="platform">Apple Macintosh</metaTag>
+    <metaTag name="source"></metaTag>
+    <metaTag name="sourceRevisionId"></metaTag>
+    <metaTag name="subtitle">Subtitle</metaTag>
+    <metaTag name="translator"></metaTag>
+    <metaTag name="workNumber"></metaTag>
+    <metaTag name="workTitle">Untitled score</metaTag>
+    <Order id="orchestral">
+      <name>Orchestral</name>
+      <instrument id="piano">
+        <family id="keyboards">Keyboards</family>
+        </instrument>
+      <section id="woodwind" brackets="true" barLineSpan="true" thinBrackets="true">
+        <family>flutes</family>
+        <family>oboes</family>
+        <family>clarinets</family>
+        <family>saxophones</family>
+        <family>bassoons</family>
+        <unsorted group="woodwinds"/>
+        </section>
+      <section id="brass" brackets="true" barLineSpan="true" thinBrackets="true">
+        <family>horns</family>
+        <family>trumpets</family>
+        <family>cornets</family>
+        <family>flugelhorns</family>
+        <family>trombones</family>
+        <family>tubas</family>
+        </section>
+      <section id="timpani" brackets="true" barLineSpan="true" thinBrackets="true">
+        <family>timpani</family>
+        </section>
+      <section id="percussion" brackets="true" barLineSpan="true" thinBrackets="true">
+        <family>keyboard-percussion</family>
+        <family>drums</family>
+        <family>unpitched-metal-percussion</family>
+        <family>unpitched-wooden-percussion</family>
+        <family>other-percussion</family>
+        </section>
+      <family>keyboards</family>
+      <family>harps</family>
+      <family>organs</family>
+      <family>synths</family>
+      <soloists/>
+      <section id="voices" brackets="true" barLineSpan="false" thinBrackets="true">
+        <family>voices</family>
+        <family>voice-groups</family>
+        </section>
+      <section id="strings" brackets="true" barLineSpan="true" thinBrackets="true">
+        <family>orchestral-strings</family>
+        </section>
+      <unsorted/>
+      </Order>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        <bracket type="1" span="2" col="2" visible="1"/>
+        <barLineSpan>1</barLineSpan>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <clef staff="2">F</clef>
+        <Articulation>
+          <velocity>100</velocity>
+          <gateTime>95</gateTime>
+          </Articulation>
+        <Articulation name="staccatissimo">
+          <velocity>100</velocity>
+          <gateTime>33</gateTime>
+          </Articulation>
+        <Articulation name="staccato">
+          <velocity>100</velocity>
+          <gateTime>50</gateTime>
+          </Articulation>
+        <Articulation name="portato">
+          <velocity>100</velocity>
+          <gateTime>67</gateTime>
+          </Articulation>
+        <Articulation name="tenuto">
+          <velocity>100</velocity>
+          <gateTime>100</gateTime>
+          </Articulation>
+        <Articulation name="marcato">
+          <velocity>120</velocity>
+          <gateTime>67</gateTime>
+          </Articulation>
+        <Articulation name="sforzato">
+          <velocity>150</velocity>
+          <gateTime>100</gateTime>
+          </Articulation>
+        <Articulation name="sforzatoStaccato">
+          <velocity>150</velocity>
+          <gateTime>50</gateTime>
+          </Articulation>
+        <Articulation name="marcatoStaccato">
+          <velocity>120</velocity>
+          <gateTime>50</gateTime>
+          </Articulation>
+        <Articulation name="marcatoTenuto">
+          <velocity>120</velocity>
+          <gateTime>100</gateTime>
+          </Articulation>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <Measure>
+        <eid>lDXC1KNDwKO_29I/CdUy2oL</eid>
+        <voice>
+          <KeySig>
+            <eid>lULoRUFX5B_5HNcwQ40w9M</eid>
+            <concertKey>0</concertKey>
+            </KeySig>
+          <TimeSig>
+            <eid>xMLeI+QuyMF_ZRdYTcczWDO</eid>
+            <sigN>4</sigN>
+            <sigD>4</sigD>
+            </TimeSig>
+          <Tempo>
+            <tempo>1.333333</tempo>
+            <followText>1</followText>
+            <eid>RSM2xKMXnVO_u64L9j44ImD</eid>
+            <text><sym>metNoteQuarterUp</sym><font face="Edwin"/> = 80</text>
+            </Tempo>
+          <Rest>
+            <eid>EHb+fQPJ0sG_zZEhy3oqwZI</eid>
+            <durationType>measure</durationType>
+            <duration>4/4</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <eid>Il48VAL5WzE_NZOo2No7rEG</eid>
+        <voice>
+          <KeySig>
+            <eid>jsmrh6huoVE_3Z+FAnT0mCJ</eid>
+            <concertKey>2</concertKey>
+            </KeySig>
+          <TimeSig>
+            <eid>PbbYaxoLbcI_3h+M6QvZOyG</eid>
+            <sigN>3</sigN>
+            <sigD>4</sigD>
+            </TimeSig>
+          <Tempo>
+            <tempo>3</tempo>
+            <followText>1</followText>
+            <eid>3XfCV7nS/JE_02UU03tS8BC</eid>
+            <text><sym>metNoteQuarterUp</sym><font face="Edwin"/> = 180</text>
+            </Tempo>
+          <Rest>
+            <eid>fN7AFuVGGtO_mUudqQcNnGK</eid>
+            <durationType>measure</durationType>
+            <duration>3/4</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <eid>GGhboosZMYO_oxdSEFK0WwJ</eid>
+        <voice>
+          <KeySig>
+            <eid>oRO9ObMMYO_4vOxvzEmLIP</eid>
+            <concertKey>4</concertKey>
+            </KeySig>
+          <TimeSig>
+            <eid>/d050g1fqgG_KEcU5KvpuzD</eid>
+            <sigN>9</sigN>
+            <sigD>8</sigD>
+            </TimeSig>
+          <Rest>
+            <eid>BHzEFj04BmE_euMY/Mj7L+C</eid>
+            <durationType>quarter</durationType>
+            </Rest>
+          <Tempo>
+            <tempo>2</tempo>
+            <followText>1</followText>
+            <eid>UOy4eUAx8NN_ckt/o96uIsJ</eid>
+            <text><sym>metNoteQuarterUp</sym><font face="Edwin"/> = 120</text>
+            </Tempo>
+          <Rest>
+            <eid>wqvvlobnNGI_SLJUlHnqp8G</eid>
+            <durationType>half</durationType>
+            </Rest>
+          <Rest>
+            <eid>4nJsYrn+8TE_s0arBaEDKLC</eid>
+            <durationType>quarter</durationType>
+            </Rest>
+          <Rest>
+            <eid>nZ0LAjUdAzO_9htakuT6z4E</eid>
+            <durationType>eighth</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <eid>jwBeT17JXkO_lD5Th4Pxeb</eid>
+        <voice>
+          <TimeSig>
+            <eid>nBhFrHoxsmG_UzLxgNbIMEJ</eid>
+            <sigN>5</sigN>
+            <sigD>8</sigD>
+            </TimeSig>
+          <Rest>
+            <eid>DdB3cCj99SC_GXLWR+pQzjE</eid>
+            <durationType>measure</durationType>
+            <duration>5/8</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <eid>2oWQg1vnqlF_HFTKMyZ9p3B</eid>
+        <voice>
+          <TimeSig>
+            <eid>hlLi6l6ja+G_qj3ZDewRO1</eid>
+            <sigN>7</sigN>
+            <sigD>4</sigD>
+            </TimeSig>
+          <Rest>
+            <eid>WriP6exYEXO_8cBnQIlLBKK</eid>
+            <durationType>measure</durationType>
+            <duration>7/4</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <eid>0XpVQUPvSRK_zoTGiiHNuuM</eid>
+        <voice>
+          <Rest>
+            <eid>l2r5bQkQc6I_bzih306b4+K</eid>
+            <durationType>measure</durationType>
+            <duration>7/4</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <eid>75qk8pP2QdP_I8HKmZ0iK6K</eid>
+        <voice>
+          <Rest>
+            <eid>6PIT/MqtpCI_MbFDGmYvVqG</eid>
+            <durationType>measure</durationType>
+            <duration>7/4</duration>
+            </Rest>
+          </voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>

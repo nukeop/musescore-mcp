@@ -10,12 +10,12 @@ export const BunFsMock = {
 			return 0;
 		}),
 
-	mockFile: (files: Record<string, string>) =>
+	mockFile: (files: Record<string, string> = {}) =>
 		spyOn(Bun, "file").mockImplementation(
 			((path: string) =>
 				({
-					exists: async () => path in files,
-					text: async () => files[path],
+					exists: async () => writtenFiles.has(path) || path in files,
+					text: async () => writtenFiles.get(path) ?? files[path],
 				}) as BunFile) as typeof Bun.file,
 		),
 
