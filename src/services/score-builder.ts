@@ -1,6 +1,7 @@
 import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
-import { actualKey, KEY_FIFTHS, type KeyName } from "../model/keys";
+import { KEY_FIFTHS, type KeyName } from "../model/keys";
 import type { Clefs, InstrumentDefinition, Transposition } from "./instruments";
+import { buildKeySig } from "./signatures/key-signature-element";
 
 type ScoreState = {
 	readonly title: string;
@@ -151,17 +152,8 @@ ${this.renderKeySig(definition)}
 	}
 
 	private renderKeySig(definition: InstrumentDefinition): string {
-		const concert = this.state.concertKey;
-		const actual = actualKey(concert, definition.transposition);
-		if (actual === concert) {
-			return `          <KeySig>
-            <concertKey>${concert}</concertKey>
-            </KeySig>`;
-		}
-		return `          <KeySig>
-            <concertKey>${concert}</concertKey>
-            <actualKey>${actual}</actualKey>
-            </KeySig>`;
+		const keySig = buildKeySig(document, this.state.concertKey, definition.transposition);
+		return `          ${serializer.serializeToString(keySig)}`;
 	}
 
 	private renderRestMeasure(): string {

@@ -3,6 +3,7 @@ import { createScoreController } from "./controllers/create-score/create-score.c
 import { getOverviewController } from "./controllers/get-overview/get-overview.controller";
 import { measuresController } from "./controllers/measures/measures.controller";
 import { setHeaderController } from "./controllers/set-header/set-header.controller";
+import { signaturesController } from "./controllers/signatures/signatures.controller";
 
 export type Controller = (server: McpServer) => void;
 
@@ -11,6 +12,7 @@ const controllers: Controller[] = [
 	getOverviewController,
 	measuresController,
 	setHeaderController,
+	signaturesController,
 ];
 
 export function buildServer(): McpServer {

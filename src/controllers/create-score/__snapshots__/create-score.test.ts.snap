@@ -62,10 +62,7 @@ exports[`create_score creates a new file 1`] = `
         </VBox>
       <Measure>
         <voice>
-          <KeySig>
-            <concertKey>-3</concertKey>
-            <actualKey>-1</actualKey>
-            </KeySig>
+          <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
           <TimeSig>
             <sigN>4</sigN>
             <sigD>4</sigD>
@@ -387,10 +384,7 @@ exports[`create_score creates one part and staff per requested instrument 1`] = 
         </VBox>
       <Measure>
         <voice>
-          <KeySig>
-            <concertKey>-3</concertKey>
-            <actualKey>-1</actualKey>
-            </KeySig>
+          <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
           <TimeSig>
             <sigN>4</sigN>
             <sigD>4</sigD>
@@ -626,9 +620,7 @@ exports[`create_score creates one part and staff per requested instrument 1`] = 
     <Staff id="2">
       <Measure>
         <voice>
-          <KeySig>
-            <concertKey>-3</concertKey>
-            </KeySig>
+          <KeySig><concertKey>-3</concertKey></KeySig>
           <TimeSig>
             <sigN>4</sigN>
             <sigD>4</sigD>
