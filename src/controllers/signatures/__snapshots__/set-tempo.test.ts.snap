@@ -1,6 +1,6 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
-exports[`set_key_signature (Snapshot) writes a key change to all staves of a multi-staff score 1`] = `
+exports[`set_tempo (Snapshot) writes a tempo change to the first staff only 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <museScore version="4.50">
   <Score>
@@ -47,21 +47,25 @@ exports[`set_key_signature (Snapshot) writes a key change to all staves of a mul
         <StaffType group="pitched">
           <name>stdNormal</name>
           </StaffType>
+        <defaultConcertClef>F8vb</defaultConcertClef>
+        <defaultTransposingClef>F</defaultTransposingClef>
         </Staff>
-      <trackName>Trumpet</trackName>
-      <Instrument id="bb-trumpet">
-        <longName>Trumpet</longName>
-        <shortName>Tpt.</shortName>
-        <trackName>Trumpet</trackName>
-        <minPitchP>52</minPitchP>
-        <maxPitchP>85</maxPitchP>
-        <minPitchA>52</minPitchA>
-        <maxPitchA>80</maxPitchA>
-        <transposeDiatonic>-1</transposeDiatonic>
-        <transposeChromatic>-2</transposeChromatic>
-        <instrumentId>brass.trumpet.bflat</instrumentId>
+      <trackName>Electric Bass</trackName>
+      <Instrument id="electric-bass">
+        <longName>Electric Bass</longName>
+        <shortName>El. B.</shortName>
+        <trackName>Electric Bass</trackName>
+        <minPitchP>28</minPitchP>
+        <maxPitchP>67</maxPitchP>
+        <minPitchA>28</minPitchA>
+        <maxPitchA>65</maxPitchA>
+        <transposeDiatonic>-7</transposeDiatonic>
+        <transposeChromatic>-12</transposeChromatic>
+        <instrumentId>pluck.bass.electric</instrumentId>
+        <concertClef>F8vb</concertClef>
+        <transposingClef>F</transposingClef>
         <Channel>
-          <program value="56"/>
+          <program value="33"/>
           <synti>Fluid</synti>
           </Channel>
         </Instrument>
@@ -96,7 +100,7 @@ exports[`set_key_signature (Snapshot) writes a key change to all staves of a mul
           </voice>
         </Measure>
       <Measure>
-        <voice><KeySig><concertKey>2</concertKey></KeySig>
+        <voice><Tempo><tempo>1.333333</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 80</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -113,7 +117,7 @@ exports[`set_key_signature (Snapshot) writes a key change to all staves of a mul
     <Staff id="2">
       <Measure>
         <voice>
-          <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
+          <KeySig><concertKey>-3</concertKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Rest>
             <durationType>measure</durationType>
@@ -128,7 +132,7 @@ exports[`set_key_signature (Snapshot) writes a key change to all staves of a mul
           </voice>
         </Measure>
       <Measure>
-        <voice><KeySig><concertKey>2</concertKey><actualKey>4</actualKey></KeySig>
+        <voice>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -147,7 +151,7 @@ exports[`set_key_signature (Snapshot) writes a key change to all staves of a mul
 "
 `;
 
-exports[`set_key_signature (Snapshot) replaces an existing KeySig at the same bar 1`] = `
+exports[`set_tempo (Snapshot) replaces an existing Tempo at the same bar instead of duplicating 1`] = `
 "<?xml version="1.0" encoding="UTF-8"?>
 <museScore version="4.50">
   <Score>
@@ -212,14 +216,14 @@ exports[`set_key_signature (Snapshot) replaces an existing KeySig at the same ba
           </voice>
         </Measure>
       <Measure>
-        <voice><KeySig><concertKey>-2</concertKey></KeySig>
+        <voice>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
           </voice>
         </Measure>
       <Measure>
-        <voice>
+        <voice><Tempo><tempo>1.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 100</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>

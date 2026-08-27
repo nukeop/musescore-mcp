@@ -2,6 +2,7 @@ import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
 import { KEY_FIFTHS, type KeyName } from "../model/keys";
 import type { Clefs, InstrumentDefinition, Transposition } from "./instruments";
 import { buildKeySig } from "./signatures/key-signature-element";
+import { buildTempo } from "./signatures/tempo-element";
 import { buildTimeSig } from "./signatures/time-signature-element";
 
 type ScoreState = {
@@ -10,7 +11,7 @@ type ScoreState = {
 	readonly concertKey: number;
 	readonly beats: number;
 	readonly beatUnit: number;
-	readonly tempo: { bpm: number; quarterNotesPerSecond: number };
+	readonly tempo: number;
 	readonly measures: number;
 	readonly instruments: readonly InstrumentDefinition[];
 };
@@ -32,7 +33,7 @@ export class ScoreBuilder {
 			concertKey: 0,
 			beats: 4,
 			beatUnit: 4,
-			tempo: { bpm: 120, quarterNotesPerSecond: 2 },
+			tempo: 120,
 			measures: 32,
 			instruments: [],
 		});
@@ -54,7 +55,7 @@ export class ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, beats: time.beats, beatUnit: time.beatUnit });
 	}
 
-	withTempo(tempo: { bpm: number; quarterNotesPerSecond: number }): ScoreBuilder {
+	withTempo(tempo: number): ScoreBuilder {
 		return new ScoreBuilder({ ...this.state, tempo });
 	}
 
@@ -141,12 +142,9 @@ ${this.renderTimeSig()}${tempo}
 	}
 
 	private renderTempo(): string {
+		const tempo = buildTempo(document, this.state.tempo);
 		return `
-          <Tempo>
-            <tempo>${this.state.tempo.quarterNotesPerSecond}</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = ${this.state.tempo.bpm}</text>
-            </Tempo>`;
+          ${serializer.serializeToString(tempo)}`;
 	}
 
 	private renderKeySig(definition: InstrumentDefinition): string {

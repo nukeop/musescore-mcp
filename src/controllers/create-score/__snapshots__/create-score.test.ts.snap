@@ -64,11 +64,7 @@ exports[`create_score creates a new file 1`] = `
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -383,11 +379,7 @@ exports[`create_score creates one part and staff per requested instrument 1`] = 
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>

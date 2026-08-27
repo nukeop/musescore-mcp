@@ -1,9 +1,10 @@
 import type { Controller } from "../../server";
 import { ScoreFile } from "../../services/score-file";
 import { KeySignatureWriter } from "../../services/signatures/key-signature-writer";
+import { TempoWriter } from "../../services/signatures/tempo-writer";
 import { TimeSignatureWriter } from "../../services/signatures/time-signature-writer";
 import { textResult } from "../tool-response";
-import { setKeySignatureSchema, setTimeSignatureSchema } from "./signatures.schema";
+import { setKeySignatureSchema, setTempoSchema, setTimeSignatureSchema } from "./signatures.schema";
 
 export const signaturesController: Controller = (server) => {
 	server.registerTool(
@@ -38,6 +39,23 @@ export const signaturesController: Controller = (server) => {
 
 			await scoreFile.save();
 			return textResult(`Set time signature ${time.beats}/${time.beatUnit} at measure ${measure} in ${file}`);
+		},
+	);
+
+	server.registerTool(
+		"set_tempo",
+		{
+			description: "Sets a tempo change at the start of a measure, on the first staff.",
+			inputSchema: setTempoSchema,
+		},
+		async ({ file, measure, bpm }) => {
+			const scoreFile = await ScoreFile.open(file);
+			const score = scoreFile.read();
+
+			new TempoWriter(scoreFile, score.staves).set(measure, bpm);
+
+			await scoreFile.save();
+			return textResult(`Set tempo ${bpm} bpm at measure ${measure} in ${file}`);
 		},
 	);
 };

@@ -13,3 +13,9 @@ export const setTimeSignatureSchema = {
 	measure: z.number().int().min(1),
 	time: timeSignature,
 };
+
+export const setTempoSchema = {
+	file: z.string(),
+	measure: z.number().int().min(1),
+	bpm: z.number().positive(),
+};

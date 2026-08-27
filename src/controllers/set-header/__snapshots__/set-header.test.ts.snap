@@ -516,11 +516,7 @@ exports[`set_header updates the title and composer texts in the header frame 1`]
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -813,11 +809,7 @@ exports[`set_header adds a text to the frame for a field the header does not hav
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -1093,11 +1085,7 @@ exports[`set_header creates the header frame when the score has none 1`] = `
         <voice>
           <KeySig><concertKey>0</concertKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 120</text>
-            </Tempo>
+          <Tempo><tempo>2</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 120</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -1180,11 +1168,7 @@ exports[`set_header clears a field given an empty string 1`] = `
         <voice>
           <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -1460,11 +1444,7 @@ exports[`set_header leaves a frameless score untouched when no fields are given 
         <voice>
           <KeySig><concertKey>0</concertKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 120</text>
-            </Tempo>
+          <Tempo><tempo>2</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 120</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>

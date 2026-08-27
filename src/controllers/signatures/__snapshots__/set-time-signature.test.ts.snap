@@ -86,11 +86,7 @@ exports[`set_time_signature (Snapshot) writes a time change at the start of an e
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           
           <Chord><durationType>whole</durationType><Note><pitch>60</pitch><tpc>14</tpc></Note></Chord></voice>
         </Measure>
@@ -237,11 +233,7 @@ exports[`set_time_signature (Snapshot) stops the affected range at the next exis
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>
@@ -344,11 +336,7 @@ exports[`set_time_signature (Snapshot) replaces an existing TimeSig at the same 
         <voice>
           <KeySig><concertKey>-3</concertKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           <Rest>
             <durationType>measure</durationType>
             </Rest>

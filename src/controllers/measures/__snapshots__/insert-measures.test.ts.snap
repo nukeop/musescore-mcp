@@ -58,11 +58,7 @@ exports[`insert_measures (Snapshot) inserting at bar 1 keeps the signatures in t
         <voice>
           
           
-          <Tempo>
-            <tempo>2.666667</tempo>
-            <followText>1</followText>
-            <text><sym>metNoteQuarterUp</sym> = 160</text>
-            </Tempo>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           
           <Chord><durationType>whole</durationType><Note><pitch>60</pitch><tpc>14</tpc></Note></Chord></voice>
         </Measure>

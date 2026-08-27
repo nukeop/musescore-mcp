@@ -12,9 +12,6 @@ export const createScoreSchema = {
 	instruments: z.array(z.enum(instrumentNames)),
 	key: z.enum(KEY_NAMES),
 	time: timeSignature.prefault("4/4"),
-	tempo: z
-		.number()
-		.positive()
-		.transform((bpm) => ({ bpm, quarterNotesPerSecond: Math.round((bpm / 60) * 1_000_000) / 1_000_000 })),
+	tempo: z.number().positive(),
 	measures: z.number().int().positive(),
 };
