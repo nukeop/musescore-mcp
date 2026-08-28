@@ -1,7 +1,7 @@
 import type { Staff } from "../../model/score";
 import { child, replaceOrPrepend } from "../score-dom";
 import type { ScoreFile } from "../score-file";
-import { assertMeasureInRange } from "./measure-range";
+import { assertMeasureInRange } from "../measure-range";
 import { buildTempo } from "./tempo-element";
 
 export class TempoWriter {

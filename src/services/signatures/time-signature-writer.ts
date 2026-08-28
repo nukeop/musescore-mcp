@@ -1,7 +1,7 @@
 import type { Measure, Staff, TimeSig } from "../../model/score";
 import { child, children, replaceOrPrepend } from "../score-dom";
 import type { ScoreFile } from "../score-file";
-import { assertMeasureInRange } from "./measure-range";
+import { assertMeasureInRange } from "../measure-range";
 import { buildTimeSig } from "./time-signature-element";
 
 export class TimeSignatureWriter {

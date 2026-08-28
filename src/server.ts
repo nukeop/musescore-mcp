@@ -4,6 +4,7 @@ import { getOverviewController } from "./controllers/get-overview/get-overview.c
 import { measuresController } from "./controllers/measures/measures.controller";
 import { setHeaderController } from "./controllers/set-header/set-header.controller";
 import { signaturesController } from "./controllers/signatures/signatures.controller";
+import { structureController } from "./controllers/structure/structure.controller";
 
 export type Controller = (server: McpServer) => void;
 
@@ -13,6 +14,7 @@ const controllers: Controller[] = [
 	measuresController,
 	setHeaderController,
 	signaturesController,
+	structureController,
 ];
 
 export function buildServer(): McpServer {

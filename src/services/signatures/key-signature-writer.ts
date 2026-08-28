@@ -3,7 +3,7 @@ import type { Staff } from "../../model/score";
 import { child, replaceOrPrepend } from "../score-dom";
 import type { ScoreFile } from "../score-file";
 import { buildKeySig } from "./key-signature-element";
-import { assertMeasureInRange } from "./measure-range";
+import { assertMeasureInRange } from "../measure-range";
 
 export class KeySignatureWriter {
 	constructor(
