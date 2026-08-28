@@ -3,6 +3,7 @@ import { createScore } from "../../test/create-score";
 import "../../test/matchers";
 import { BunFsMock } from "../../test/mocks/bun-fs";
 import { readMeasures } from "../../test/read-measures";
+import { setBarline } from "../../test/set-barline";
 import { createTestClient, type TestClient } from "../../test/test-setup";
 import { writeMeasures } from "../../test/write-measures";
 
@@ -728,5 +729,18 @@ describe("write_measures", () => {
 		expect(result.content).toEqual([
 			expect.objectContaining({ type: "text", text: expect.stringContaining("xyz") }),
 		]);
+	});
+
+	test("(Snapshot) keeps a double barline after the rewritten events", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		const setup = await setBarline(mcp, "/scores/test-tune.mscx", { measure: 2, type: "double" });
+		expect(setup.isError).toBeUndefined();
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 2, content: "C4:1" });
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 });
