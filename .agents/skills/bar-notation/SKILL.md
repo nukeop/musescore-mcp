@@ -1,6 +1,6 @@
 ---
 name: bar-notation
-description: Reference sheet for the notation format used by musescore-mcp tools. Use when calling musescore-mcp tools.
+description: Reference sheet for the notation format used by musescore-mcp tools, and for reading get_overview output. Use when calling musescore-mcp tools.
 ---
 
 # Bar notation reference
@@ -14,8 +14,8 @@ Bars are separated by `|`. Just like in regular sheet music, all bars must have 
 | `R`                      | Full-measure rest, alone in the bar                  |
 | `chord(C4 E4 G4):4`      | Chord, one duration for the entire chord             |
 | `tuplet(3:2 C5:8 D5 E5)` | Tuplet, ratio is actual:normal                       |
-| `grace(D4:8) C4:4`        | Grace note (acciaccatura) before the main note       |
-| `slur(C4:8 D4 E4)`        | Slur, may cross barlines: `slur(G4:8 A4 \| B4 C5)` |
+| `grace(D4:8) C4:4`       | Grace note (acciaccatura) before the main note       |
+| `slur(C4:8 D4 E4)`       | Slur, may cross barlines: `slur(G4:8 A4 \| B4 C5)`   |
 | `C5:4~ C5`               | Tie                                                  |
 | `C5:4'`                  | Staccato                                             |
 | `C5:4>`                  | Accent                                               |
@@ -36,3 +36,12 @@ Example:
 ```
 [C-7] grace(B4:8) C5:4.' B4:8> [F7] slur(A4(tr) G4 r F4~) | [B♭^7] F4:2.(gliss) E4:4 | tuplet(3:2 C5:8 D5 E5) [E♭7] r:4 r:2 | R
 ```
+
+# Reading the overview
+
+get_overview prints a summary line, a Form section, and a Chords section. Form and Chords are omitted when empty.
+
+- Key signature shows the major and equivalent minor key.
+- Bar 1's key, time, and tempo are printed in the summary Subsequent `key:`, `time:`, or `tempo:` entries always means a mid-score change.
+- The Chords grid prints 4 bars per line, each line prefixed with its first bar number. Lines without chord symbols are omitted. Example: a jump from `1:` to `9:` means bars 5-8 don't have chords.
+- Chord roots are written pitch, spelled the same as read_measures output.
