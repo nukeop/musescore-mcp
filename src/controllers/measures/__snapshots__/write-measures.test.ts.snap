@@ -450,7 +450,7 @@ exports[`write_measures (Snapshot) writes a transposing staff 1`] = `
         </VBox>
       <Measure>
         <voice>
-          <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
+          <KeySig><concertKey>-5</concertKey><actualKey>-3</actualKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           
@@ -754,7 +754,7 @@ exports[`write_measures (Snapshot) writes annotation XML 1`] = `
         </VBox>
       <Measure>
         <voice>
-          <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
+          <KeySig><concertKey>-5</concertKey><actualKey>-3</actualKey></KeySig>
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           

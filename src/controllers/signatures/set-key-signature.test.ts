@@ -41,6 +41,19 @@ describe("set_key_signature", () => {
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
+	test("derives the concert key by inverting the first staff's transposition", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp, { instruments: ["trumpet", "piano"], measures: 4 });
+
+		const result = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 2, key: "D" });
+
+		expect(result.isError).toBeUndefined();
+		const file = BunFsMock.getWrittenFile("/scores/test-tune.mscx");
+		expect(file).toContain("<KeySig><concertKey>0</concertKey><actualKey>2</actualKey></KeySig>");
+		expect(file).toContain("<KeySig><concertKey>0</concertKey></KeySig>");
+	});
+
 	test("rejects a measure beyond the end of the score", async () => {
 		BunFsMock.mockWrite();
 		BunFsMock.mockFile();

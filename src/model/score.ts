@@ -14,7 +14,7 @@ export interface ScorePart {
 }
 
 export interface KeySig {
-	concertKey: number;
+	writtenKey: number;
 }
 
 export interface TimeSig {

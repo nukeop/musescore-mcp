@@ -65,7 +65,7 @@ function keyEntries({ keySig }: Measure): string[] {
 	if (!keySig) {
 		return [];
 	}
-	return [`key: ${keyName(keySig.concertKey)}`];
+	return [`key: ${keyName(keySig.writtenKey)}`];
 }
 
 function timeEntries({ timeSig }: Measure): string[] {

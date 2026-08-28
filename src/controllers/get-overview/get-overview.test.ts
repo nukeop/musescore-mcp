@@ -7,6 +7,7 @@ import { BunFsMock } from "../../test/mocks/bun-fs";
 import { setBarline } from "../../test/set-barline";
 import { setKeySignature } from "../../test/set-key-signature";
 import { setLayoutBreak } from "../../test/set-layout-break";
+import { setHeader } from "../../test/set-header";
 import { setSectionMarker } from "../../test/set-section-marker";
 import { setTempo } from "../../test/set-tempo";
 import { setText } from "../../test/set-text";
@@ -182,7 +183,63 @@ Chords:
 			`Test Tune by Test Composer
 Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
-  1. Tenor Saxophone`,
+  1. Tenor Saxophone (concert D♭/B♭m)`,
+		);
+	});
+
+	test("prints just the title when the composer is empty", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp);
+
+		const setup = await setHeader(mcp, { composer: "" });
+		expect(setup.isError).toBeUndefined();
+
+		const result = await getOverview(mcp);
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText(
+			`Test Tune
+Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+Instruments:
+  1. Tenor Saxophone (concert D♭/B♭m)`,
+		);
+	});
+
+	test("prints 'by Composer' when the title is empty", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp);
+
+		const setup = await setHeader(mcp, { title: "" });
+		expect(setup.isError).toBeUndefined();
+
+		const result = await getOverview(mcp);
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText(
+			`by Test Composer
+Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+Instruments:
+  1. Tenor Saxophone (concert D♭/B♭m)`,
+		);
+	});
+
+	test("omits the header line entirely when both title and composer are empty", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp);
+
+		const setup = await setHeader(mcp, { title: "", composer: "" });
+		expect(setup.isError).toBeUndefined();
+
+		const result = await getOverview(mcp);
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText(
+			`Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+Instruments:
+  1. Tenor Saxophone (concert D♭/B♭m)`,
 		);
 	});
 

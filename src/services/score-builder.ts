@@ -1,5 +1,5 @@
 import { DOMImplementation, XMLSerializer } from "@xmldom/xmldom";
-import { KEY_FIFTHS, type KeyName } from "../model/keys";
+import { concertKey, KEY_FIFTHS, type KeyName } from "../model/keys";
 import type { Clefs, InstrumentDefinition, Transposition } from "./instruments";
 import { buildKeySig } from "./signatures/key-signature-element";
 import { buildTempo } from "./signatures/tempo-element";
@@ -8,7 +8,7 @@ import { buildTimeSig } from "./signatures/time-signature-element";
 type ScoreState = {
 	readonly title: string;
 	readonly composer: string;
-	readonly concertKey: number;
+	readonly writtenKey: number;
 	readonly beats: number;
 	readonly beatUnit: number;
 	readonly tempo: number;
@@ -30,7 +30,7 @@ export class ScoreBuilder {
 		return new ScoreBuilder({
 			title: "",
 			composer: "",
-			concertKey: 0,
+			writtenKey: 0,
 			beats: 4,
 			beatUnit: 4,
 			tempo: 120,
@@ -48,7 +48,7 @@ export class ScoreBuilder {
 	}
 
 	withKey(key: KeyName): ScoreBuilder {
-		return new ScoreBuilder({ ...this.state, concertKey: KEY_FIFTHS[key] });
+		return new ScoreBuilder({ ...this.state, writtenKey: KEY_FIFTHS[key] });
 	}
 
 	withTime(time: { beats: number; beatUnit: number }): ScoreBuilder {
@@ -148,8 +148,12 @@ ${this.renderTimeSig()}${tempo}
 	}
 
 	private renderKeySig(definition: InstrumentDefinition): string {
-		const keySig = buildKeySig(document, this.state.concertKey, definition.transposition);
+		const keySig = buildKeySig(document, this.concertKeyFifths(), definition.transposition);
 		return `          ${serializer.serializeToString(keySig)}`;
+	}
+
+	private concertKeyFifths(): number {
+		return concertKey(this.state.writtenKey, this.state.instruments[0]?.transposition);
 	}
 
 	private renderTimeSig(): string {

@@ -78,7 +78,13 @@ export class ScoreReader {
 
 	private readKeySig(voice: Element): KeySig | undefined {
 		const keySig = child(voice, "KeySig");
-		return keySig && { concertKey: numberIn(keySig, "concertKey") };
+		if (!keySig) {
+			return undefined;
+		}
+		if (child(keySig, "actualKey")) {
+			return { writtenKey: numberIn(keySig, "actualKey") };
+		}
+		return { writtenKey: numberIn(keySig, "concertKey") };
 	}
 
 	private readTimeSig(voice: Element): TimeSig | undefined {

@@ -8,7 +8,7 @@ exports[`get_overview summarizes a freshly created score 1`] = `
 "Test Tune by Test Composer
 Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
-  1. Tenor Saxophone"
+  1. Tenor Saxophone (concert D♭/B♭m)"
 ,
       "type": "text",
     },
@@ -24,7 +24,7 @@ exports[`get_overview lists every instrument 1`] = `
 "Test Tune by Test Composer
 Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
-  1. Tenor Saxophone
+  1. Tenor Saxophone (concert D♭/B♭m)
   2. Piano"
 ,
       "type": "text",
@@ -39,9 +39,9 @@ exports[`get_overview summarizes example sheet 1`] = `
     {
       "text": 
 "Simple Lead Sheet by Test Composer
-Key: B♭/Gm | Time: 4/4 | Tempo: 132 bpm | Bars: 8
+Key: C/Am | Time: 4/4 | Tempo: 132 bpm | Bars: 8
 Instruments:
-  1. Tenor Saxophone
+  1. Tenor Saxophone (concert B♭/Gm)
 Form:
   5: system break
 Chords:

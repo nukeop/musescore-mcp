@@ -41,7 +41,7 @@ Example:
 
 get_overview prints a summary line, a Form section, and a Chords section. Form and Chords are omitted when empty.
 
-- Key signature shows the major and equivalent minor key.
+- Key signature shows the major and equivalent minor key in written pitch. A transposing instrument's concert key appears in parentheses next to its name on the Instruments line.
 - Bar 1's key, time, and tempo are printed in the summary Subsequent `key:`, `time:`, or `tempo:` entries always means a mid-score change.
 - The Chords grid prints 4 bars per line, each line prefixed with its first bar number. Lines without chord symbols are omitted. Example: a jump from `1:` to `9:` means bars 5-8 don't have chords.
 - Chord roots are written pitch, spelled the same as read_measures output.

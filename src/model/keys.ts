@@ -100,11 +100,19 @@ export function keyName(fifths: number): string {
 	return KEY_NAMES.filter((name) => KEY_FIFTHS[name] === fifths).join("/");
 }
 
-export function actualKey(
-	concertKey: number,
-	transposition: { diatonic: number; chromatic: number } | undefined,
-): number {
-	return transposition
-		? concertKey - (7 * transposition.chromatic - 12 * transposition.diatonic)
-		: concertKey;
+type Transposition = { diatonic: number; chromatic: number };
+
+function keyOffset(transposition: Transposition | undefined): number {
+	if (!transposition) {
+		return 0;
+	}
+	return 7 * transposition.chromatic - 12 * transposition.diatonic;
+}
+
+export function actualKey(concertKey: number, transposition: Transposition | undefined): number {
+	return concertKey - keyOffset(transposition);
+}
+
+export function concertKey(writtenKey: number, transposition: Transposition | undefined): number {
+	return writtenKey + keyOffset(transposition);
 }

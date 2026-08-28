@@ -30,6 +30,15 @@ describe("create_score", () => {
 		expect(result.isError).toBeUndefined();
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
+	test("derives the concert key by inverting the first instrument's transposition", async () => {
+		const result = await createScore(mcp, { instruments: ["alto-saxophone", "tenor-saxophone"], key: "D" });
+
+		expect(result.isError).toBeUndefined();
+		const file = BunFsMock.getWrittenFile("/scores/test-tune.mscx");
+		expect(file).toContain("<KeySig><concertKey>-1</concertKey><actualKey>2</actualKey></KeySig>");
+		expect(file).toContain("<KeySig><concertKey>-1</concertKey><actualKey>1</actualKey></KeySig>");
+	});
+
 	// Raw tool call is needed here so this doesn't get rejected by type check
 	test("rejects an unknown instrument and names the allowed ones", async () => {
 		const result = await mcp.client.callTool({
