@@ -1,6 +1,7 @@
 import { type DottedDuration, durationSymbol } from "../../model/duration-tables";
 import type { Chord, Duration, Note, ScorePart, Voice, VoiceEvent } from "../../model/score";
 import { WrittenPitch } from "../../model/written-pitch";
+import { chordSymbol } from "../../notation/chord-symbol";
 import { stripUnpairedEnclosures, wrapInEnclosures } from "../../notation/enclosures";
 import { SUFFIXES } from "../../notation/suffixes";
 
@@ -36,8 +37,7 @@ export class MeasuresRenderer {
 		if (!event.harmony) {
 			return "";
 		}
-		const root = WrittenPitch.fromTpc(event.harmony.root);
-		return `[${root.letter}${root.accidental}${event.harmony.name}] `;
+		return `[${chordSymbol(event.harmony)}] `;
 	}
 
 	private renderSuffixes(event: VoiceEvent): string {

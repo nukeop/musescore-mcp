@@ -1,16 +1,25 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type { Staff } from "../../model/score";
+import type { LayoutBreakType, Staff } from "../../model/score";
 import { assertMeasureInRange } from "../measure-range";
-import { child, elementWithText, removeChildren } from "../score-dom";
+import { child, elementWithText, removeChildren, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
-
-export type LayoutBreakType = "system" | "page" | "section";
 
 const SUBTYPES: Record<LayoutBreakType, string> = {
 	system: "line",
 	page: "page",
 	section: "section",
 };
+
+const TYPES_BY_SUBTYPE: Record<string, LayoutBreakType> = {
+	line: "system",
+	page: "page",
+	section: "section",
+};
+
+export function readLayoutBreak(measure: Element): LayoutBreakType | undefined {
+	const layoutBreak = child(measure, "LayoutBreak");
+	return layoutBreak && TYPES_BY_SUBTYPE[textIn(layoutBreak, "subtype")];
+}
 
 export function buildLayoutBreak(document: Document, type: LayoutBreakType): Element {
 	const layoutBreak = document.createElement("LayoutBreak");

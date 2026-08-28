@@ -1,16 +1,45 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import Fraction from "fraction.js";
-import type { Measure, Staff } from "../../model/score";
+import type { Measure, Staff, VoltaHook, VoltaStart } from "../../model/score";
 import { effectiveTimeSigAt } from "../effective-time-sig";
 import { assertMeasureInRange } from "../measure-range";
-import { child, children, elementWithText, firstEvent, firstSpannerOrEvent } from "../score-dom";
+import {
+	child,
+	children,
+	elementWithText,
+	firstEvent,
+	firstSpannerOrEvent,
+	numberIn,
+	textIn,
+} from "../score-dom";
 import type { ScoreFile } from "../score-file";
-
-export type VoltaHook = "closed" | "open";
 
 export interface VoltaRange {
 	from: number;
 	to: number;
+}
+
+const CLOSED_HOOK_TYPE = "1";
+
+export function readVoltaStarts(voice: Element, from: number): VoltaStart[] {
+	return voltaStartsIn(voice).map((start) => readVoltaStart(start, from));
+}
+
+function readVoltaStart(spanner: Element, from: number): VoltaStart {
+	const volta = child(spanner, "Volta")!;
+	return {
+		ending: numberIn(volta, "endings"),
+		from,
+		to: from + coveredMeasures(spanner) - 1,
+		hook: hookOf(volta),
+	};
+}
+
+function hookOf(volta: Element): VoltaHook {
+	if (textIn(volta, "endHookType") === CLOSED_HOOK_TYPE) {
+		return "closed";
+	}
+	return "open";
 }
 
 interface VoltaLocation {
@@ -27,7 +56,7 @@ export function buildVoltaStart(
 	const spanner = voltaSpanner(document);
 	const volta = document.createElement("Volta");
 	if (closed) {
-		volta.appendChild(elementWithText(document, "endHookType", "1"));
+		volta.appendChild(elementWithText(document, "endHookType", CLOSED_HOOK_TYPE));
 	}
 	volta.appendChild(elementWithText(document, "beginText", `${ending}.`));
 	volta.appendChild(elementWithText(document, "endings", String(ending)));
@@ -97,13 +126,9 @@ export class VoltaWriter {
 	}
 
 	private existingVoltas(): VoltaRange[] {
-		return this.firstStaffMeasures().flatMap((measure, index) => {
-			const voice = child(measure.element, "voice")!;
-			return voltaStartsIn(voice).map((start) => ({
-				from: index + 1,
-				to: index + coveredMeasures(start),
-			}));
-		});
+		return this.firstStaffMeasures().flatMap((measure, index) =>
+			readVoltaStarts(child(measure.element, "voice")!, index + 1),
+		);
 	}
 
 	private voice(measure: number): Element {
@@ -119,7 +144,7 @@ export class VoltaWriter {
 	}
 }
 
-function defaultHook(ending: number): VoltaHook {
+export function defaultHook(ending: number): VoltaHook {
 	if (ending === 1) {
 		return "closed";
 	}

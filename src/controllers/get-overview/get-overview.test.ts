@@ -127,6 +127,8 @@ Chords:
 		expect(staffText.isError).toBeUndefined();
 		const volta = await addVolta(mcp, file, { from: 5, to: 6, ending: 1, hook: "open" });
 		expect(volta.isError).toBeUndefined();
+		const secondVolta = await addVolta(mcp, file, { from: 7, to: 7, ending: 2, hook: "closed" });
+		expect(secondVolta.isError).toBeUndefined();
 		const double = await setBarline(mcp, file, { measure: 8, type: "double" });
 		expect(double.isError).toBeUndefined();
 		const sectionBreak = await setLayoutBreak(mcp, file, { measure: 8, type: "section" });
@@ -137,6 +139,11 @@ Chords:
 		expect(time.isError).toBeUndefined();
 		const tempo = await setTempo(mcp, file, { measure: 9, bpm: 90 });
 		expect(tempo.isError).toBeUndefined();
+		const tupletChord = await writeMeasures(mcp, file, {
+			from: 9,
+			content: "tuplet(3:2 [E7] C5:8 D5 E5) r:4 r:4",
+		});
+		expect(tupletChord.isError).toBeUndefined();
 
 		const result = await getOverview(mcp);
 
@@ -152,10 +159,12 @@ Form:
   3: staff text "solo fills"
   4: end-repeat x3 | system break
   5: swing: off "Straight" | volta 1 (bars 5-6, open)
+  7: volta 2 (bar 7, closed)
   8: double barline | section break
   9: key: F/Dm | time: 3/4 | tempo: 90 bpm
 Chords:
-  1: | C^7 | A-7 | D-7 | G7 |`,
+  1: | C^7 | A-7 | D-7 | G7 |
+  9: | E7 |  |  |  |`,
 		);
 	});
 

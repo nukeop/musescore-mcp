@@ -14,9 +14,7 @@ interface OpenEnclosure {
 }
 
 export function validateEnclosures(bars: Voice[]): void {
-	const chords = bars
-		.flatMap((bar) => bar.events)
-		.filter((event): event is Chord => event.kind === "chord");
+	const chords = bars.flatMap((bar) => bar.events).filter((event): event is Chord => event.kind === "chord");
 	const open = chords.reduce<OpenEnclosure | undefined>(validateChord, undefined);
 	if (open) {
 		throw new Error(`Unclosed ${open.name}`);

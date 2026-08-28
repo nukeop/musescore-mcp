@@ -41,7 +41,12 @@ exports[`get_overview summarizes example sheet 1`] = `
 "Simple Lead Sheet by Test Composer
 Key: B♭/Gm | Time: 4/4 | Tempo: 132 bpm | Bars: 8
 Instruments:
-  1. Tenor Saxophone"
+  1. Tenor Saxophone
+Form:
+  5: system break
+Chords:
+  1: | C^7 | D-7 | G7 |  |
+  5: | A-7 | D-7 | G7 | C^7 |"
 ,
       "type": "text",
     },

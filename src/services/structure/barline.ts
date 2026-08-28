@@ -1,8 +1,22 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import type { Staff } from "../../model/score";
 import { assertMeasureInRange } from "../measure-range";
-import { child, elementWithText, removeChildren } from "../score-dom";
+import { child, elementWithText, removeChildren, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
+
+export function readStartRepeat(measure: Element): boolean {
+	return child(measure, "startRepeat") !== undefined;
+}
+
+export function readEndRepeat(measure: Element): number | undefined {
+	const endRepeat = child(measure, "endRepeat");
+	return endRepeat && Number(endRepeat.textContent);
+}
+
+export function readBarline(voice: Element): string | undefined {
+	const barLine = child(voice, "BarLine");
+	return barLine && textIn(barLine, "subtype");
+}
 
 export function buildDoubleBarLine(document: Document): Element {
 	const barLine = document.createElement("BarLine");

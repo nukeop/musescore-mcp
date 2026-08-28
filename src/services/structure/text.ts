@@ -1,12 +1,8 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type { Staff } from "../../model/score";
+import type { FormText, Staff, SwingMode, TextStyle } from "../../model/score";
 import { assertMeasureInRange } from "../measure-range";
-import { child, elementWithText, firstSpannerOrEvent, removeChildren } from "../score-dom";
+import { child, children, elementWithText, firstSpannerOrEvent, removeChildren, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
-
-export type TextStyle = "staff" | "system";
-
-export type SwingMode = "eighth" | "off";
 
 const ELEMENT_NAMES: Record<TextStyle, string> = {
 	staff: "StaffText",
@@ -18,12 +14,29 @@ const SWING_UNITS: Record<SwingMode, string> = {
 	off: "",
 };
 
-export function buildText(
-	document: Document,
-	style: TextStyle,
-	text: string,
-	swing?: SwingMode,
-): Element {
+const SWING_MODES: Record<string, SwingMode> = {
+	eighth: "eighth",
+	"": "off",
+};
+
+export function readTexts(voice: Element): FormText[] {
+	return [...textsOf(voice, "staff"), ...textsOf(voice, "system")];
+}
+
+function textsOf(voice: Element, style: TextStyle): FormText[] {
+	return children(voice, ELEMENT_NAMES[style]).map((element) => ({
+		style,
+		text: textIn(element, "text"),
+		swing: readSwing(element),
+	}));
+}
+
+function readSwing(element: Element): SwingMode | undefined {
+	const swing = child(element, "swing");
+	return swing && SWING_MODES[swing.getAttribute("unit") ?? ""];
+}
+
+export function buildText(document: Document, style: TextStyle, text: string, swing?: SwingMode): Element {
 	const element = document.createElement(ELEMENT_NAMES[style]);
 	if (swing) {
 		const swingElement = document.createElement("swing");

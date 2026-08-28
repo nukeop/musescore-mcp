@@ -28,7 +28,9 @@ describe("write_measures", () => {
 		});
 
 		expect(result.isError).toBeUndefined();
-		expect(BunFsMock.getWrittenFile("src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx")).toMatchSnapshot();
+		expect(
+			BunFsMock.getWrittenFile("src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx"),
+		).toMatchSnapshot();
 	});
 
 	test("writes notes, rests and dotted durations (round trip)", async () => {

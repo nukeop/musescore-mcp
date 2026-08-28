@@ -1,8 +1,13 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import type { Staff } from "../../model/score";
 import { assertMeasureInRange } from "../measure-range";
-import { child, elementWithText, replaceOrPrepend } from "../score-dom";
+import { child, elementWithText, replaceOrPrepend, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
+
+export function readRehearsalMark(voice: Element): string | undefined {
+	const mark = child(voice, "RehearsalMark");
+	return mark && textIn(mark, "text");
+}
 
 export function buildRehearsalMark(document: Document, text: string): Element {
 	const rehearsalMark = document.createElement("RehearsalMark");

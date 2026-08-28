@@ -2,6 +2,7 @@ import type { Element } from "@xmldom/xmldom";
 import type {
 	KeySig,
 	Measure,
+	MeasureForm,
 	Score,
 	ScoreHeader,
 	ScorePart,
@@ -11,6 +12,11 @@ import type {
 	Voice,
 } from "../model/score";
 import { child, children, numberIn, textIn } from "./score-dom";
+import { readBarline, readEndRepeat, readStartRepeat } from "./structure/barline";
+import { readLayoutBreak } from "./structure/layout-break";
+import { readRehearsalMark } from "./structure/rehearsal-mark";
+import { readTexts } from "./structure/text";
+import { readVoltaStarts } from "./structure/volta";
 import { VoiceReader } from "./voice-reader";
 
 export class ScoreReader {
@@ -66,7 +72,7 @@ export class ScoreReader {
 	private readStaff(element: Element): Staff {
 		return {
 			part: this.readPart(this.partOf(element)),
-			measures: children(element, "Measure").map((measure) => this.readMeasure(measure)),
+			measures: children(element, "Measure").map((measure, index) => this.readMeasure(measure, index + 1)),
 		};
 	}
 
@@ -85,18 +91,38 @@ export class ScoreReader {
 		return tempo && { quarterNotesPerSecond: numberIn(tempo, "tempo") };
 	}
 
-	private readMeasure(element: Element): Measure {
+	private readMeasure(element: Element, bar: number): Measure {
 		const voices = children(element, "voice");
 		const [first] = voices;
-		return first
-			? {
-					element,
-					keySig: this.readKeySig(first),
-					timeSig: this.readTimeSig(first),
-					tempo: this.readTempo(first),
-					voices: voices.map((voice) => this.readVoice(voice)),
-				}
-			: { element, voices: [] };
+		if (!first) {
+			return { element, form: this.readForm(element, first, bar), voices: [] };
+		}
+		return {
+			element,
+			keySig: this.readKeySig(first),
+			timeSig: this.readTimeSig(first),
+			tempo: this.readTempo(first),
+			form: this.readForm(element, first, bar),
+			voices: voices.map((voice) => this.readVoice(voice)),
+		};
+	}
+
+	private readForm(measure: Element, voice: Element | undefined, bar: number): MeasureForm {
+		const measureFacts = {
+			startRepeat: readStartRepeat(measure),
+			endRepeat: readEndRepeat(measure),
+			layoutBreak: readLayoutBreak(measure),
+		};
+		if (!voice) {
+			return { ...measureFacts, texts: [], voltas: [] };
+		}
+		return {
+			...measureFacts,
+			rehearsalMark: readRehearsalMark(voice),
+			barline: readBarline(voice),
+			texts: readTexts(voice),
+			voltas: readVoltaStarts(voice, bar),
+		};
 	}
 
 	private readVoice(element: Element): Voice {

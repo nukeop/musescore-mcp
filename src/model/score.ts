@@ -74,11 +74,43 @@ export interface Voice {
 	events: VoiceEvent[];
 }
 
+export type TextStyle = "staff" | "system";
+
+export type SwingMode = "eighth" | "off";
+
+export type LayoutBreakType = "system" | "page" | "section";
+
+export type VoltaHook = "closed" | "open";
+
+export interface FormText {
+	style: TextStyle;
+	text: string;
+	swing?: SwingMode;
+}
+
+export interface VoltaStart {
+	ending: number;
+	from: number;
+	to: number;
+	hook: VoltaHook;
+}
+
+export interface MeasureForm {
+	rehearsalMark?: string;
+	startRepeat: boolean;
+	endRepeat?: number;
+	barline?: string;
+	texts: FormText[];
+	voltas: VoltaStart[];
+	layoutBreak?: LayoutBreakType;
+}
+
 export interface Measure {
 	element: Element;
 	keySig?: KeySig;
 	timeSig?: TimeSig;
 	tempo?: Tempo;
+	form: MeasureForm;
 	voices: Voice[];
 }
 
