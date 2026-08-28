@@ -3,7 +3,7 @@ import Fraction from "fraction.js";
 import type { Measure, Staff } from "../../model/score";
 import { effectiveTimeSigAt } from "../effective-time-sig";
 import { assertMeasureInRange } from "../measure-range";
-import { child, childElements, children, elementWithText } from "../score-dom";
+import { child, children, elementWithText, firstEvent, firstSpannerOrEvent } from "../score-dom";
 import type { ScoreFile } from "../score-file";
 
 export type VoltaHook = "closed" | "open";
@@ -17,8 +17,6 @@ interface VoltaLocation {
 	measures: number;
 	fractions?: Fraction;
 }
-
-const EVENT_NAMES = new Set(["Harmony", "Chord", "Rest", "Tuplet"]);
 
 export function buildVoltaStart(
 	document: Document,
@@ -157,16 +155,6 @@ function formatFraction(fraction: Fraction): string {
 		return `-${fraction.n}/${fraction.d}`;
 	}
 	return `${fraction.n}/${fraction.d}`;
-}
-
-function firstEvent(voice: Element): Element | undefined {
-	return childElements(voice).find((element) => EVENT_NAMES.has(element.nodeName));
-}
-
-function firstSpannerOrEvent(voice: Element): Element | undefined {
-	return childElements(voice).find(
-		(element) => element.nodeName === "Spanner" || EVENT_NAMES.has(element.nodeName),
-	);
 }
 
 function voltaStartsIn(voice: Element): Element[] {

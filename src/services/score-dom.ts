@@ -51,6 +51,18 @@ export function replaceOrPrepend(parent: Element, element: Element): void {
 	}
 }
 
+const EVENT_NAMES = new Set(["Harmony", "Chord", "Rest", "Tuplet"]);
+
+export function firstEvent(voice: Element): Element | undefined {
+	return childElements(voice).find((element) => EVENT_NAMES.has(element.nodeName));
+}
+
+export function firstSpannerOrEvent(voice: Element): Element | undefined {
+	return childElements(voice).find(
+		(element) => element.nodeName === "Spanner" || EVENT_NAMES.has(element.nodeName),
+	);
+}
+
 export function precedingElement(element: Element): Element | undefined {
 	let node = element.previousSibling;
 	while (node && node.nodeType !== node.ELEMENT_NODE) {

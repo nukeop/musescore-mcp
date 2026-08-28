@@ -20,3 +20,16 @@ export const addVoltaSchema = {
 	ending: z.number().int().positive(),
 	hook: z.enum(["closed", "open"]).optional(),
 };
+
+export const setLayoutBreakSchema = {
+	file: z.string(),
+	measure: z.number().int().min(1),
+	type: z.enum(["system", "page", "section", "none"]),
+};
+
+export const setTextSchema = {
+	file: z.string(),
+	measure: z.number().int().min(1),
+	text: z.string(),
+	style: z.enum(["staff", "system"]),
+};

@@ -1,0 +1,512 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`set_layout_break (Snapshot) writes a system break as subtype line, on the first staff only 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <Score>
+    <Division>480</Division>
+    <metaTag name="arranger"/>
+    <metaTag name="audioComUrl"/>
+    <metaTag name="composer">Test Composer</metaTag>
+    <metaTag name="copyright"/>
+    <metaTag name="lyricist"/>
+    <metaTag name="movementNumber"/>
+    <metaTag name="movementTitle"/>
+    <metaTag name="platform"/>
+    <metaTag name="poet"/>
+    <metaTag name="source"/>
+    <metaTag name="sourceRevisionId"/>
+    <metaTag name="subtitle"/>
+    <metaTag name="translator"/>
+    <metaTag name="workNumber"/>
+    <metaTag name="workTitle">Test Tune</metaTag>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Part id="2">
+      <Staff id="2">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Trumpet</trackName>
+      <Instrument id="bb-trumpet">
+        <longName>Trumpet</longName>
+        <shortName>Tpt.</shortName>
+        <trackName>Trumpet</trackName>
+        <minPitchP>52</minPitchP>
+        <maxPitchP>85</maxPitchP>
+        <minPitchA>52</minPitchA>
+        <maxPitchA>80</maxPitchA>
+        <transposeDiatonic>-1</transposeDiatonic>
+        <transposeChromatic>-2</transposeChromatic>
+        <instrumentId>brass.trumpet.bflat</instrumentId>
+        <Channel>
+          <program value="56"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>Test Tune</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>Test Composer</text>
+          </Text>
+        </VBox>
+      <Measure>
+        <voice>
+          <KeySig><concertKey>-3</concertKey></KeySig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <LayoutBreak><subtype>line</subtype></LayoutBreak><voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      </Staff>
+    <Staff id="2">
+      <Measure>
+        <voice>
+          <KeySig><concertKey>-3</concertKey><actualKey>-1</actualKey></KeySig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>
+"
+`;
+
+exports[`set_layout_break (Snapshot) writes a page break 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <Score>
+    <Division>480</Division>
+    <metaTag name="arranger"/>
+    <metaTag name="audioComUrl"/>
+    <metaTag name="composer">Test Composer</metaTag>
+    <metaTag name="copyright"/>
+    <metaTag name="lyricist"/>
+    <metaTag name="movementNumber"/>
+    <metaTag name="movementTitle"/>
+    <metaTag name="platform"/>
+    <metaTag name="poet"/>
+    <metaTag name="source"/>
+    <metaTag name="sourceRevisionId"/>
+    <metaTag name="subtitle"/>
+    <metaTag name="translator"/>
+    <metaTag name="workNumber"/>
+    <metaTag name="workTitle">Test Tune</metaTag>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>Test Tune</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>Test Composer</text>
+          </Text>
+        </VBox>
+      <Measure>
+        <voice>
+          <KeySig><concertKey>-3</concertKey></KeySig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <LayoutBreak><subtype>page</subtype></LayoutBreak><voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>
+"
+`;
+
+exports[`set_layout_break (Snapshot) writes a section break 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <Score>
+    <Division>480</Division>
+    <metaTag name="arranger"/>
+    <metaTag name="audioComUrl"/>
+    <metaTag name="composer">Test Composer</metaTag>
+    <metaTag name="copyright"/>
+    <metaTag name="lyricist"/>
+    <metaTag name="movementNumber"/>
+    <metaTag name="movementTitle"/>
+    <metaTag name="platform"/>
+    <metaTag name="poet"/>
+    <metaTag name="source"/>
+    <metaTag name="sourceRevisionId"/>
+    <metaTag name="subtitle"/>
+    <metaTag name="translator"/>
+    <metaTag name="workNumber"/>
+    <metaTag name="workTitle">Test Tune</metaTag>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>Test Tune</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>Test Composer</text>
+          </Text>
+        </VBox>
+      <Measure>
+        <voice>
+          <KeySig><concertKey>-3</concertKey></KeySig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <LayoutBreak><subtype>section</subtype></LayoutBreak><voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>
+"
+`;
+
+exports[`set_layout_break (Snapshot) replaces an existing break at the same measure 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <Score>
+    <Division>480</Division>
+    <metaTag name="arranger"/>
+    <metaTag name="audioComUrl"/>
+    <metaTag name="composer">Test Composer</metaTag>
+    <metaTag name="copyright"/>
+    <metaTag name="lyricist"/>
+    <metaTag name="movementNumber"/>
+    <metaTag name="movementTitle"/>
+    <metaTag name="platform"/>
+    <metaTag name="poet"/>
+    <metaTag name="source"/>
+    <metaTag name="sourceRevisionId"/>
+    <metaTag name="subtitle"/>
+    <metaTag name="translator"/>
+    <metaTag name="workNumber"/>
+    <metaTag name="workTitle">Test Tune</metaTag>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>Test Tune</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>Test Composer</text>
+          </Text>
+        </VBox>
+      <Measure>
+        <voice>
+          <KeySig><concertKey>-3</concertKey></KeySig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <LayoutBreak><subtype>page</subtype></LayoutBreak><voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>
+"
+`;
+
+exports[`set_layout_break (Snapshot) none clears an existing break 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<museScore version="4.50">
+  <Score>
+    <Division>480</Division>
+    <metaTag name="arranger"/>
+    <metaTag name="audioComUrl"/>
+    <metaTag name="composer">Test Composer</metaTag>
+    <metaTag name="copyright"/>
+    <metaTag name="lyricist"/>
+    <metaTag name="movementNumber"/>
+    <metaTag name="movementTitle"/>
+    <metaTag name="platform"/>
+    <metaTag name="poet"/>
+    <metaTag name="source"/>
+    <metaTag name="sourceRevisionId"/>
+    <metaTag name="subtitle"/>
+    <metaTag name="translator"/>
+    <metaTag name="workNumber"/>
+    <metaTag name="workTitle">Test Tune</metaTag>
+    <Part id="1">
+      <Staff id="1">
+        <StaffType group="pitched">
+          <name>stdNormal</name>
+          </StaffType>
+        </Staff>
+      <trackName>Piano</trackName>
+      <Instrument id="piano">
+        <longName>Piano</longName>
+        <shortName>Pno.</shortName>
+        <trackName>Piano</trackName>
+        <minPitchP>21</minPitchP>
+        <maxPitchP>108</maxPitchP>
+        <minPitchA>21</minPitchA>
+        <maxPitchA>108</maxPitchA>
+        <instrumentId>keyboard.piano</instrumentId>
+        <Channel>
+          <program value="0"/>
+          <synti>Fluid</synti>
+          </Channel>
+        </Instrument>
+      </Part>
+    <Staff id="1">
+      <VBox>
+        <height>10</height>
+        <Text>
+          <style>title</style>
+          <text>Test Tune</text>
+          </Text>
+        <Text>
+          <style>composer</style>
+          <text>Test Composer</text>
+          </Text>
+        </VBox>
+      <Measure>
+        <voice>
+          <KeySig><concertKey>-3</concertKey></KeySig>
+          <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
+          <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      <Measure>
+        <voice>
+          <Rest>
+            <durationType>measure</durationType>
+            </Rest>
+          </voice>
+        </Measure>
+      </Staff>
+    </Score>
+  </museScore>
+"
+`;
