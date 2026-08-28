@@ -1,8 +1,9 @@
 import Fraction from "fraction.js";
 import { validateBarFill } from "../model/bar-fill";
 import { validateEnclosures } from "../model/enclosures";
-import type { Staff, TimeSig, Voice } from "../model/score";
+import type { Staff, Voice } from "../model/score";
 import { EnclosureWriter } from "./elements/enclosure-writer";
+import { effectiveTimeSigAt } from "./effective-time-sig";
 import { SpannerWriter } from "./elements/spanner-writer";
 import { MeasureWriter } from "./measure-writer";
 import type { ScoreFile } from "./score-file";
@@ -23,7 +24,7 @@ export class StaffWriter {
 		}
 
 		bars.forEach((bar, index) => {
-			validateBarFill(bar, index + 1, this.timeSigAt(from + index));
+			validateBarFill(bar, index + 1, effectiveTimeSigAt(this.staff.measures, from + index));
 		});
 		validateEnclosures(bars);
 
@@ -44,13 +45,8 @@ export class StaffWriter {
 		enclosureWriter.finalize();
 	}
 
-	private timeSigAt(measureNumber: number): TimeSig {
-		const declared = this.staff.measures.slice(0, measureNumber).findLast((measure) => measure.timeSig);
-		return declared?.timeSig ?? { beats: 4, beatUnit: 4 };
-	}
-
 	private measureLengthAt(measureNumber: number): Fraction {
-		const timeSig = this.timeSigAt(measureNumber);
+		const timeSig = effectiveTimeSigAt(this.staff.measures, measureNumber);
 		return new Fraction(timeSig.beats, timeSig.beatUnit);
 	}
 }

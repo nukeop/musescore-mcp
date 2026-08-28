@@ -2,8 +2,9 @@ import type { Controller } from "../../server";
 import { ScoreFile } from "../../services/score-file";
 import { BarlineWriter } from "../../services/structure/barline";
 import { RehearsalMarkWriter } from "../../services/structure/rehearsal-mark";
+import { VoltaWriter } from "../../services/structure/volta";
 import { textResult } from "../tool-response";
-import { setBarlineSchema, setSectionMarkerSchema } from "./structure.schema";
+import { addVoltaSchema, setBarlineSchema, setSectionMarkerSchema } from "./structure.schema";
 
 export const structureController: Controller = (server) => {
 	server.registerTool(
@@ -56,6 +57,24 @@ export const structureController: Controller = (server) => {
 
 			await scoreFile.save();
 			return textResult(`Set ${type} barline at measure ${measure} in ${file}`);
+		},
+	);
+
+	server.registerTool(
+		"add_volta",
+		{
+			description:
+				"Adds a volta (ending bracket) over an inclusive measure range. The label and played ending derive from the ending number; the end hook defaults to closed for ending 1 and open otherwise.",
+			inputSchema: addVoltaSchema,
+		},
+		async ({ file, from, to, ending, hook }) => {
+			const scoreFile = await ScoreFile.open(file);
+			const score = scoreFile.read();
+
+			new VoltaWriter(scoreFile, score.staves).add({ from, to }, ending, hook);
+
+			await scoreFile.save();
+			return textResult(`Added volta ${ending} over measures ${from}-${to} in ${file}`);
 		},
 	);
 };
