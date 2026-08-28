@@ -116,11 +116,14 @@ export const structureController: Controller = (server) => {
 				"Sets a staff or system text at the start of a measure, replacing any existing text of the same style there.",
 			inputSchema: setTextSchema,
 		},
-		async ({ file, measure, text, style }) => {
+		async ({ file, measure, text, style, swing }) => {
+			if (swing !== undefined && style !== "system") {
+				throw new Error("Swing is only valid with style system");
+			}
 			const scoreFile = await ScoreFile.open(file);
 			const score = scoreFile.read();
 
-			new TextWriter(scoreFile, score.staves).set(measure, style, text);
+			new TextWriter(scoreFile, score.staves).set(measure, style, text, swing);
 
 			await scoreFile.save();
 			return textResult(`Set ${style} text "${text}" at measure ${measure} in ${file}`);

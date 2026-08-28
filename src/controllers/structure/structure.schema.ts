@@ -32,4 +32,5 @@ export const setTextSchema = {
 	measure: z.number().int().min(1),
 	text: z.string(),
 	style: z.enum(["staff", "system"]),
+	swing: z.enum(["eighth", "off"]).optional(),
 };

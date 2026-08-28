@@ -110,6 +110,53 @@ describe("set_text", () => {
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
+	test("(Snapshot) writes a swing mark on a system text", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+
+		const result = await setText(mcp, "/scores/test-tune.mscx", {
+			measure: 2,
+			text: "Swing",
+			style: "system",
+			swing: "eighth",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+	});
+
+	test("(Snapshot) writes a straight mark turning swing off", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+
+		const result = await setText(mcp, "/scores/test-tune.mscx", {
+			measure: 3,
+			text: "Straight",
+			style: "system",
+			swing: "off",
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
+	});
+
+	test("rejects swing combined with staff style", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+
+		const result = await setText(mcp, "/scores/test-tune.mscx", {
+			measure: 2,
+			text: "Swing",
+			style: "staff",
+			swing: "eighth",
+		});
+
+		expect(result).toBeToolError("Swing is only valid with style system");
+	});
+
 	test("rejects a measure beyond the end of the score", async () => {
 		BunFsMock.mockWrite();
 		BunFsMock.mockFile();
