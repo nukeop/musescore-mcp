@@ -51,10 +51,10 @@ describe("set_barline", () => {
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
-	test("(Snapshot) writes a double barline after the bar's events", async () => {
+	test("(Snapshot) writes a double barline to all staves, after the bar's events", async () => {
 		BunFsMock.mockWrite();
 		BunFsMock.mockFile();
-		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		await createScore(mcp, { instruments: ["piano", "trumpet"], measures: 4 });
 		await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 2, content: "C4:1" });
 
 		const result = await setBarline(mcp, "/scores/test-tune.mscx", { measure: 2, type: "double" });
@@ -63,10 +63,10 @@ describe("set_barline", () => {
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
-	test("(Snapshot) end-repeat replaces an existing double barline", async () => {
+	test("(Snapshot) end-repeat replaces an existing double barline in all staves", async () => {
 		BunFsMock.mockWrite();
 		BunFsMock.mockFile();
-		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		await createScore(mcp, { instruments: ["piano", "trumpet"], measures: 4 });
 		const setup = await setBarline(mcp, "/scores/test-tune.mscx", { measure: 3, type: "double" });
 		expect(setup.isError).toBeUndefined();
 
@@ -104,10 +104,10 @@ describe("set_barline", () => {
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
 	});
 
-	test("(Snapshot) normal clears a double barline", async () => {
+	test("(Snapshot) normal clears a double barline from all staves", async () => {
 		BunFsMock.mockWrite();
 		BunFsMock.mockFile();
-		await createScore(mcp, { instruments: ["piano"], measures: 4 });
+		await createScore(mcp, { instruments: ["piano", "trumpet"], measures: 4 });
 		const setup = await setBarline(mcp, "/scores/test-tune.mscx", { measure: 2, type: "double" });
 		expect(setup.isError).toBeUndefined();
 

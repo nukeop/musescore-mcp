@@ -29,6 +29,9 @@ export class VoiceWriter {
 			(position, event) => this.writeEvent(event, position, measureLength, spannerWriter, enclosureWriter),
 			new Fraction(0),
 		);
+		children(this.voiceElement, "BarLine").forEach((barLine) => {
+			this.voiceElement.appendChild(barLine);
+		});
 	}
 
 	private writeEvent(

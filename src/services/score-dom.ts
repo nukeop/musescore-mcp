@@ -36,6 +36,12 @@ export function textElementIn(document: Document, parent: Element): Element {
 	return created;
 }
 
+export function removeChildren(parent: Element, name: string): void {
+	children(parent, name).forEach((element) => {
+		parent.removeChild(element);
+	});
+}
+
 export function replaceOrPrepend(parent: Element, element: Element): void {
 	const existing = child(parent, element.nodeName);
 	if (existing) {
