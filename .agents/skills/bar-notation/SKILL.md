@@ -29,7 +29,7 @@ Durations: `:1` `:2` `:4` `:8` `:16` `:32` `:64` `:128`, dotted `:4.`, double-do
 
 Each note or chord gets at most one suffix: a tie, an annotation, or a glissando. No stacking.
 
-Chord symbols are written in square brackets before the event they attach to. The root is a note name (A-G with optional ♭/♯). Everything after the root is the suffix, passed through unchanged. Common suffixes: `-7` (minor 7th), `7` (dominant), `^7` (major 7th), `o7` (diminished), `ø7` (half-diminished), `-` (minor), `6`, `-6`. A chord symbol can attach to any event, including rests.
+Chord symbols are written in square brackets before the event they attach to. The root is a note name (A-G with optional ♭/♯). Everything after the root is the suffix, passed through unchanged. Common suffixes: `-7` (minor 7th), `7` (dominant), `^7` (major 7th), `o7` (diminished), `ø7` (half-diminished), `-` (minor), `6`, `-6`. A chord symbol can attach to any event, including rests. A chord symbol before `slur(` or `tuplet(` attaches to the first note or rest inside the group; read_measures prints it in that inside position. A chord symbol should be either outside or inside a group.
 
 Example:
 

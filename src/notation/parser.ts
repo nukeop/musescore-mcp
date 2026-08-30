@@ -50,17 +50,39 @@ export class NotationParser {
 	}
 
 	private parseBarEvent(): VoiceEvent {
-		return this.enclosures.around(() => this.parseEvent());
+		const harmony = this.parseHarmony();
+		return this.enclosures.around(() => this.parseEvent(harmony));
 	}
 
-	private parseEvent(): VoiceEvent {
-		const harmony = this.parseHarmony();
+	private parseEvent(outerHarmony?: Harmony): VoiceEvent {
+		const harmony = this.combineHarmony(outerHarmony, this.parseHarmony());
 		const word = this.cursor.expectWord();
 		const event = this.parseSuffixes(this.parseBody(word));
-		if (harmony && (event.kind === "chord" || event.kind === "rest")) {
-			return { ...event, harmony };
+		return this.attachHarmony(event, harmony);
+	}
+
+	private combineHarmony(outer: Harmony | undefined, inner: Harmony | undefined): Harmony | undefined {
+		if (outer && inner) {
+			throw new Error("Chord symbol given both outside and inside a group");
 		}
-		return event;
+		return outer ?? inner;
+	}
+
+	private attachHarmony(event: VoiceEvent, harmony: Harmony | undefined): VoiceEvent {
+		if (!harmony) {
+			return event;
+		}
+		if (event.kind === "tuplet") {
+			const [first, ...rest] = event.events;
+			if (!first) {
+				return event;
+			}
+			return { ...event, events: [this.attachHarmony(first, harmony), ...rest] };
+		}
+		if (event.harmony) {
+			throw new Error("Chord symbol given both outside and inside a group");
+		}
+		return { ...event, harmony };
 	}
 
 	private parseHarmony(): Harmony | undefined {

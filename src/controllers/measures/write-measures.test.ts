@@ -583,6 +583,120 @@ describe("write_measures", () => {
 		expect(readBack).toBeToolText("[E♭-7] C4:2. [B♭7] D4:2");
 	});
 
+	test("attaches a chord symbol before a tuplet to its first note (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[A7♭9] tuplet(3:2 E4:8 G4 B♭4) C♯5:4 r:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("tuplet(3:2 [A7♭9] E4:8 G4 B♭4) C♯5:4 r:2");
+	});
+
+	test("attaches a chord symbol before a tuplet to a leading rest (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[D-7] tuplet(3:2 r:8 E4 G4) C♯5:4 r:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("tuplet(3:2 [D-7] r:8 E4 G4) C♯5:4 r:2");
+	});
+
+	test("attaches a chord symbol before a tuplet to a leading grace note (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[G7] tuplet(3:2 grace(D5:8) E4 G4) C♯5:4 r:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("tuplet(3:2 [G7] grace(D5:8) E4 G4) C♯5:4 r:2");
+	});
+
+	test("attaches a chord symbol before a slur to its first note (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[A♭7] slur(G♭5:8 E♭5 C5 A♭4) r:2",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("slur([A♭7] G♭5:8 E♭5 C5 A♭4) r:2");
+	});
+
+	test("rejects a chord symbol given both outside and inside a tuplet", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[A7] tuplet(3:2 [B-7] A4:8 B4 C5) r:4 r:2",
+		});
+
+		expect(result).toBeToolError("Chord symbol given both outside and inside a group");
+	});
+
+	test("rejects a chord symbol given both outside and inside a slur", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[A7] slur([B-7] G4:8 A4 B4) r:2",
+		});
+
+		expect(result).toBeToolError("Chord symbol given both outside and inside a group");
+	});
+
 	test("(Snapshot) writes chord symbol XML", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 1 });
