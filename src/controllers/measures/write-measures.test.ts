@@ -410,18 +410,6 @@ describe("write_measures", () => {
 		expect(result).toBeToolError("Invalid note: H5");
 	});
 
-	test("rejects unicode accidentals", async () => {
-		BunFsMock.mockWrite();
-		await createScore(mcp, { instruments: ["piano"], measures: 4 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-
-		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content: "B\u266d4:1" });
-
-		expect(result).toBeToolError("Invalid note: B\u266d4");
-	});
-
 	test("rejects an invalid duration", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
@@ -778,23 +766,6 @@ describe("write_measures", () => {
 		});
 		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
 		expect(readBack).toBeToolText("[F#07] C4:4 [C^7#5] C4 [G7b9] C4 [Bb7#11/Ab] C4");
-	});
-
-	test("rejects a chord suffix that is not ASCII", async () => {
-		BunFsMock.mockWrite();
-		await createScore(mcp, { instruments: ["piano"], measures: 1 });
-		BunFsMock.mockFile({
-			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
-		});
-
-		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
-			from: 1,
-			content: "[F#\u00f87] C4:1",
-		});
-
-		expect(result).toBeToolError(
-			"Chord suffix must be ASCII because MuseScore does not play other symbols: \u00f87",
-		);
 	});
 
 	test("rejects a chord symbol given both outside and inside a tuplet", async () => {

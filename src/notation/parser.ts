@@ -2,7 +2,6 @@ import { parseDuration } from "../model/duration-tables";
 import { ACCIDENTAL_SEMITONES, isAccidental, isLetter, NATURAL_TPC } from "../model/pitch-tables";
 import type { Chord, Duration, Harmony, ScorePart, Voice, VoiceEvent } from "../model/score";
 import { WrittenPitch } from "../model/written-pitch";
-import { validChordSuffix } from "./chord-suffix";
 import { EnclosureMarker } from "./enclosures";
 import { suffixForParenName } from "./suffixes";
 import type { WordToken } from "./token";
@@ -104,7 +103,7 @@ export class NotationParser {
 		}
 		const afterRoot = token.text.substring(root.length);
 		const slash = SLASH_BASS.exec(afterRoot)?.index;
-		const harmony = { root: tpcOfNoteName(root), name: validChordSuffix(afterRoot.substring(0, slash)) };
+		const harmony = { root: tpcOfNoteName(root), name: afterRoot.substring(0, slash) };
 		if (slash === undefined) {
 			return harmony;
 		}
