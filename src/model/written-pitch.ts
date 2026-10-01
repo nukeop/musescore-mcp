@@ -37,7 +37,7 @@ export class WrittenPitch {
 		return new WrittenPitch(letter, accidental, 0);
 	}
 
-	// Written pitch as it will be shown to AI. e.g. E♭5
+	// Written pitch as it will be shown to AI. e.g. Eb5
 	// Converts from Musescore XML to something AI-readable
 	static fromNote(note: Note, part: ScorePart): WrittenPitch {
 		const writtenTpc = note.tpc2 ?? note.tpc;
@@ -47,7 +47,7 @@ export class WrittenPitch {
 		return new WrittenPitch(base.letter, base.accidental, octave);
 	}
 
-	// From written pitch (e.g. E♭5, 5 being the octave)
+	// From written pitch (e.g. Eb5, 5 being the octave)
 	// to a structured object. This helps us save it in the Musescore XML
 	toNote(part: ScorePart): Note {
 		const tpcShift = 7 * part.transposeChromatic - 12 * part.transposeDiatonic;

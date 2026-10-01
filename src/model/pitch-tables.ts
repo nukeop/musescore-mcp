@@ -1,8 +1,8 @@
 export type Letter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
-export type Accidental = "" | "♭" | "♭♭" | "♯" | "♯♯";
+export type Accidental = "" | "b" | "bb" | "#" | "##";
 
 export const LETTERS: Letter[] = ["C", "D", "E", "F", "G", "A", "B"];
-export const ACCIDENTALS: Accidental[] = ["", "♭", "♭♭", "♯", "♯♯"];
+export const ACCIDENTALS: Accidental[] = ["", "b", "bb", "#", "##"];
 
 export const NATURAL_TPC: Record<Letter, number> = {
 	F: 13,
@@ -26,10 +26,10 @@ export const NATURAL_PITCH_CLASS: Record<Letter, number> = {
 
 export const ACCIDENTAL_SEMITONES: Record<Accidental, number> = {
 	"": 0,
-	"♭": -1,
-	"♭♭": -2,
-	"♯": 1,
-	"♯♯": 2,
+	b: -1,
+	bb: -2,
+	"#": 1,
+	"##": 2,
 };
 
 export function isLetter(value: string): value is Letter {

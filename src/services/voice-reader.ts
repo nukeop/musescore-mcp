@@ -3,11 +3,12 @@ import { ANNOTATION_NAMES, ANNOTATIONS, type Annotation, type AnnotationName } f
 import type { MscxDurationType } from "../model/duration-tables";
 import { ENCLOSURE_NAMES, ENCLOSURE_SPANNERS, type EnclosureName } from "../model/enclosures";
 import type { Chord, Duration, Harmony, Note, Rest, Tuplet, Voice, VoiceEvent } from "../model/score";
-import { child, childElements, children, numberIn, precedingElement, textIn } from "./score-dom";
+import { child, childElements, children, numberIn, textIn } from "./score-dom";
 
 export class VoiceReader {
 	private readonly events: VoiceEvent[] = [];
 	private readonly openTuplets: Tuplet[] = [];
+	private pendingHarmony: Harmony | undefined;
 
 	constructor(private readonly voice: Element) {}
 
@@ -20,6 +21,12 @@ export class VoiceReader {
 
 	private readElement(element: Element): void {
 		switch (element.nodeName) {
+			case "Harmony":
+				this.pendingHarmony = this.readHarmony(element);
+				break;
+			case "location":
+				this.pendingHarmony = undefined;
+				break;
 			case "Tuplet":
 				this.openTuplet(this.readTuplet(element));
 				break;
@@ -27,10 +34,10 @@ export class VoiceReader {
 				this.openTuplets.pop();
 				break;
 			case "Chord":
-				this.add({ ...this.readChord(element), harmony: this.readHarmonyBefore(element) });
+				this.add({ ...this.readChord(element), harmony: this.takePendingHarmony() });
 				break;
 			case "Rest":
-				this.add({ ...this.readRest(element), harmony: this.readHarmonyBefore(element) });
+				this.add({ ...this.readRest(element), harmony: this.takePendingHarmony() });
 				break;
 		}
 	}
@@ -70,9 +77,7 @@ export class VoiceReader {
 	}
 
 	private readAnnotation(chordElement: Element, noteElements: Element[]): AnnotationName | undefined {
-		return ANNOTATION_NAMES.find((name) =>
-			this.hasAnnotation(ANNOTATIONS[name], chordElement, noteElements),
-		);
+		return ANNOTATION_NAMES.find((name) => this.hasAnnotation(ANNOTATIONS[name], chordElement, noteElements));
 	}
 
 	private hasAnnotation(annotation: Annotation, chordElement: Element, noteElements: Element[]): boolean {
@@ -84,7 +89,11 @@ export class VoiceReader {
 		);
 	}
 
-	private annotationParents(annotation: Annotation, chordElement: Element, noteElements: Element[]): Element[] {
+	private annotationParents(
+		annotation: Annotation,
+		chordElement: Element,
+		noteElements: Element[],
+	): Element[] {
 		if (annotation.xmlParent === "chord") {
 			return [chordElement];
 		}
@@ -95,12 +104,18 @@ export class VoiceReader {
 		return { kind: "rest", duration: this.readDuration(element) };
 	}
 
-	private readHarmonyBefore(element: Element): Harmony | undefined {
-		const prev = precedingElement(element);
-		if (prev?.nodeName !== "Harmony") {
-			return undefined;
+	private readHarmony(element: Element): Harmony {
+		const harmony = { root: numberIn(element, "root"), name: textIn(element, "name") };
+		if (!child(element, "base")) {
+			return harmony;
 		}
-		return { root: numberIn(prev, "root"), name: textIn(prev, "name") };
+		return { ...harmony, base: numberIn(element, "base") };
+	}
+
+	private takePendingHarmony(): Harmony | undefined {
+		const harmony = this.pendingHarmony;
+		this.pendingHarmony = undefined;
+		return harmony;
 	}
 
 	private readDuration(element: Element): Duration {

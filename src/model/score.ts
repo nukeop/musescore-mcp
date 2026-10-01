@@ -42,6 +42,7 @@ export interface Note {
 export interface Harmony {
 	root: number;
 	name: string;
+	base?: number;
 }
 
 export interface Chord {

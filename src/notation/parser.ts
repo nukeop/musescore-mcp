@@ -1,18 +1,26 @@
 import { parseDuration } from "../model/duration-tables";
-import {
-	ACCIDENTAL_SEMITONES,
-	type Accidental,
-	isAccidental,
-	isLetter,
-	NATURAL_TPC,
-} from "../model/pitch-tables";
+import { ACCIDENTAL_SEMITONES, isAccidental, isLetter, NATURAL_TPC } from "../model/pitch-tables";
 import type { Chord, Duration, Harmony, ScorePart, Voice, VoiceEvent } from "../model/score";
 import { WrittenPitch } from "../model/written-pitch";
+import { validChordSuffix } from "./chord-suffix";
 import { EnclosureMarker } from "./enclosures";
 import { suffixForParenName } from "./suffixes";
 import type { WordToken } from "./token";
 import { TokenCursor } from "./token-cursor";
 import { tokenize } from "./tokenize";
+
+const NOTE_NAME = "[A-G][b#]?";
+const CHORD_ROOT = new RegExp(`^${NOTE_NAME}`);
+const SLASH_BASS = new RegExp(`/${NOTE_NAME}$`);
+
+function tpcOfNoteName(name: string): number {
+	const letter = name.charAt(0);
+	const accidental = name.substring(1);
+	if (!isLetter(letter) || !isAccidental(accidental)) {
+		throw new Error(`Invalid note name: ${name}`);
+	}
+	return NATURAL_TPC[letter] + 7 * ACCIDENTAL_SEMITONES[accidental];
+}
 
 export class NotationParser {
 	private readonly cursor: TokenCursor;
@@ -90,17 +98,17 @@ export class NotationParser {
 		if (!token) {
 			return undefined;
 		}
-		const letter = token.text.charAt(0);
-		if (!isLetter(letter)) {
+		const root = CHORD_ROOT.exec(token.text)?.[0];
+		if (!root) {
 			throw new Error(`Invalid chord symbol root: ${token.text}`);
 		}
-		const secondChar = token.text.charAt(1);
-		const accidental: Accidental = isAccidental(secondChar) ? secondChar : "";
-		const name = token.text.substring(1 + accidental.length);
-		return {
-			root: NATURAL_TPC[letter] + 7 * ACCIDENTAL_SEMITONES[accidental],
-			name,
-		};
+		const afterRoot = token.text.substring(root.length);
+		const slash = SLASH_BASS.exec(afterRoot)?.index;
+		const harmony = { root: tpcOfNoteName(root), name: validChordSuffix(afterRoot.substring(0, slash)) };
+		if (slash === undefined) {
+			return harmony;
+		}
+		return { ...harmony, base: tpcOfNoteName(afterRoot.substring(slash + 1)) };
 	}
 
 	private parseSuffixes(event: VoiceEvent): VoiceEvent {

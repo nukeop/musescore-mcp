@@ -3,11 +3,13 @@ import Fraction from "fraction.js";
 import { eventDuration } from "../model/bar-fill";
 import type { Harmony, Voice, VoiceEvent } from "../model/score";
 import { ChordWriter } from "./elements/chord-writer";
-import { RestWriter } from "./elements/rest-writer";
 import type { EnclosureWriter } from "./elements/enclosure-writer";
+import { RestWriter } from "./elements/rest-writer";
 import type { SpannerWriter } from "./elements/spanner-writer";
 import { TupletWriter } from "./elements/tuplet-writer";
-import { children } from "./score-dom";
+import { childElements, children, elementWithText } from "./score-dom";
+
+const CONTENT_ELEMENTS = new Set(["Harmony", "Chord", "Rest", "Tuplet", "endTuplet", "location"]);
 
 export class VoiceWriter {
 	private readonly chordWriter: ChordWriter;
@@ -23,7 +25,12 @@ export class VoiceWriter {
 		this.tupletWriter = new TupletWriter(document);
 	}
 
-	write(voice: Voice, measureLength: Fraction, spannerWriter: SpannerWriter, enclosureWriter: EnclosureWriter): void {
+	write(
+		voice: Voice,
+		measureLength: Fraction,
+		spannerWriter: SpannerWriter,
+		enclosureWriter: EnclosureWriter,
+	): void {
 		this.removeContent();
 		voice.events.reduce(
 			(position, event) => this.writeEvent(event, position, measureLength, spannerWriter, enclosureWriter),
@@ -72,25 +79,19 @@ export class VoiceWriter {
 			return;
 		}
 		const element = this.document.createElement("Harmony");
-		const root = this.document.createElement("root");
-		root.textContent = String(harmony.root);
-		const name = this.document.createElement("name");
-		name.textContent = harmony.name;
-		element.appendChild(root);
-		element.appendChild(name);
+		element.appendChild(elementWithText(this.document, "root", String(harmony.root)));
+		element.appendChild(elementWithText(this.document, "name", harmony.name));
+		if (harmony.base !== undefined) {
+			element.appendChild(elementWithText(this.document, "base", String(harmony.base)));
+		}
 		this.voiceElement.appendChild(element);
 	}
 
 	private removeContent(): void {
-		const content = [
-			...children(this.voiceElement, "Harmony"),
-			...children(this.voiceElement, "Chord"),
-			...children(this.voiceElement, "Rest"),
-			...children(this.voiceElement, "Tuplet"),
-			...children(this.voiceElement, "endTuplet"),
-		];
-		content.forEach((element) => {
-			this.voiceElement.removeChild(element);
-		});
+		childElements(this.voiceElement)
+			.filter((element) => CONTENT_ELEMENTS.has(element.nodeName))
+			.forEach((element) => {
+				this.voiceElement.removeChild(element);
+			});
 	}
 }

@@ -35,7 +35,7 @@ describe("set_key_signature", () => {
 		const setup = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 2, key: "D" });
 		expect(setup.isError).toBeUndefined();
 
-		const result = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 2, key: "B♭" });
+		const result = await setKeySignature(mcp, "/scores/test-tune.mscx", { measure: 2, key: "Bb" });
 
 		expect(result.isError).toBeUndefined();
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();

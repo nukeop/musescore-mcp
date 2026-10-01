@@ -1,10 +1,10 @@
 export type KeyName =
-	| "C♭"
-	| "G♭"
-	| "D♭"
-	| "A♭"
-	| "E♭"
-	| "B♭"
+	| "Cb"
+	| "Gb"
+	| "Db"
+	| "Ab"
+	| "Eb"
+	| "Bb"
 	| "F"
 	| "C"
 	| "G"
@@ -12,11 +12,11 @@ export type KeyName =
 	| "A"
 	| "E"
 	| "B"
-	| "F♯"
-	| "C♯"
-	| "A♭m"
-	| "E♭m"
-	| "B♭m"
+	| "F#"
+	| "C#"
+	| "Abm"
+	| "Ebm"
+	| "Bbm"
 	| "Fm"
 	| "Cm"
 	| "Gm"
@@ -24,19 +24,19 @@ export type KeyName =
 	| "Am"
 	| "Em"
 	| "Bm"
-	| "F♯m"
-	| "C♯m"
-	| "G♯m"
-	| "D♯m"
-	| "A♯m";
+	| "F#m"
+	| "C#m"
+	| "G#m"
+	| "D#m"
+	| "A#m";
 
 export const KEY_NAMES: [KeyName, ...KeyName[]] = [
-	"C♭",
-	"G♭",
-	"D♭",
-	"A♭",
-	"E♭",
-	"B♭",
+	"Cb",
+	"Gb",
+	"Db",
+	"Ab",
+	"Eb",
+	"Bb",
 	"F",
 	"C",
 	"G",
@@ -44,11 +44,11 @@ export const KEY_NAMES: [KeyName, ...KeyName[]] = [
 	"A",
 	"E",
 	"B",
-	"F♯",
-	"C♯",
-	"A♭m",
-	"E♭m",
-	"B♭m",
+	"F#",
+	"C#",
+	"Abm",
+	"Ebm",
+	"Bbm",
 	"Fm",
 	"Cm",
 	"Gm",
@@ -56,20 +56,20 @@ export const KEY_NAMES: [KeyName, ...KeyName[]] = [
 	"Am",
 	"Em",
 	"Bm",
-	"F♯m",
-	"C♯m",
-	"G♯m",
-	"D♯m",
-	"A♯m",
+	"F#m",
+	"C#m",
+	"G#m",
+	"D#m",
+	"A#m",
 ];
 
 export const KEY_FIFTHS: Record<KeyName, number> = {
-	"C♭": -7,
-	"G♭": -6,
-	"D♭": -5,
-	"A♭": -4,
-	"E♭": -3,
-	"B♭": -2,
+	Cb: -7,
+	Gb: -6,
+	Db: -5,
+	Ab: -4,
+	Eb: -3,
+	Bb: -2,
 	F: -1,
 	C: 0,
 	G: 1,
@@ -77,11 +77,11 @@ export const KEY_FIFTHS: Record<KeyName, number> = {
 	A: 3,
 	E: 4,
 	B: 5,
-	"F♯": 6,
-	"C♯": 7,
-	"A♭m": -7,
-	"E♭m": -6,
-	"B♭m": -5,
+	"F#": 6,
+	"C#": 7,
+	Abm: -7,
+	Ebm: -6,
+	Bbm: -5,
 	Fm: -4,
 	Cm: -3,
 	Gm: -2,
@@ -89,11 +89,11 @@ export const KEY_FIFTHS: Record<KeyName, number> = {
 	Am: 0,
 	Em: 1,
 	Bm: 2,
-	"F♯m": 3,
-	"C♯m": 4,
-	"G♯m": 5,
-	"D♯m": 6,
-	"A♯m": 7,
+	"F#m": 3,
+	"C#m": 4,
+	"G#m": 5,
+	"D#m": 6,
+	"A#m": 7,
 };
 
 export function keyName(fifths: number): string {

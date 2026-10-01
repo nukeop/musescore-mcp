@@ -87,7 +87,7 @@ Form:
   24: section break
   25: time: 4/4
 Chords:
-  1: | D-7 | G7 C♯7 | C^7 |  |
+  1: | D-7 | G7 C#7 | C^7 |  |
   5: | A-7 | D-7 | E0 | C^7 |`,
 		);
 	});
@@ -181,9 +181,9 @@ Chords:
 		expect(result.isError).toBeUndefined();
 		expect(result).toBeToolText(
 			`Test Tune by Test Composer
-Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+Key: Eb/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
-  1. Tenor Saxophone (concert D♭/B♭m)`,
+  1. Tenor Saxophone (concert Db/Bbm)`,
 		);
 	});
 
@@ -200,9 +200,9 @@ Instruments:
 		expect(result.isError).toBeUndefined();
 		expect(result).toBeToolText(
 			`Test Tune
-Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+Key: Eb/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
-  1. Tenor Saxophone (concert D♭/B♭m)`,
+  1. Tenor Saxophone (concert Db/Bbm)`,
 		);
 	});
 
@@ -219,9 +219,9 @@ Instruments:
 		expect(result.isError).toBeUndefined();
 		expect(result).toBeToolText(
 			`by Test Composer
-Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+Key: Eb/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
-  1. Tenor Saxophone (concert D♭/B♭m)`,
+  1. Tenor Saxophone (concert Db/Bbm)`,
 		);
 	});
 
@@ -237,9 +237,9 @@ Instruments:
 
 		expect(result.isError).toBeUndefined();
 		expect(result).toBeToolText(
-			`Key: E♭/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
+			`Key: Eb/Cm | Time: 4/4 | Tempo: 160 bpm | Bars: 32
 Instruments:
-  1. Tenor Saxophone (concert D♭/B♭m)`,
+  1. Tenor Saxophone (concert Db/Bbm)`,
 		);
 	});
 

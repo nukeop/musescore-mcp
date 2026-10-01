@@ -63,14 +63,6 @@ export function firstSpannerOrEvent(voice: Element): Element | undefined {
 	);
 }
 
-export function precedingElement(element: Element): Element | undefined {
-	let node = element.previousSibling;
-	while (node && node.nodeType !== node.ELEMENT_NODE) {
-		node = node.previousSibling;
-	}
-	return (node as Element) ?? undefined;
-}
-
 export function scoreElementOf(document: Document): Element | undefined {
 	const root = child(document, "museScore");
 	return root && child(root, "Score");

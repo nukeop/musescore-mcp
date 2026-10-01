@@ -46,6 +46,36 @@ describe("read_measures", () => {
 		expect(result).toBeToolText("[C^7] C5:4. B4:8 A4 G4 r F4~ | [D-7] F4:2. E4:4");
 	});
 
+	test("prints a chord symbol that MuseScore writes before a tuplet on the tuplet's first note", async () => {
+		const result = await readMeasures(mcp, "src/fixtures/musescore-harmony/musescore-harmony.mscx", {
+			from: 1,
+			to: 1,
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText("tuplet(3:2 [D-] E4:4 F4 E5) B4:2");
+	});
+
+	test("does not attach a chord symbol placed between events to the next note", async () => {
+		const result = await readMeasures(mcp, "src/fixtures/musescore-harmony/musescore-harmony.mscx", {
+			from: 2,
+			to: 2,
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText("[C^7] C5:2 D5");
+	});
+
+	test("prints the bass note of a slash chord that MuseScore writes", async () => {
+		const result = await readMeasures(mcp, "src/fixtures/musescore-harmony/musescore-harmony.mscx", {
+			from: 4,
+			to: 4,
+		});
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText("[A7/G] R");
+	});
+
 	test("errors for a file that does not exist", async () => {
 		BunFsMock.mockNoFile();
 
