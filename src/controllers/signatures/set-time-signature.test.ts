@@ -91,9 +91,7 @@ describe("set_time_signature", () => {
 
 		const result = await setTimeSignature(mcp, "/scores/test-tune.mscx", { measure: 6, time: "3/4" });
 
-		expect(result).toBeToolError(
-			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
 	});
 
 	test("(Snapshot) rewrites the duration of MuseScore-authored measure rests", async () => {

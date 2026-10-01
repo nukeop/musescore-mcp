@@ -168,8 +168,6 @@ describe("set_text", () => {
 			style: "staff",
 		});
 
-		expect(result).toBeToolError(
-			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
 	});
 });

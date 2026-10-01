@@ -2,7 +2,12 @@ import type { Document, Element } from "@xmldom/xmldom";
 import Fraction from "fraction.js";
 import type { Chord, Note } from "../../model/score";
 import { children, elementWithText } from "../score-dom";
-import { appendLocationElement, negateSpanLocation, type SpanLocation, spanLocation } from "./spanner-location";
+import {
+	appendLocationElement,
+	negateSpanLocation,
+	type SpanLocation,
+	spanLocation,
+} from "./spanner-location";
 
 interface MarkedNote {
 	note: Note;
@@ -82,18 +87,16 @@ export class SpannerWriter {
 	}
 
 	private appendStartSpanners(last: LastChord, location: SpanLocation): void {
-		const noteElements = children(last.element, "Note");
 		for (const kind of SPANNER_KINDS) {
 			last.chord.notes.forEach((note, index) => {
 				if (kind.isMarked(note)) {
-					this.insertSpanner(noteElements[index]!, "next", location, kind);
+					this.insertSpanner(noteElementAt(last.element, index), "next", location, kind);
 				}
 			});
 		}
 	}
 
 	private appendEndSpanners(chord: Chord, element: Element, last: LastChord, location: SpanLocation): void {
-		const noteElements = children(element, "Note");
 		for (const kind of SPANNER_KINDS) {
 			last.chord.notes.forEach((note, index) => {
 				if (!kind.isMarked(note)) {
@@ -101,7 +104,7 @@ export class SpannerWriter {
 				}
 				const targetIndex = kind.targetIndex({ note, index }, chord);
 				if (targetIndex !== undefined) {
-					this.insertSpanner(noteElements[targetIndex]!, "prev", location, kind);
+					this.insertSpanner(noteElementAt(element, targetIndex), "prev", location, kind);
 				}
 			});
 		}
@@ -123,4 +126,12 @@ export class SpannerWriter {
 		spanner.appendChild(endpoint);
 		noteElement.insertBefore(spanner, noteElement.firstChild);
 	}
+}
+
+function noteElementAt(chordElement: Element, index: number): Element {
+	const noteElement = children(chordElement, "Note")[index];
+	if (!noteElement) {
+		throw new Error(`<${chordElement.nodeName}> has no <Note> at index ${index}`);
+	}
+	return noteElement;
 }

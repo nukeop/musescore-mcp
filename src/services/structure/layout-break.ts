@@ -1,7 +1,7 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import type { LayoutBreakType, Staff } from "../../model/score";
-import { assertMeasureInRange } from "../measure-range";
-import { child, elementWithText, removeChildren, textIn } from "../score-dom";
+import { assertMeasureInRange, firstStaff, measureAt } from "../measure-range";
+import { child, elementWithText, removeChildren, requiredChild, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
 
 const SUBTYPES: Record<LayoutBreakType, string> = {
@@ -39,7 +39,7 @@ export class LayoutBreakWriter {
 		removeChildren(measureElement, "LayoutBreak");
 		measureElement.insertBefore(
 			buildLayoutBreak(this.scoreFile.document, type),
-			child(measureElement, "voice")!,
+			requiredChild(measureElement, "voice"),
 		);
 	}
 
@@ -49,6 +49,6 @@ export class LayoutBreakWriter {
 	}
 
 	private measureElement(measure: number): Element {
-		return this.staves[0]!.measures[measure - 1]!.element;
+		return measureAt(firstStaff(this.staves), measure).element;
 	}
 }

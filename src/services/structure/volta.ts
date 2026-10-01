@@ -2,7 +2,7 @@ import type { Document, Element } from "@xmldom/xmldom";
 import Fraction from "fraction.js";
 import type { Measure, Staff, VoltaHook, VoltaStart } from "../../model/score";
 import { effectiveTimeSigAt } from "../effective-time-sig";
-import { assertMeasureInRange } from "../measure-range";
+import { assertMeasureInRange, firstStaff, voiceAt } from "../measure-range";
 import {
 	child,
 	children,
@@ -10,6 +10,7 @@ import {
 	firstEvent,
 	firstSpannerOrEvent,
 	numberIn,
+	requiredChild,
 	textIn,
 } from "../score-dom";
 import type { ScoreFile } from "../score-file";
@@ -26,7 +27,7 @@ export function readVoltaStarts(voice: Element, from: number): VoltaStart[] {
 }
 
 function readVoltaStart(spanner: Element, from: number): VoltaStart {
-	const volta = child(spanner, "Volta")!;
+	const volta = requiredChild(spanner, "Volta");
 	return {
 		ending: numberIn(volta, "endings"),
 		from,
@@ -127,12 +128,12 @@ export class VoltaWriter {
 
 	private existingVoltas(): VoltaRange[] {
 		return this.firstStaffMeasures().flatMap((measure, index) =>
-			readVoltaStarts(child(measure.element, "voice")!, index + 1),
+			readVoltaStarts(requiredChild(measure.element, "voice"), index + 1),
 		);
 	}
 
 	private voice(measure: number): Element {
-		return child(this.firstStaffMeasures()[measure - 1]!.element, "voice")!;
+		return voiceAt(firstStaff(this.staves), measure);
 	}
 
 	private measureCount(): number {
@@ -140,7 +141,7 @@ export class VoltaWriter {
 	}
 
 	private firstStaffMeasures(): Measure[] {
-		return this.staves[0]!.measures;
+		return firstStaff(this.staves).measures;
 	}
 }
 
@@ -189,7 +190,7 @@ function voltaStartsIn(voice: Element): Element[] {
 }
 
 function coveredMeasures(start: Element): number {
-	const location = child(child(start, "next")!, "location")!;
+	const location = requiredChild(requiredChild(start, "next"), "location");
 	const crossed = Number(child(location, "measures")?.textContent ?? "0");
 	if (child(location, "fractions")) {
 		return crossed + 1;

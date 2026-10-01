@@ -60,9 +60,17 @@ export class MeasuresRenderer {
 			return `r${this.renderDuration(event.duration)}`;
 		}
 		if (event.grace) {
-			return `grace(${this.renderNote(event.notes[0]!)}${this.renderDuration(event.duration)})`;
+			return this.renderGrace(event);
 		}
 		return this.renderChord(event);
+	}
+
+	private renderGrace(grace: Chord): string {
+		const [note] = grace.notes;
+		if (!note) {
+			throw new Error("Grace note chord has no notes");
+		}
+		return `grace(${this.renderNote(note)}${this.renderDuration(grace.duration)})`;
 	}
 
 	private renderChord(chord: Chord): string {

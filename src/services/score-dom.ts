@@ -12,6 +12,22 @@ export function child(parent: Node, name: string): Element | undefined {
 	return children(parent, name)[0];
 }
 
+export function requiredChild(parent: Element, name: string): Element {
+	const element = child(parent, name);
+	if (!element) {
+		throw new Error(`<${parent.nodeName}> has no <${name}>`);
+	}
+	return element;
+}
+
+export function parentOf(element: Element): Node {
+	const parent = element.parentNode;
+	if (!parent) {
+		throw new Error(`<${element.nodeName}> has no parent`);
+	}
+	return parent;
+}
+
 export function numberIn(parent: Element, name: string): number {
 	return Number(child(parent, name)?.textContent);
 }

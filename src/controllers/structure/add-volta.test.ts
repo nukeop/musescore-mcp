@@ -77,9 +77,7 @@ describe("add_volta", () => {
 
 		const result = await addVolta(mcp, "/scores/test-tune.mscx", { from: 3, to: 4, ending: 2 });
 
-		expect(result).toBeToolError(
-			"Volta 3-4 overlaps the existing volta at bars 2-3: /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Volta 3-4 overlaps the existing volta at bars 2-3: /scores/test-tune.mscx");
 	});
 
 	test("rejects an inverted range", async () => {
@@ -89,9 +87,7 @@ describe("add_volta", () => {
 
 		const result = await addVolta(mcp, "/scores/test-tune.mscx", { from: 5, to: 2, ending: 1 });
 
-		expect(result).toBeToolError(
-			"Volta range 5-2 is inverted (from exceeds to): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Volta range 5-2 is inverted (from exceeds to): /scores/test-tune.mscx");
 	});
 
 	test("rejects a range beyond the end of the score", async () => {
@@ -101,8 +97,6 @@ describe("add_volta", () => {
 
 		const result = await addVolta(mcp, "/scores/test-tune.mscx", { from: 3, to: 6, ending: 1 });
 
-		expect(result).toBeToolError(
-			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
 	});
 });

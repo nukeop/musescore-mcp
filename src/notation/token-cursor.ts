@@ -6,7 +6,11 @@ export class TokenCursor {
 	constructor(private readonly tokens: Token[]) {}
 
 	peek(): Token {
-		return this.tokens[this.index]!;
+		const token = this.tokens[this.index];
+		if (!token) {
+			throw new Error(`Read past the end of the token stream at index ${this.index}`);
+		}
+		return token;
 	}
 
 	match(kind: Token["kind"]): boolean {

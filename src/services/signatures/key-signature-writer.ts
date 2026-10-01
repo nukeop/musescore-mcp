@@ -1,7 +1,7 @@
 import { concertKey, KEY_FIFTHS, type KeyName } from "../../model/keys";
 import type { Staff } from "../../model/score";
-import { assertMeasureInRange } from "../measure-range";
-import { child, replaceOrPrepend } from "../score-dom";
+import { assertMeasureInRange, firstStaff, voiceAt } from "../measure-range";
+import { replaceOrPrepend } from "../score-dom";
 import type { ScoreFile } from "../score-file";
 import { buildKeySig } from "./key-signature-element";
 
@@ -16,7 +16,7 @@ export class KeySignatureWriter {
 
 		const concert = this.concertKeyFifths(key);
 		this.staves.forEach((staff) => {
-			const voice = child(staff.measures[measure - 1]!.element, "voice")!;
+			const voice = voiceAt(staff, measure);
 			const transposition = {
 				diatonic: staff.part.transposeDiatonic,
 				chromatic: staff.part.transposeChromatic,
@@ -26,10 +26,10 @@ export class KeySignatureWriter {
 	}
 
 	private concertKeyFifths(key: KeyName): number {
-		const firstStaff = this.staves[0]!;
+		const { part } = firstStaff(this.staves);
 		return concertKey(KEY_FIFTHS[key], {
-			diatonic: firstStaff.part.transposeDiatonic,
-			chromatic: firstStaff.part.transposeChromatic,
+			diatonic: part.transposeDiatonic,
+			chromatic: part.transposeChromatic,
 		});
 	}
 }

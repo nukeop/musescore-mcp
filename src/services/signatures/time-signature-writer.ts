@@ -1,7 +1,7 @@
 import type { Measure, Staff, TimeSig } from "../../model/score";
+import { assertMeasureInRange, firstStaff, measureAt, voiceAt } from "../measure-range";
 import { child, children, replaceOrPrepend } from "../score-dom";
 import type { ScoreFile } from "../score-file";
-import { assertMeasureInRange } from "../measure-range";
 import { buildTimeSig } from "./time-signature-element";
 
 export class TimeSignatureWriter {
@@ -17,9 +17,9 @@ export class TimeSignatureWriter {
 
 		this.staves.forEach((staff) => {
 			affected.forEach((measureNumber) => {
-				this.rescaleMeasureRests(staff.measures[measureNumber - 1]!, time);
+				this.rescaleMeasureRests(measureAt(staff, measureNumber), time);
 			});
-			const voice = child(staff.measures[measure - 1]!.element, "voice")!;
+			const voice = voiceAt(staff, measure);
 			replaceOrPrepend(voice, buildTimeSig(this.scoreFile.document, time));
 		});
 	}
@@ -30,8 +30,10 @@ export class TimeSignatureWriter {
 	}
 
 	private lastAffectedMeasure(measure: number): number {
-		const measures = this.staves[0]!.measures;
-		const next = measures.findIndex((candidate, index) => index >= measure && candidate.timeSig !== undefined);
+		const { measures } = firstStaff(this.staves);
+		const next = measures.findIndex(
+			(candidate, index) => index >= measure && candidate.timeSig !== undefined,
+		);
 		if (next === -1) {
 			return measures.length;
 		}
@@ -49,7 +51,7 @@ export class TimeSignatureWriter {
 
 	private isEmpty(measureNumber: number): boolean {
 		return this.staves.every((staff) =>
-			staff.measures[measureNumber - 1]!.voices.every((voice) =>
+			measureAt(staff, measureNumber).voices.every((voice) =>
 				voice.events.every((event) => event.kind === "rest" && event.duration.type === "measure"),
 			),
 		);

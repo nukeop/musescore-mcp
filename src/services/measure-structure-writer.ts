@@ -1,7 +1,8 @@
 import type { Element } from "@xmldom/xmldom";
 import type { Measure, Staff } from "../model/score";
+import { measureAt } from "./measure-range";
+import { child, parentOf, requiredChild } from "./score-dom";
 import type { ScoreFile } from "./score-file";
-import { child } from "./score-dom";
 
 function hasTiedLastEvent(measure: Measure | undefined): boolean {
 	const lastEvent = measure?.voices[0]?.events.at(-1);
@@ -10,14 +11,14 @@ function hasTiedLastEvent(measure: Measure | undefined): boolean {
 
 function deleteFromStaff(staff: Staff, from: number, to: number): void {
 	staff.measures.slice(from - 1, to).forEach((measure) => {
-		measure.element.parentNode!.removeChild(measure.element);
+		parentOf(measure.element).removeChild(measure.element);
 	});
 }
 
 function moveSignatures(oldFirstMeasure: Measure, newFirstMeasureElement: Element): void {
-	const oldVoice = child(oldFirstMeasure.element, "voice")!;
-	const newVoice = child(newFirstMeasureElement, "voice")!;
-	const rest = child(newVoice, "Rest")!;
+	const oldVoice = requiredChild(oldFirstMeasure.element, "voice");
+	const newVoice = requiredChild(newFirstMeasureElement, "voice");
+	const rest = requiredChild(newVoice, "Rest");
 	const keySig = child(oldVoice, "KeySig");
 	const timeSig = child(oldVoice, "TimeSig");
 	if (keySig) {
@@ -71,17 +72,22 @@ export class MeasureStructureWriter {
 	private assertNoBrokenTie(from: number, to: number, length: number): void {
 		const breaksBefore = this.staves.some((staff) => hasTiedLastEvent(staff.measures[from - 2]));
 		if (breaksBefore) {
-			throw new Error(`Deleting measures ${from}-${to} would break a tie between measures ${from - 1} and ${from}`);
+			throw new Error(
+				`Deleting measures ${from}-${to} would break a tie between measures ${from - 1} and ${from}`,
+			);
 		}
 		const breaksAfter = to < length && this.staves.some((staff) => hasTiedLastEvent(staff.measures[to - 1]));
 		if (breaksAfter) {
-			throw new Error(`Deleting measures ${from}-${to} would break a tie between measures ${to} and ${to + 1}`);
+			throw new Error(
+				`Deleting measures ${from}-${to} would break a tie between measures ${to} and ${to + 1}`,
+			);
 		}
 	}
 
 	private insertIntoStaff(staff: Staff, at: number, count: number): void {
 		const referenceMeasure = staff.measures[at - 1];
-		const parent = staff.measures[0]!.element.parentNode!;
+		const firstMeasure = measureAt(staff, 1);
+		const parent = parentOf(firstMeasure.element);
 
 		const newMeasures = Array.from({ length: count }, () => this.buildEmptyMeasure());
 		newMeasures.forEach((measureElement) => {
@@ -92,8 +98,9 @@ export class MeasureStructureWriter {
 			}
 		});
 
-		if (at === 1) {
-			moveSignatures(staff.measures[0]!, newMeasures[0]!);
+		const [firstNewMeasure] = newMeasures;
+		if (at === 1 && firstNewMeasure) {
+			moveSignatures(firstMeasure, firstNewMeasure);
 		}
 	}
 

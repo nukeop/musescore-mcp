@@ -1,6 +1,6 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import type { FormText, Staff, SwingMode, TextStyle } from "../../model/score";
-import { assertMeasureInRange } from "../measure-range";
+import { assertMeasureInRange, firstStaff, voiceAt } from "../measure-range";
 import { child, children, elementWithText, firstSpannerOrEvent, removeChildren, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
 
@@ -57,7 +57,7 @@ export class TextWriter {
 
 	set(measure: number, style: TextStyle, text: string, swing?: SwingMode): void {
 		assertMeasureInRange(this.staves, measure, this.scoreFile.path);
-		const voice = child(this.staves[0]!.measures[measure - 1]!.element, "voice")!;
+		const voice = voiceAt(firstStaff(this.staves), measure);
 		removeChildren(voice, ELEMENT_NAMES[style]);
 		voice.insertBefore(
 			buildText(this.scoreFile.document, style, text, swing),

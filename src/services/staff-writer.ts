@@ -2,9 +2,10 @@ import Fraction from "fraction.js";
 import { validateBarFill } from "../model/bar-fill";
 import { validateEnclosures } from "../model/enclosures";
 import type { Staff, Voice } from "../model/score";
-import { EnclosureWriter } from "./elements/enclosure-writer";
 import { effectiveTimeSigAt } from "./effective-time-sig";
+import { EnclosureWriter } from "./elements/enclosure-writer";
 import { SpannerWriter } from "./elements/spanner-writer";
+import { measureAt } from "./measure-range";
 import { MeasureWriter } from "./measure-writer";
 import type { ScoreFile } from "./score-file";
 
@@ -30,11 +31,10 @@ export class StaffWriter {
 
 		const spannerWriter = new SpannerWriter(this.scoreFile.document);
 		const enclosureWriter = new EnclosureWriter(this.scoreFile.document);
-		const targetMeasures = this.staff.measures.slice(from - 1, to);
 		bars.forEach((bar, index) => {
 			spannerWriter.startBar();
 			enclosureWriter.startBar();
-			new MeasureWriter(this.scoreFile.document, targetMeasures[index]!).write(
+			new MeasureWriter(this.scoreFile.document, measureAt(this.staff, from + index)).write(
 				bar,
 				this.measureLengthAt(from + index),
 				spannerWriter,

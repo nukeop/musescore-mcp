@@ -28,7 +28,9 @@ describe("set_header", () => {
 		);
 
 		expect(result.isError).toBeUndefined();
-		expect(BunFsMock.getWrittenFile("src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx")).toMatchSnapshot();
+		expect(
+			BunFsMock.getWrittenFile("src/fixtures/simple-lead-sheet/simple-lead-sheet.mscx"),
+		).toMatchSnapshot();
 	});
 
 	test("updates the title and composer texts in the header frame", async () => {

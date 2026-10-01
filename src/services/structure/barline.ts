@@ -1,7 +1,7 @@
 import type { Document, Element } from "@xmldom/xmldom";
 import type { Staff } from "../../model/score";
-import { assertMeasureInRange } from "../measure-range";
-import { child, elementWithText, removeChildren, textIn } from "../score-dom";
+import { assertMeasureInRange, firstStaff, measureAt, voiceAt } from "../measure-range";
+import { child, elementWithText, removeChildren, requiredChild, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
 
 export function readStartRepeat(measure: Element): boolean {
@@ -36,7 +36,7 @@ export class BarlineWriter {
 		removeChildren(measureElement, "startRepeat");
 		measureElement.insertBefore(
 			this.scoreFile.document.createElement("startRepeat"),
-			child(measureElement, "voice")!,
+			requiredChild(measureElement, "voice"),
 		);
 	}
 
@@ -46,7 +46,7 @@ export class BarlineWriter {
 		const measureElement = this.firstStaffMeasure(measure);
 		measureElement.insertBefore(
 			elementWithText(this.scoreFile.document, "endRepeat", String(count)),
-			child(measureElement, "voice")!,
+			requiredChild(measureElement, "voice"),
 		);
 	}
 
@@ -72,10 +72,10 @@ export class BarlineWriter {
 	}
 
 	private voices(measure: number): Element[] {
-		return this.staves.map((staff) => child(staff.measures[measure - 1]!.element, "voice")!);
+		return this.staves.map((staff) => voiceAt(staff, measure));
 	}
 
 	private firstStaffMeasure(measure: number): Element {
-		return this.staves[0]!.measures[measure - 1]!.element;
+		return measureAt(firstStaff(this.staves), measure).element;
 	}
 }

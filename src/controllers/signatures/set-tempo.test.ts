@@ -48,8 +48,6 @@ describe("set_tempo", () => {
 
 		const result = await setTempo(mcp, "/scores/test-tune.mscx", { measure: 6, bpm: 80 });
 
-		expect(result).toBeToolError(
-			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
 	});
 });

@@ -83,8 +83,6 @@ describe("set_layout_break", () => {
 
 		const result = await setLayoutBreak(mcp, "/scores/test-tune.mscx", { measure: 6, type: "system" });
 
-		expect(result).toBeToolError(
-			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
 	});
 });

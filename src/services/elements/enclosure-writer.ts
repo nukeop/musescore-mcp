@@ -2,8 +2,13 @@ import type { Document, Element } from "@xmldom/xmldom";
 import type Fraction from "fraction.js";
 import { ENCLOSURE_SPANNERS, type EnclosureName } from "../../model/enclosures";
 import type { Chord } from "../../model/score";
-import { children } from "../score-dom";
-import { appendLocationElement, negateSpanLocation, type SpanLocation, spanLocation } from "./spanner-location";
+import { requiredChild } from "../score-dom";
+import {
+	appendLocationElement,
+	negateSpanLocation,
+	type SpanLocation,
+	spanLocation,
+} from "./spanner-location";
 
 interface PendingStart {
 	name: EnclosureName;
@@ -55,6 +60,6 @@ export class EnclosureWriter {
 		const endpoint = this.document.createElement(direction);
 		appendLocationElement(this.document, endpoint, location);
 		spanner.appendChild(endpoint);
-		chordElement.insertBefore(spanner, children(chordElement, "Note")[0]!);
+		chordElement.insertBefore(spanner, requiredChild(chordElement, "Note"));
 	}
 }

@@ -45,7 +45,11 @@ describe("set_barline", () => {
 		BunFsMock.mockFile();
 		await createScore(mcp, { instruments: ["piano"], measures: 4 });
 
-		const result = await setBarline(mcp, "/scores/test-tune.mscx", { measure: 4, type: "end-repeat", count: 3 });
+		const result = await setBarline(mcp, "/scores/test-tune.mscx", {
+			measure: 4,
+			type: "end-repeat",
+			count: 3,
+		});
 
 		expect(result.isError).toBeUndefined();
 		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toMatchSnapshot();
@@ -134,8 +138,6 @@ describe("set_barline", () => {
 
 		const result = await setBarline(mcp, "/scores/test-tune.mscx", { measure: 6, type: "double" });
 
-		expect(result).toBeToolError(
-			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
 	});
 });

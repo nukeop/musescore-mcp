@@ -62,8 +62,6 @@ describe("set_section_marker", () => {
 
 		const result = await setSectionMarker(mcp, "/scores/test-tune.mscx", { measure: 6, text: "A" });
 
-		expect(result).toBeToolError(
-			"Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx",
-		);
+		expect(result).toBeToolError("Measure 6 exceeds score length (4 measures): /scores/test-tune.mscx");
 	});
 });

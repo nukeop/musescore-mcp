@@ -91,7 +91,7 @@ function pairedChords(chords: Chord[], name: EnclosureName): Set<Chord> {
 	const fold = chords.reduce<PairFold>(
 		(state, chord) => {
 			if (chord.opensEnclosure === name) {
-				return { ...state, open: chord };
+				return { open: chord, paired: state.paired };
 			}
 			if (chord.closesEnclosure === name && state.open) {
 				return { open: undefined, paired: [...state.paired, state.open, chord] };
