@@ -169,6 +169,73 @@ Chords:
 		);
 	});
 
+	test("reports a final barline under the same name set_barline accepts", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		const file = "/scores/test-tune.mscx";
+		await createScore(mcp, { instruments: ["piano"], key: "C", tempo: 120, measures: 4 });
+		const final = await setBarline(mcp, file, { measure: 4, type: "final" });
+		expect(final.isError).toBeUndefined();
+
+		const result = await getOverview(mcp);
+
+		expect(result.isError).toBeUndefined();
+		expect(result).toBeToolText(
+			`Test Tune by Test Composer
+Key: C/Am | Time: 4/4 | Tempo: 120 bpm | Bars: 4
+Instruments:
+  1. Piano
+Form:
+  4: final barline`,
+		);
+	});
+
+	test("reports a MuseScore barline that set_barline cannot write under its MuseScore name", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp, { instruments: ["piano"], key: "C", tempo: 120, measures: 4 });
+		await setBarline(mcp, "/scores/test-tune.mscx", { measure: 2, type: "final" });
+		BunFsMock.mockFile({
+			"/scores/dashed.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx").replace(
+				"<subtype>end</subtype>",
+				"<subtype>dashed</subtype>",
+			),
+		});
+
+		const result = await getOverview(mcp, "/scores/dashed.mscx");
+
+		expect(result).toBeToolText(
+			`Test Tune by Test Composer
+Key: C/Am | Time: 4/4 | Tempo: 120 bpm | Bars: 4
+Instruments:
+  1. Piano
+Form:
+  2: dashed barline`,
+		);
+	});
+
+	test("omits a barline whose subtype is normal", async () => {
+		BunFsMock.mockWrite();
+		BunFsMock.mockFile();
+		await createScore(mcp, { instruments: ["piano"], key: "C", tempo: 120, measures: 4 });
+		await setBarline(mcp, "/scores/test-tune.mscx", { measure: 2, type: "final" });
+		BunFsMock.mockFile({
+			"/scores/normal.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx").replace(
+				"<subtype>end</subtype>",
+				"<subtype>normal</subtype>",
+			),
+		});
+
+		const result = await getOverview(mcp, "/scores/normal.mscx");
+
+		expect(result).toBeToolText(
+			`Test Tune by Test Composer
+Key: C/Am | Time: 4/4 | Tempo: 120 bpm | Bars: 4
+Instruments:
+  1. Piano`,
+		);
+	});
+
 	test("omits the Form and Chords sections on a score without structure or chords", async () => {
 		BunFsMock.mockWrite();
 		await createScore(mcp);

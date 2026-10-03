@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { END_BARLINE_TYPES } from "../../model/score";
 
 export const setSectionMarkerSchema = {
 	file: z.string(),
@@ -9,7 +10,7 @@ export const setSectionMarkerSchema = {
 export const setBarlineSchema = {
 	file: z.string(),
 	measure: z.number().int().min(1),
-	type: z.enum(["start-repeat", "end-repeat", "double", "normal"]),
+	type: z.enum(["start-repeat", "end-repeat", ...END_BARLINE_TYPES, "normal"]),
 	count: z.number().int().positive().optional(),
 };
 

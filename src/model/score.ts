@@ -81,6 +81,23 @@ export type SwingMode = "eighth" | "off";
 
 export type LayoutBreakType = "system" | "page" | "section";
 
+export const END_BARLINE_TYPES = ["double", "final"] as const;
+
+export type EndBarlineType = (typeof END_BARLINE_TYPES)[number];
+
+// Barline types MuseScore can draw but set_barline cannot write. They keep MuseScore's own names.
+export type ForeignBarlineType =
+	| "dashed"
+	| "dotted"
+	| "heavy"
+	| "double-heavy"
+	| "reverse-end"
+	| "start-repeat"
+	| "end-repeat"
+	| "end-start-repeat";
+
+export type BarlineType = EndBarlineType | ForeignBarlineType;
+
 export type VoltaHook = "closed" | "open";
 
 export interface FormText {
@@ -100,7 +117,7 @@ export interface MeasureForm {
 	rehearsalMark?: string;
 	startRepeat: boolean;
 	endRepeat?: number;
-	barline?: string;
+	barline?: BarlineType;
 	texts: FormText[];
 	voltas: VoltaStart[];
 	layoutBreak?: LayoutBreakType;

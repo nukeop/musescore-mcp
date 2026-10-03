@@ -1,5 +1,5 @@
 import type { Document, Element } from "@xmldom/xmldom";
-import type { Staff } from "../../model/score";
+import type { BarlineType, EndBarlineType, Staff } from "../../model/score";
 import { assertMeasureInRange, firstStaff, measureAt, voiceAt } from "../measure-range";
 import { child, elementWithText, removeChildren, requiredChild, textIn } from "../score-dom";
 import type { ScoreFile } from "../score-file";
@@ -13,14 +13,33 @@ export function readEndRepeat(measure: Element): number | undefined {
 	return endRepeat && Number(endRepeat.textContent);
 }
 
-export function readBarline(voice: Element): string | undefined {
+const SUBTYPES: Record<EndBarlineType, string> = {
+	double: "double",
+	final: "end",
+};
+
+// "normal" is absent on purpose: a normal barline is no override, so readBarline reports none.
+const TYPES_BY_SUBTYPE: Record<string, BarlineType> = {
+	double: "double",
+	end: "final",
+	dashed: "dashed",
+	dotted: "dotted",
+	heavy: "heavy",
+	"double-heavy": "double-heavy",
+	"reverse-end": "reverse-end",
+	"start-repeat": "start-repeat",
+	"end-repeat": "end-repeat",
+	"end-start-repeat": "end-start-repeat",
+};
+
+export function readBarline(voice: Element): BarlineType | undefined {
 	const barLine = child(voice, "BarLine");
-	return barLine && textIn(barLine, "subtype");
+	return barLine && TYPES_BY_SUBTYPE[textIn(barLine, "subtype")];
 }
 
-export function buildDoubleBarLine(document: Document): Element {
+function buildBarLine(document: Document, type: EndBarlineType): Element {
 	const barLine = document.createElement("BarLine");
-	barLine.appendChild(elementWithText(document, "subtype", "double"));
+	barLine.appendChild(elementWithText(document, "subtype", SUBTYPES[type]));
 	return barLine;
 }
 
@@ -50,11 +69,11 @@ export class BarlineWriter {
 		);
 	}
 
-	double(measure: number): void {
+	endBarline(measure: number, type: EndBarlineType): void {
 		assertMeasureInRange(this.staves, measure, this.scoreFile.path);
 		this.removeEndOverrides(measure);
 		this.voices(measure).forEach((voice) => {
-			voice.appendChild(buildDoubleBarLine(this.scoreFile.document));
+			voice.appendChild(buildBarLine(this.scoreFile.document, type));
 		});
 	}
 

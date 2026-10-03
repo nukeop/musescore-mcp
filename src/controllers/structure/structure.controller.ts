@@ -37,7 +37,7 @@ export const structureController: Controller = (server) => {
 		"set_barline",
 		{
 			description:
-				"Sets the barline type at a measure: start-repeat, end-repeat (with an optional play count, default 2), double, or normal to clear any override.",
+				"Sets the barline type at a measure: start-repeat, end-repeat (with an optional play count, default 2), double, final, or normal to clear any override.",
 			inputSchema: setBarlineSchema,
 		},
 		async ({ file, measure, type, count }) => {
@@ -56,7 +56,8 @@ export const structureController: Controller = (server) => {
 					writer.endRepeat(measure, count);
 					break;
 				case "double":
-					writer.double(measure);
+				case "final":
+					writer.endBarline(measure, type);
 					break;
 				case "normal":
 					writer.clear(measure);
