@@ -740,7 +740,7 @@ exports[`write_measures (Snapshot) writes tuplets 1`] = `
           <TimeSig><sigN>4</sigN><sigD>4</sigD></TimeSig>
           <Tempo><tempo>2.666667</tempo><followText>1</followText><text><sym>metNoteQuarterUp</sym> = 160</text></Tempo>
           
-          <Tuplet><normalNotes>2</normalNotes><actualNotes>3</actualNotes></Tuplet><Chord><durationType>eighth</durationType><Note><pitch>72</pitch><tpc>14</tpc></Note></Chord><Chord><durationType>eighth</durationType><Note><pitch>74</pitch><tpc>16</tpc></Note></Chord><Chord><durationType>eighth</durationType><Note><pitch>76</pitch><tpc>18</tpc></Note></Chord><endTuplet/><Rest><durationType>quarter</durationType></Rest><Rest><durationType>half</durationType></Rest></voice>
+          <Tuplet><normalNotes>2</normalNotes><actualNotes>3</actualNotes><baseNote>eighth</baseNote><Number><style>tuplet</style><text>3</text></Number></Tuplet><Chord><durationType>eighth</durationType><Note><pitch>72</pitch><tpc>14</tpc></Note></Chord><Chord><durationType>eighth</durationType><Note><pitch>74</pitch><tpc>16</tpc></Note></Chord><Chord><durationType>eighth</durationType><Note><pitch>76</pitch><tpc>18</tpc></Note></Chord><endTuplet/><Rest><durationType>quarter</durationType></Rest><Rest><durationType>half</durationType></Rest></voice>
         </Measure>
       </Staff>
     </Score>

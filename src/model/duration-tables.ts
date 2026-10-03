@@ -45,6 +45,11 @@ export function durationFraction(type: NoteDuration, dots: number): Fraction {
 	return dotFactor.div(DURATIONS_MAP[type]);
 }
 
+export function undottedDurationOf(length: Fraction): NoteDuration | undefined {
+	const types = Object.keys(DURATIONS_MAP) as NoteDuration[];
+	return types.find((type) => length.equals(durationFraction(type, 0)));
+}
+
 export function durationSymbol(type: NoteDuration, dots: number): DottedDuration {
 	const base = TYPE_TO_SYMBOL[type];
 	if (dots === 1) {

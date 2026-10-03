@@ -200,6 +200,77 @@ describe("write_measures", () => {
 	});
 
 	test.each([
+		["tuplet(3:2 C5:4 D5 E5) r:2", "quarter"],
+		["tuplet(3:2 C5:2 D5 E5)", "half"],
+		["tuplet(3:2 C5:4 D5:8) r:4 r:2", "eighth"],
+		["tuplet(6:4 C5:16 D5 E5 F5 G5 A5) r:4 r:2", "16th"],
+	])("writes the base note of %s", async (content, baseNote) => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", { from: 1, content });
+
+		expect(result.isError).toBeUndefined();
+		expect(BunFsMock.getWrittenFile("/scores/test-tune.mscx")).toContain(`<baseNote>${baseNote}</baseNote>`);
+	});
+
+	test("rejects a tuplet whose notes do not fill its equal undotted units", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "tuplet(3:2 C5:4 D5) tuplet(3:2 E5:4 F5) tuplet(3:2 G5:4 A5)",
+		});
+
+		expect(result).toBeToolError(
+			"Tuplet 3:2 is incomplete: its notes add up to 1/2 of a whole note, which is not 3 equal undotted notes",
+		);
+	});
+
+	test("rejects a chord symbol with no note after it inside a tuplet", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "tuplet(3:2 C5:8 D5 E5 [G7]) r:4 r:2",
+		});
+
+		expect(result).toBeToolError("Chord symbol [G7] must come before a note");
+	});
+
+	test("writes chord symbols on later notes inside a tuplet (round trip)", async () => {
+		BunFsMock.mockWrite();
+		await createScore(mcp, { instruments: ["piano"], measures: 1 });
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+
+		const result = await writeMeasures(mcp, "/scores/test-tune.mscx", {
+			from: 1,
+			content: "[D-7] A4:4. B4:8 tuplet(3:2 [G7sus] C5:4 [G7] D5 [G7b9] E5)",
+		});
+
+		expect(result.isError).toBeUndefined();
+
+		BunFsMock.mockFile({
+			"/scores/test-tune.mscx": BunFsMock.getWrittenFile("/scores/test-tune.mscx"),
+		});
+		const readBack = await readMeasures(mcp, "/scores/test-tune.mscx", { from: 1, to: 1 });
+		expect(readBack).toBeToolText("[D-7] A4:4. B4:8 tuplet(3:2 [G7sus] C5:4 [G7] D5 [G7b9] E5)");
+	});
+
+	test.each([
 		["tie", "C5:4~ C5:4 r:2", "C5:4~ C5 r:2"],
 		["glissando", "C5:4(gliss) D5 E5 F5", "C5:4(gliss) D5 E5 F5"],
 		["slur", "slur(C5:4 D5 E5) F5", "slur(C5:4 D5 E5) F5"],

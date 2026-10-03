@@ -45,13 +45,13 @@ export class NotationParser {
 
 	private parseBar(): Voice {
 		const events = [this.parseBarEvent()];
-		while (this.continuesBar()) {
+		while (this.atEventStart()) {
 			events.push(this.parseBarEvent());
 		}
 		return { events };
 	}
 
-	private continuesBar(): boolean {
+	private atEventStart(): boolean {
 		const kind = this.cursor.peek().kind;
 		return kind === "word" || kind === "harmony";
 	}
@@ -96,6 +96,9 @@ export class NotationParser {
 		const token = this.cursor.matchHarmony();
 		if (!token) {
 			return undefined;
+		}
+		if (this.cursor.peek().kind !== "word") {
+			throw new Error(`Chord symbol [${token.text}] must come before a note`);
 		}
 		const root = CHORD_ROOT.exec(token.text)?.[0];
 		if (!root) {
@@ -177,7 +180,7 @@ export class NotationParser {
 		const normalNotes = Number(this.cursor.expectWord().text);
 
 		const events = [this.parseEvent()];
-		while (this.cursor.peek().kind === "word") {
+		while (this.atEventStart()) {
 			events.push(this.parseEvent());
 		}
 		this.cursor.expect("rparen");
