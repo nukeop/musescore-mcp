@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { KEY_NAMES } from "../../model/keys";
 import { instrumentNames } from "../../services/instruments";
+import { SCORE_STYLES } from "../../services/score-style";
 import { timeSignature } from "../time-signature.schema";
 
 export type CreateScoreArgs = z.input<z.ZodObject<typeof createScoreSchema>>;
@@ -14,4 +15,5 @@ export const createScoreSchema = {
 	time: timeSignature.prefault("4/4"),
 	tempo: z.number().positive(),
 	measures: z.number().int().positive(),
+	style: z.enum(SCORE_STYLES).default("standard"),
 };
