@@ -22,6 +22,7 @@ export function tupletDuration(tuplet: Tuplet): Fraction {
 
 function contentDuration(tuplet: Tuplet): Fraction {
 	return tuplet.events
+		.filter((member) => !(member.kind === "chord" && member.grace))
 		.map((member) => {
 			if (member.kind === "tuplet" || member.duration.type === "measure") {
 				throw new Error("Tuplet members must be notes or rests with explicit durations");
